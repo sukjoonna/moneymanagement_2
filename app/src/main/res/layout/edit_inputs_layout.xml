@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/edit_amountEt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/edit_amount"
+        android:inputType="numberDecimal"
+        android:lines="8"
+        android:maxLines="3"
+        android:minLines="6"
+        android:scrollbars="vertical"
+        android:importantForAutofill="no" />
+
+    <EditText
+        android:id="@+id/edit_textEt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edit_description"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:lines="8"
+        android:maxLines="3"
+        android:minLines="6"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/edit_dateEt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edit_date"
+        android:ems="10"
+        android:inputType="date"
+        android:importantForAutofill="no"
+        android:gravity="center"/>
+
+    <Spinner
+        android:id="@+id/edit_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="100sp" />
+
+
+
+
+</LinearLayout>
