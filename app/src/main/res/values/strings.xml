@@ -30,4 +30,8 @@
     <string name="edit_date">Edit Date</string>
     <string name="reset_all_categories">Reset All Categories</string>
     <string name="Settings">Settings</string>
+    <string name="categories_to_delete">Categories to Delete</string>
+    <string name="delete_all_categories">Delete All Categories</string>
+    <string name="manage_categories">Manage Categories</string>
+    <string name="go_back">Go Back</string>
 </resources>

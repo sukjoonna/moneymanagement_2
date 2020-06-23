@@ -1,6 +1,8 @@
 package com.example.moneymanagement3.ui.setting;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -60,7 +62,6 @@ public class SettingFragment extends Fragment {
         lv_settings.setAdapter(adapter_settings);
 
 
-        onClick_resetBtn();
         onClick_itemselectedLv();
 
 
@@ -77,87 +78,14 @@ public class SettingFragment extends Fragment {
 
                 //If "Manage Categories" is selected
                 if (position==0){
-                    //creates the categories arraylist from database table2
-                    categories = new ArrayList<String>();
-                    while (res2.moveToNext()) {
-                        String category = res2.getString(1); //from database table2
-                        categories.add(category);
-                    }
-
-                    //creates boolean array of falses
-                    final boolean[] bool_list= new boolean[categories.size()];
-                    //converts categories arraylist to char sequence array
-                    final CharSequence[] categories_list = new CharSequence[categories.size()];
-                    for (int i = 0; i < categories.size(); i++){
-                        categories_list[i] = categories.get(i);
-                    }
-
-                    //create an alert dialog1 builder - "Manage Categories"
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
-                    builder1.setTitle("Manage Categories");
-                    builder1.setPositiveButton("Delete", null);
-                    builder1.setNeutralButton("Cancel", null);
-
-                    //set the checkbox listview
-                    builder1.setMultiChoiceItems(categories_list, bool_list,
-                            new DialogInterface.OnMultiChoiceClickListener() {
-                                @Override
-                                // indexSelected contains the index of item (of which checkbox checked)
-                                //checks and unchecks the boxes when clicked
-                                public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                                    bool_list[indexSelected] = isChecked;
-                                    String current_item = categories_list[indexSelected].toString();
-                                }
-                            });
-                    //creates the alert dialog from the builder
-                    final AlertDialog alertDialog = builder1.create();
-
-                    //display the alert dialog with the buttons
-                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(final DialogInterface dialog) {
-
-                            //delete button
-                            Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                            positiveButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    //deletes the categories from database table2 if the boxes are checked
-                                    for (int i = 0; i < categories_list.length; i++){
-                                        boolean checked = bool_list[i];
-                                        if (checked){
-                                            res2.moveToPosition(i); //move to correct row in table2
-                                            String category_id = res2.getString(0); //get the ID of category
-                                            myDb.delete_categories(category_id);
-                                        }
-                                    }
-                                    //recreates SettingFragment so the checkbox list appears again after alertdialog closes
-                                    getFragmentManager()
-                                            .beginTransaction()
-                                            .detach(SettingFragment.this)
-                                            .attach(SettingFragment.this)
-                                            .commit();
-                                    dialog.dismiss();
-                                }
-                            });
-
-                            //cancel button
-                            Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-                            neutralButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    //recreates SettingFragment so the checkbox list appears again after alertdialog closes
-                                    getFragmentManager()
-                                            .beginTransaction()
-                                            .detach(SettingFragment.this)
-                                            .attach(SettingFragment.this)
-                                            .commit();
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    });
-                    alertDialog.show();
+                    //starts new fragment "ManageCatFragment"
+                    ManageCatFragment frag= new ManageCatFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, frag, "manageCatFrag")
+                            .addToBackStack(null)
+                            .commit();
+                }
+                else{
 
                 }
 
@@ -166,21 +94,6 @@ public class SettingFragment extends Fragment {
 
     }
 
-
-    public void onClick_resetBtn() {
-        //Button to reset all categories
-        btn_reset.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                //deletes all newly created categories and restores to default
-                int value = myDb.deleteAll_categories();
-                if(value > 0)
-                    Toast.makeText(view.getContext(),"Deleted all categories",Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(view.getContext(),"Data not Deleted",Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
 
 
 }
