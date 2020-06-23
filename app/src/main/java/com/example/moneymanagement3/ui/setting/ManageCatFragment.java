@@ -41,6 +41,7 @@ public class ManageCatFragment extends Fragment {
     String[] managecat_items;
     ArrayAdapter<String> adapter_managecat;
     Button btn1;
+    CharSequence[] categories_list;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_managecat, container, false);
@@ -68,7 +69,7 @@ public class ManageCatFragment extends Fragment {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void onClick_itemselectedLv() {
-        //Delete/edit selected items in the settings listview by selecting an item in the settings list view
+        //Delete/edit selected items in the manageCat listview by selecting an item in the list view
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, final int position, long id) {
 
@@ -84,102 +85,142 @@ public class ManageCatFragment extends Fragment {
                     //creates boolean array of falses
                     final boolean[] bool_list = new boolean[categories.size()];
                     //converts categories arraylist to char sequence array
-                    final CharSequence[] categories_list = new CharSequence[categories.size()];
+                    categories_list = new CharSequence[categories.size()];
                     for (int i = 0; i < categories.size(); i++) {
                         categories_list[i] = categories.get(i);
                     }
 
-                    //create an alert dialog1 builder - "Manage Categories"
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
-                    builder1.setTitle("Select Categories to Delete");
-                    builder1.setPositiveButton("Delete", null);
-                    builder1.setNeutralButton("Cancel", null);
+                    //if there are no categories, show an alert saying "there are no categories"
+                    if (categories_list.length == 0) {
+                        AlertDialog.Builder builder0 = new AlertDialog.Builder(view.getContext());
+                        builder0.setTitle("Alert");
+                        builder0.setMessage("There are no categories");
+                        builder0.setPositiveButton("Okay", null);
+                        builder0.show();
+                    }
 
-                    //set the checkbox listview
-                    builder1.setMultiChoiceItems(categories_list, bool_list,
-                            new DialogInterface.OnMultiChoiceClickListener() {
-                                @Override
-                                // indexSelected contains the index of item (of which checkbox checked)
-                                //checks and unchecks the boxes when clicked
-                                public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
-                                    bool_list[indexSelected] = isChecked;
-                                    String current_item = categories_list[indexSelected].toString();
-                                }
-                            });
-                    //creates the alert dialog from the builder
-                    final AlertDialog alertDialog = builder1.create();
+                    //otherwise
+                    else {
+                        //create an alert dialog1 builder - "Manage Categories"
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+                        builder1.setTitle("Select Categories to Delete");
+                        builder1.setPositiveButton("Delete", null);
+                        builder1.setNeutralButton("Cancel", null);
 
-                    //display the alert dialog with the buttons
-                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(final DialogInterface dialog) {
-
-                            //delete button
-                            Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                            positiveButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    //deletes the categories from database table2 if the boxes are checked
-                                    for (int i = 0; i < categories_list.length; i++) {
-                                        boolean checked = bool_list[i];
-                                        if (checked) {
-                                            res2.moveToPosition(i); //move to correct row in table2
-                                            String category_id = res2.getString(0); //get the ID of category
-                                            myDb.delete_categories(category_id);
-                                        }
+                        //set the checkbox listview
+                        builder1.setMultiChoiceItems(categories_list, bool_list,
+                                new DialogInterface.OnMultiChoiceClickListener() {
+                                    @Override
+                                    // indexSelected contains the index of item (of which checkbox checked)
+                                    //checks and unchecks the boxes when clicked
+                                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                                        bool_list[indexSelected] = isChecked;
+                                        String current_item = categories_list[indexSelected].toString();
                                     }
-                                    //recreates SettingFragment so the checkbox list appears again after alertdialog closes
-                                    getFragmentManager()
-                                            .beginTransaction()
-                                            .detach(ManageCatFragment.this)
-                                            .attach(ManageCatFragment.this)
-                                            .commit();
-                                    dialog.dismiss();
-                                }
-                            });
+                                });
+                        //creates the alert dialog from the builder
+                        final AlertDialog alertDialog = builder1.create();
 
-                            //Cancel button
-                            Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-                            neutralButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    //recreates SettingFragment so the checkbox list appears again after alertdialog closes
-                                    getFragmentManager()
-                                            .beginTransaction()
-                                            .detach(ManageCatFragment.this)
-                                            .attach(ManageCatFragment.this)
-                                            .commit();
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
-                    });
-                    alertDialog.show();
+                        //display the alert dialog with the buttons
+                        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                            @Override
+                            public void onShow(final DialogInterface dialog) {
+
+                                //delete button
+                                Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                                positiveButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        //deletes the categories from database table2 if the boxes are checked
+                                        for (int i = 0; i < categories_list.length; i++) {
+                                            boolean checked = bool_list[i];
+                                            if (checked) {
+                                                res2.moveToPosition(i); //move to correct row in table2
+                                                String category_id = res2.getString(0); //get the ID of category
+                                                myDb.delete_categories(category_id);
+                                            }
+                                        }
+                                        //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                        getFragmentManager()
+                                                .beginTransaction()
+                                                .detach(ManageCatFragment.this)
+                                                .attach(ManageCatFragment.this)
+                                                .commit();
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                //Cancel button
+                                Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                                neutralButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                        getFragmentManager()
+                                                .beginTransaction()
+                                                .detach(ManageCatFragment.this)
+                                                .attach(ManageCatFragment.this)
+                                                .commit();
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                        alertDialog.show();
+                    }
                 }
 
                 //if "delete all categories" is selected
                 else {
-                    AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
-                    adb.setTitle("Alert");
-                    adb.setMessage("Are you sure you want to delete all categories");
-                    adb.setNeutralButton("Cancel",null);
-                    adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            //deletes all categories in database table2 and restores to default
-                            int value = myDb.deleteAll_categories();
-                            if(value > 0)
-                                Toast.makeText(view.getContext(),"Deleted all categories",Toast.LENGTH_SHORT).show();
-                            else
-                                Toast.makeText(view.getContext(),"Data not Deleted",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    adb.show();
+
+                    ArrayList<String> arr = new ArrayList<String>();
+                    while (res2.moveToNext()){
+                        arr.add(res2.getString(1));
+                    }
+                    //if there are no categories, show an alert saying "there are no categories"
+                    if (arr.isEmpty()) {
+                        AlertDialog.Builder builder0 = new AlertDialog.Builder(view.getContext());
+                        builder0.setTitle("Alert");
+                        builder0.setMessage("There are no categories");
+                        builder0.setPositiveButton("Okay", null);
+                        builder0.show();
+                    }
+                    //otherwise delete all
+                    else {
+                        AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+                        adb.setTitle("Alert");
+                        adb.setMessage("Are you sure you want to delete all categories?");
+                        adb.setNeutralButton("Cancel", new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                getFragmentManager()
+                                        .beginTransaction()
+                                        .detach(ManageCatFragment.this)
+                                        .attach(ManageCatFragment.this)
+                                        .commit();
+
+                            }
+                        });
+                        adb.setPositiveButton("Yes", new AlertDialog.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //deletes all categories in database table2 and restores to default
+                                int value = myDb.deleteAll_categories();
+                                if(value > 0)
+                                    Toast.makeText(view.getContext(),"Deleted all categories",Toast.LENGTH_SHORT).show();
+                                else
+                                    Toast.makeText(view.getContext(),"Data not Deleted",Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                        adb.show();
+                    }
+
                 }
-
-
             }
         });
     }
+
 
     public void onClick_GoBackBtn () {
         //Button to go back to settings
