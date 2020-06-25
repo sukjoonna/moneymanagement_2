@@ -25,6 +25,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.moneymanagement3.DataBaseHelper;
+import com.example.moneymanagement3.MyDate;
 import com.example.moneymanagement3.R;
 
 import java.text.SimpleDateFormat;
@@ -40,8 +41,8 @@ public class HomeFragment extends Fragment {
     Button btn_add;
     ArrayList<String> categories;
     Spinner spn_category;
-    String category; String currentDate;
-    Cursor res2;
+    String category; String currentDate; String month; String year; String current_month; String current_year;
+    Cursor res2; Cursor res3;
     View view;
 
 
@@ -49,16 +50,32 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        //creates database
-        myDb = new DataBaseHelper(getActivity());
-        //Cursor res = gets all data in the database table2
-        res2 = myDb.getAllData_categories();
-
         //Variable declarations
         et_name = view.findViewById(R.id.textEt);     //edit text
         et_amount = view.findViewById(R.id.amountEt);
         btn_add = view.findViewById(R.id.add1Btn);   //add button
         spn_category = view.findViewById(R.id.categorySpn);
+
+        //creates database
+        myDb = new DataBaseHelper(getActivity());
+        //Cursor res = gets all data in the database table2 and table3
+        res2 = myDb.getAllData_categories();
+        res3 = myDb.get_MonthAndYear();
+
+
+        //get current date
+        currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
+
+//        //get previous date
+//        res3.moveToNext();
+//        month = res3.getString(1);
+//        year = res3.getString(0);
+
+
+
+//        //update the month and year in database table3
+//        update_MonthAndYear(month,year);
+
 
         //creates the categories ArrayList and adds the categories from the database table2
         categories = new ArrayList<String>();
@@ -87,12 +104,19 @@ public class HomeFragment extends Fragment {
 
 //Public Functions
 
+//    public void update_MonthAndYear(String month, String year){
+//        current_month = MyDate.getMonth();
+//        current_year = MyDate.getYear();
+//        if (month==null && year==null){
+//            myDb.replace_MonthAndYear(current_month,current_year);
+//        }
+//
+//    }
+
     public void onClick_addBtn () {
         //Button to add data in database
         btn_add.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
 
                 String text1 = et_name.getText().toString();     //gets text from edit text widget: name
                 String text2 = et_amount.getText().toString();  //gets text from edit text widget: amount
@@ -134,6 +158,7 @@ public class HomeFragment extends Fragment {
                 //otherwise, store all the inputed values into database table1
                 else {
                     boolean isInserted = myDb.insertData(text1, text2, text3, text4); //insert data into database
+
                     if (isInserted == true)
                         Toast.makeText(view.getContext(), "Data Inserted", Toast.LENGTH_SHORT).show();
                     else
