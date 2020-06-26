@@ -28,6 +28,7 @@ import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.MyDate;
 import com.example.moneymanagement3.R;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +61,7 @@ public class HomeFragment extends Fragment {
         myDb = new DataBaseHelper(getActivity());
         //Cursor res = gets all data in the database table2 and table3
         res2 = myDb.getAllData_categories();
-        res3 = myDb.get_MonthAndYear();
+        //res3 = myDb.get_MonthAndYear();
 
 
         //get current date
@@ -122,6 +123,7 @@ public class HomeFragment extends Fragment {
                 String text2 = et_amount.getText().toString();  //gets text from edit text widget: amount
                 String text3 = category;
                 String text4 = currentDate;
+                Timestamp text5 = new Timestamp(System.currentTimeMillis());
 
 
                 //if "+Add New" or "SELECT CATEGORY:" is selected for category, display a warning message
@@ -157,7 +159,7 @@ public class HomeFragment extends Fragment {
                 }
                 //otherwise, store all the inputed values into database table1
                 else {
-                    boolean isInserted = myDb.insertData(text1, text2, text3, text4); //insert data into database
+                    boolean isInserted = myDb.insertData(text1, text2, text3, text4,text5); //insert data into database
 
                     if (isInserted == true)
                         Toast.makeText(view.getContext(), "Data Inserted", Toast.LENGTH_SHORT).show();

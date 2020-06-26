@@ -121,10 +121,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         //Table 1
         // this would be a sort of default time where we just grab data from the same month
         LocalDate currentDate = LocalDate.now();
-        int currentMonth= currentDate.getMonthValue();
+        String currentMonth= String.valueOf(currentDate.getMonthValue());
+        String currentYear= String.valueOf(currentDate.getYear());
+
         SQLiteDatabase db = this.getWritableDatabase();
         Timestamp startCycle;
-        Cursor res = db.rawQuery("select * from " + TABLE_NAME + " WHERE DATE_TIMESTAMP1="+ currentMonth+1,null);
+        Cursor res = db.rawQuery("select * from " + TABLE_NAME + " WHERE ltrim(substr(DATE_TIMESTAMP1,6,2),0) = "+ "\"" + currentMonth  + "\"" + " AND substr(DATE_TIMESTAMP1,1,4) = " + "\"" + currentYear+ "\"",null);
         return res;
     }
 
