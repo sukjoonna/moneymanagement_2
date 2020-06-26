@@ -55,9 +55,6 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        //updates the start and end dates of a cycle
-        cycle_updater();
-
         //Variable declarations
         et_name = view.findViewById(R.id.textEt);     //edit text
         et_amount = view.findViewById(R.id.amountEt);
@@ -70,10 +67,18 @@ public class HomeFragment extends Fragment {
         res2 = myDb.getAllData_categories();
         res3 = myDb.get_setting();
 
+        currentDate = LocalDate.now();
+        String currentDate_string = String.valueOf(currentDate);
+
+        //updates the start and end dates of a cycle
+        myDb.deleteAll_setting();
+        myDb.replace_setting(currentDate_string,currentDate_string,"01");
+        cycle_updater();
+
 
         //get current date
         //currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
-        currentDate = LocalDate.now();
+//        currentDate = LocalDate.now();
 //        //get previous date
 //        res3.moveToNext();
 //        month = res3.getString(1);
@@ -250,9 +255,9 @@ public class HomeFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     //updates the start and end date of the cycle
     public void cycle_updater() {
-        LocalDate next_month = currentDate.minusMonths(-1);
 
-        res3.moveToNext();
+        currentDate = LocalDate.now();
+        res3.moveToPosition(0);
         String user_cycle_input = res3.getString(2); // make sure this is in format "DD"
         String currentDate_string = String.valueOf(currentDate);
         String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
@@ -260,19 +265,38 @@ public class HomeFragment extends Fragment {
         String var_string = ""+currentDate_string.substring(0,5) + currentMonth_string + "-" + user_cycle_input;
         LocalDate var = LocalDate.parse(var_string);
 
+//        if (currentDate.isBefore(var)){
+//            LocalDate var_new = var.plusMonths(-1);
+//            startdate = var_new;
+//            enddate = var;
+//            //update database table3
+//            myDb.deleteAll_setting();
+//            myDb.insert_setting(String.valueOf(startdate) , String.valueOf(enddate) , user_cycle_input );
+//        }
+//        else {
+//            LocalDate var_new = var.plusMonths(1);
+//            startdate = var;
+//            enddate = var_new;
+//            //update database table3
+//            myDb.deleteAll_setting();
+//            myDb.insert_setting(String.valueOf(startdate) , String.valueOf(enddate) , user_cycle_input );
+//        }
+
         if (currentDate.isBefore(var)){
             LocalDate var_new = var.plusMonths(-1);
             startdate = var_new;
             enddate = var;
+            //update database table3
+            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , user_cycle_input );
         }
         else {
             LocalDate var_new = var.plusMonths(1);
             startdate = var;
             enddate = var_new;
+            //update database table3
+            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , user_cycle_input );
         }
 
-        //update database table3
-        myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , user_cycle_input );
 
     }
 

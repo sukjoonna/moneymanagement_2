@@ -85,7 +85,9 @@ public class SettingFragment extends Fragment {
                             .addToBackStack(null)
                             .commit();
                 }
+                //If "Manage cycles" is selected"
                 else{
+                    
 
                 }
 

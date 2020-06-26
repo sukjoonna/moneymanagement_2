@@ -42,7 +42,7 @@ public class TrackerFragment extends Fragment {
 
     View view;
     DataBaseHelper myDb;
-    Cursor res; Cursor res2;
+    Cursor res; Cursor res2; Cursor res3;
     TextView tv_total;
     Button btn;
     ListView lv;
@@ -52,6 +52,7 @@ public class TrackerFragment extends Fragment {
     String text;
     double amount_total;
     String category;
+    LocalDate startdate; LocalDate enddate;
 
     @RequiresApi(api = Build.VERSION_CODES.O) // this might need to be change to use a different package
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -68,7 +69,14 @@ public class TrackerFragment extends Fragment {
 
         //Cursor res = gets all data in the database table1
         //res = myDb.getAllData();
-        res = myDb.getDataDefault(); //testing to see if the default monthly cycle works
+//        res = myDb.getDataDefault(); //testing to see if the default monthly cycle works
+
+        res3 = myDb.get_setting();
+        res3.moveToNext();
+        startdate = LocalDate.parse(res3.getString(0)); // get startdate of cycle from database table3 as a localdate
+        enddate = LocalDate.parse(res3.getString(1)); // get enddate of cycle from database table3 as a localdate
+
+        res = myDb.getDataDateRange(startdate,enddate);
         //Cursor res2 = gets all data in the database table2
         res2 = myDb.getAllData_categories();
 

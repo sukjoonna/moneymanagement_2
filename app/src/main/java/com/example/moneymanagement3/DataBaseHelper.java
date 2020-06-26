@@ -17,7 +17,7 @@ import java.time.LocalDate;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "Tracker1.db";
+    public static final String DATABASE_NAME = "Tracker.db";
     public static final String TABLE_NAME = "names_table";
     public static final String TABLE_NAME2 = "categories_table";
     public static final String TABLE_NAME3 = "setting_table";
@@ -178,6 +178,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_6,enddate);
         contentValues.put(COL_8,cycle_input);
         long result = db.insert(TABLE_NAME3,null ,contentValues);
+    };
+
+    public void deleteAll_setting () {
+        //Table 3
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NAME3,"1",null);
     };
 
     public void insert_setting (String startdate, String enddate, String cycle_input) {
