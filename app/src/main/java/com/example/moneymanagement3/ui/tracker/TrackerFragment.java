@@ -33,6 +33,7 @@ import com.example.moneymanagement3.R;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -272,6 +273,7 @@ public class TrackerFragment extends Fragment {
                                 //update button
                                 Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                                 positiveButton.setOnClickListener(new View.OnClickListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
                                     @Override
                                     public void onClick(View v) {
                                         res.moveToPosition(position_ind);
@@ -280,7 +282,7 @@ public class TrackerFragment extends Fragment {
                                         String edited_text = et2.getText().toString();
                                         String edited_category = category;
                                         String edited_date = et3.getText().toString();
-                                        Timestamp text5 = new Timestamp(System.currentTimeMillis());
+                                        LocalDate text5 = LocalDate.now();
 
                                         if (edited_amount.equals("") || edited_text.equals("") ) {
                                             Toast.makeText(view.getContext(),"There are Blank Fields",Toast.LENGTH_SHORT).show();

@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.moneymanagement3.ui.home.HomeFragment;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
@@ -57,7 +56,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public boolean insertData(String name, String amount, String category, String date, Timestamp DATE_TIMESTAMP1) {
+    public boolean insertData(String name, String amount, String category, String date, LocalDate DATE_TIMESTAMP1) {
         //Table1
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -73,7 +72,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean updateData( String id, String name, String amount, String category, String date,Timestamp DATE_TIMESTAMP1) {
+    public boolean updateData( String id, String name, String amount, String category, String date,LocalDate DATE_TIMESTAMP1) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1,name);
@@ -107,12 +106,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public Cursor getDataDateRange(Timestamp StartDate, Timestamp EndDate) {
+    public Cursor getDataDateRange(LocalDate StartDate, LocalDate EndDate) {
         //Table 1
         // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
         SQLiteDatabase db = this.getWritableDatabase();
-        Timestamp startCycle;
-        Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 >" + StartDate + "& DATE_TIMESTAMP1 <" + EndDate ,null);
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 > datetime(" + StartDate +")"+ "& DATE_TIMESTAMP1 < datetime(" + EndDate+")" ,null);
         return res;
     }
 
@@ -125,7 +123,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String currentYear= String.valueOf(currentDate.getYear());
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Timestamp startCycle;
         Cursor res = db.rawQuery("select * from " + TABLE_NAME + " WHERE ltrim(substr(DATE_TIMESTAMP1,6,2),0) = "+ "\"" + currentMonth  + "\"" + " AND substr(DATE_TIMESTAMP1,1,4) = " + "\"" + currentYear+ "\"",null);
         return res;
     }

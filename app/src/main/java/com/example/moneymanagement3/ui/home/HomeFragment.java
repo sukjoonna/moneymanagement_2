@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -31,7 +33,7 @@ import com.example.moneymanagement3.R;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment {
@@ -42,11 +44,12 @@ public class HomeFragment extends Fragment {
     Button btn_add;
     ArrayList<String> categories;
     Spinner spn_category;
-    String category; String currentDate; String month; String year; String current_month; String current_year;
+    String category; LocalDate currentDate; String month; String year; String current_month; String current_year;
     Cursor res2; Cursor res3;
     View view;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -65,8 +68,8 @@ public class HomeFragment extends Fragment {
 
 
         //get current date
-        currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
-
+        //currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
+        currentDate = LocalDate.now();
 //        //get previous date
 //        res3.moveToNext();
 //        month = res3.getString(1);
@@ -117,13 +120,14 @@ public class HomeFragment extends Fragment {
     public void onClick_addBtn () {
         //Button to add data in database
         btn_add.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
 
                 String text1 = et_name.getText().toString();     //gets text from edit text widget: name
                 String text2 = et_amount.getText().toString();  //gets text from edit text widget: amount
                 String text3 = category;
-                String text4 = currentDate;
-                Timestamp text5 = new Timestamp(System.currentTimeMillis());
+                String text4 = String.valueOf(currentDate);
+                LocalDate text5 = LocalDate.now();
 
 
                 //if "+Add New" or "SELECT CATEGORY:" is selected for category, display a warning message
