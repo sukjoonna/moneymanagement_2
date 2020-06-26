@@ -5,18 +5,23 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.moneymanagement3.ui.home.HomeFragment;
+
+import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Tracker.db";
     public static final String TABLE_NAME = "names_table";
     public static final String TABLE_NAME2 = "categories_table";
-    public static final String TABLE_NAME3 = "month_year_table";
+    public static final String TABLE_NAME3 = "setting_table";
     public static final String COL_0 = "ID";
     public static final String COL_1 = "NAME";
     public static final String COL_2 = "AMOUNT";
@@ -24,7 +29,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COL_4 = "DATE";
     public static final String COL_5 = "MONTH";
     public static final String COL_6 = "YEAR";
-
+    public static final String COL_7 = "DATE_TIMESTAMP1";
 
 //    public static final String COL_2 = "NAME";
 
@@ -35,7 +40,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //creating table "names_table" with 2 cols
-        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT)");
+        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP )");
         db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT)");
         db.execSQL("create table " + TABLE_NAME3 +" (YEAR STRING, MONTH STRING)");
 
@@ -52,7 +57,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public boolean insertData(String name, String amount, String category, String date) {
+    public boolean insertData(String name, String amount, String category, String date, Timestamp DATE_TIMESTAMP1) {
         //Table1
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -60,6 +65,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_2,amount);
         contentValues.put(COL_3,category);
         contentValues.put(COL_4,date);
+        contentValues.put(COL_7, String.valueOf(DATE_TIMESTAMP1));
         long result = db.insert(TABLE_NAME,null ,contentValues);
         if (result == -1)
             return false;
@@ -67,13 +73,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean updateData( String id, String name, String amount, String category, String date) {
+    public boolean updateData( String id, String name, String amount, String category, String date,Timestamp DATE_TIMESTAMP1) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1,name);
         contentValues.put(COL_2,amount);
         contentValues.put(COL_3,category);
         contentValues.put(COL_4,date);
+        contentValues.put(COL_7, String.valueOf(DATE_TIMESTAMP1));
         db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
         return true;
     }
@@ -99,6 +106,29 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
         return res;
     }
+
+    public Cursor getDataDateRange(Timestamp StartDate, Timestamp EndDate) {
+        //Table 1
+        // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
+        SQLiteDatabase db = this.getWritableDatabase();
+        Timestamp startCycle;
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 >" + StartDate + "& DATE_TIMESTAMP1 <" + EndDate ,null);
+        return res;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O) //okay so this requires android oreo to run
+    public Cursor getDataDefault() {
+        //Table 1
+        // this would be a sort of default time where we just grab data from the same month
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth= currentDate.getMonthValue();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Timestamp startCycle;
+        Cursor res = db.rawQuery("select * from " + TABLE_NAME + " WHERE DATE_TIMESTAMP1="+ currentMonth+1,null);
+        return res;
+    }
+
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -134,6 +164,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from "+TABLE_NAME2,null);
         return res;
     }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 

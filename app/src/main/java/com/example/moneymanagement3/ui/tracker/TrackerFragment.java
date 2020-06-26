@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -29,6 +31,7 @@ import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,6 +52,7 @@ public class TrackerFragment extends Fragment {
     double amount_total;
     String category;
 
+    @RequiresApi(api = Build.VERSION_CODES.O) // this might need to be change to use a different package
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_tracker, container, false);
@@ -62,7 +66,8 @@ public class TrackerFragment extends Fragment {
         amount_total = (double) 0;
 
         //Cursor res = gets all data in the database table1
-        res = myDb.getAllData();
+        //res = myDb.getAllData();
+        res = myDb.getDataDefault(); //testing to see if the default monthly cycle works
         //Cursor res2 = gets all data in the database table2
         res2 = myDb.getAllData_categories();
 
@@ -275,6 +280,7 @@ public class TrackerFragment extends Fragment {
                                         String edited_text = et2.getText().toString();
                                         String edited_category = category;
                                         String edited_date = et3.getText().toString();
+                                        Timestamp text5 = new Timestamp(System.currentTimeMillis());
 
                                         if (edited_amount.equals("") || edited_text.equals("") ) {
                                             Toast.makeText(view.getContext(),"There are Blank Fields",Toast.LENGTH_SHORT).show();
@@ -287,7 +293,7 @@ public class TrackerFragment extends Fragment {
                                             adapter.notifyDataSetChanged();
 
                                             //update data in database
-                                            boolean wasUpdated = myDb.updateData(entry_id,edited_text,edited_amount,edited_category,edited_date);
+                                            boolean wasUpdated = myDb.updateData(entry_id,edited_text,edited_amount,edited_category,edited_date,text5);
 
                                             //recreates TrackerFragement to update all changes
                                             getFragmentManager()
