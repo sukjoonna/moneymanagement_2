@@ -87,7 +87,13 @@ public class SettingFragment extends Fragment {
                 }
                 //If "Manage cycles" is selected"
                 else{
-                    
+                    //starts new fragment "ManageCatFragment"
+                    ManageCycFragment frag= new ManageCycFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, frag, "manageCycFrag")
+                            .addToBackStack(null)
+                            .commit();
+
 
                 }
 

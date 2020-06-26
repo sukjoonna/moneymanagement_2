@@ -168,7 +168,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void replace_setting (String startdate, String enddate, String cycle_input) {
+    public void replace_setting ( String startdate, String enddate, String cycle_input) {
         //Table 3
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME3,"1",null);
@@ -179,6 +179,19 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_8,cycle_input);
         long result = db.insert(TABLE_NAME3,null ,contentValues);
     };
+
+    public boolean update_cycle_input (String old_cycle_input, String new_cycle_input) {
+        //Table 3
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_8,new_cycle_input);
+        long result = db.update(TABLE_NAME3, contentValues, "CYCLE_INPUT = ?",new String[]{old_cycle_input});
+        if (result > 0)
+            return true;
+        else
+            return false;
+    };
+
 
     public void deleteAll_setting () {
         //Table 3
