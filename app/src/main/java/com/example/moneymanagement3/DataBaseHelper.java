@@ -17,7 +17,7 @@ import java.time.LocalDate;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "Tracker.db";
+    public static final String DATABASE_NAME = "Tracker1.db";
     public static final String TABLE_NAME = "names_table";
     public static final String TABLE_NAME2 = "categories_table";
     public static final String TABLE_NAME3 = "setting_table";
@@ -26,9 +26,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COL_2 = "AMOUNT";
     public static final String COL_3 = "CATEGORY";
     public static final String COL_4 = "DATE";
-    public static final String COL_5 = "MONTH";
-    public static final String COL_6 = "YEAR";
+    public static final String COL_5 = "START_DATE";
+    public static final String COL_6 = "END_DATE";
     public static final String COL_7 = "DATE_TIMESTAMP1";
+    public static final String COL_8 = "CYCLE_INPUT";
 
 //    public static final String COL_2 = "NAME";
 
@@ -41,7 +42,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         //creating table "names_table" with 2 cols
         db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP )");
         db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT)");
-        db.execSQL("create table " + TABLE_NAME3 +" (YEAR STRING, MONTH STRING)");
+        db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT)");
 
 //        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT)");
     }
@@ -167,27 +168,29 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void replace_MonthAndYear (String month, String year) {
+    public void replace_setting (String startdate, String enddate, String cycle_input) {
         //Table 3
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME3,"1",null);
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_5,month);
-        contentValues.put(COL_6,year);
+        contentValues.put(COL_5,startdate);
+        contentValues.put(COL_6,enddate);
+        contentValues.put(COL_8,cycle_input);
         long result = db.insert(TABLE_NAME3,null ,contentValues);
     };
 
-    public void insert_MonthAndYear (String month, String year) {
+    public void insert_setting (String startdate, String enddate, String cycle_input) {
         //Table 3
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_5,month);
-        contentValues.put(COL_6,year);
+        contentValues.put(COL_5,startdate);
+        contentValues.put(COL_6,enddate);
+        contentValues.put(COL_8,cycle_input);
         long result = db.insert(TABLE_NAME3,null ,contentValues);
     };
 
-    public Cursor get_MonthAndYear() {
+    public Cursor get_setting() {
         //Table 3
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("select * from "+TABLE_NAME3,null);

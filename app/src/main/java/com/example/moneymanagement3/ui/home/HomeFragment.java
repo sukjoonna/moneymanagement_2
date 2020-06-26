@@ -44,15 +44,19 @@ public class HomeFragment extends Fragment {
     Button btn_add;
     ArrayList<String> categories;
     Spinner spn_category;
-    String category; LocalDate currentDate; String month; String year; String current_month; String current_year;
+    String category; LocalDate currentDate;
     Cursor res2; Cursor res3;
     View view;
+    LocalDate startdate; LocalDate enddate;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        //updates the start and end dates of a cycle
+        cycle_updater();
 
         //Variable declarations
         et_name = view.findViewById(R.id.textEt);     //edit text
@@ -64,7 +68,7 @@ public class HomeFragment extends Fragment {
         myDb = new DataBaseHelper(getActivity());
         //Cursor res = gets all data in the database table2 and table3
         res2 = myDb.getAllData_categories();
-        //res3 = myDb.get_MonthAndYear();
+        res3 = myDb.get_setting();
 
 
         //get current date
@@ -242,6 +246,37 @@ public class HomeFragment extends Fragment {
         });
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    //updates the start and end date of the cycle
+    public void cycle_updater() {
+        LocalDate next_month = currentDate.minusMonths(-1);
+
+        res3.moveToNext();
+        String user_cycle_input = res3.getString(2); // make sure this is in format "DD"
+        String currentDate_string = String.valueOf(currentDate);
+        String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
+
+        String var_string = ""+currentDate_string.substring(0,5) + currentMonth_string + "-" + user_cycle_input;
+        LocalDate var = LocalDate.parse(var_string);
+
+        if (currentDate.isBefore(var)){
+            LocalDate var_new = var.plusMonths(-1);
+            startdate = var_new;
+            enddate = var;
+        }
+        else {
+            LocalDate var_new = var.plusMonths(1);
+            startdate = var;
+            enddate = var_new;
+        }
+
+        //update database table3
+        myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , user_cycle_input );
+
+    }
+
+
 
 
 }
