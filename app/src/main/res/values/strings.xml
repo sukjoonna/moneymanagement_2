@@ -34,4 +34,5 @@
     <string name="manage_categories">Manage Categories</string>
     <string name="go_back">Go Back</string>
     <string name="textview">TextView</string>
+    <string name="dollar_amount">$ Amount</string>
 </resources>

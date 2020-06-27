@@ -2,7 +2,6 @@ package com.example.moneymanagement3.ui.tracker;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,25 +18,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
+
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 
-
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+
 
 public class TrackerFragment extends Fragment {
 
@@ -115,6 +107,8 @@ public class TrackerFragment extends Fragment {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Public functions
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void build_arrayList() {
         //takes the values out from database and puts it into the arraylist &&&& calculates total amount

@@ -39,7 +39,7 @@
         android:layout_height="83dp"
         android:ems="10"
         android:gravity="center"
-        android:hint="@string/Amount"
+        android:hint="@string/dollar_amount"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textSize="36sp"

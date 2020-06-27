@@ -26,6 +26,7 @@ import com.example.moneymanagement3.CycleUpdaterFragment;
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.time.LocalDate;
 
@@ -113,6 +114,13 @@ public class HomeFragment extends Fragment {
                 String text4 = String.valueOf(currentDate);
                 LocalDate text5 = LocalDate.now();
 
+                int decimal_places = 0;
+                //divide the amount string at "." to get the number of decimal places if there is a "."
+                if (text2.contains(".")) {
+                    String[] divided_parts = text2.split("\\.");
+                    decimal_places = divided_parts[1].length();
+                }
+
 
                 //if "+Add New" or "SELECT CATEGORY:" is selected for category, display a warning message
                 if (category.equals("+Add New") || category.equals("SELECT CATEGORY:")) {
@@ -145,11 +153,25 @@ public class HomeFragment extends Fragment {
                     adb2.setNeutralButton("Okay", null);
                     adb2.show();
                 }
+                else if (decimal_places > 2){
+                    //create an alert dialog
+                    AlertDialog.Builder adb3 =new AlertDialog.Builder(view.getContext());
+                    adb3.setTitle("Notice");
+                    adb3.setMessage("Too many decimal places");
+                    adb3.setNeutralButton("Okay", null);
+                    adb3.show();
+                }
                 //otherwise, store all the inputed values into database table1
                 else {
-                    boolean isInserted = myDb.insertData(text1, text2, text3, text4,text5); //insert data into database
 
-                    if (isInserted == true)
+                    //formats the "amount" to two decimal places
+                    float amount_float = Float.parseFloat(text2);
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    String text2_formatted = df.format(amount_float);
+
+                    boolean isInserted = myDb.insertData(text1, text2_formatted, text3, text4,text5); //insert data into database
+
+                    if (isInserted)
                         Toast.makeText(view.getContext(), "Data Inserted", Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(view.getContext(), "Data not Inserted", Toast.LENGTH_SHORT).show();
@@ -235,7 +257,7 @@ public class HomeFragment extends Fragment {
         currentDate = LocalDate.now(); //get current date
 
         if (res3!=null && res3.moveToFirst()){  //makes sure table3 is not null
-            cycle_input = res3.getString(2);;
+            cycle_input = res3.getString(2);
         }
 
         String currentDate_string = String.valueOf(currentDate);
