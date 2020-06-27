@@ -111,7 +111,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         //Table 1
         // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 > datetime(" + StartDate +")"+ "& DATE_TIMESTAMP1 < datetime(" + EndDate+")" ,null);
+        //Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 > datetime(" + StartDate +")"+ "& DATE_TIMESTAMP1 < datetime(" + EndDate+")" ,null);
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ")",null);
         return res;
     }
 
