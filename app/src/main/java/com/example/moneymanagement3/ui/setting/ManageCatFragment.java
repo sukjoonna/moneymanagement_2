@@ -44,7 +44,7 @@ public class ManageCatFragment extends Fragment {
     CharSequence[] categories_list;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragments_settings_manage, container, false);
+        view = inflater.inflate(R.layout.fragment_managecat, container, false);
         view.setBackgroundColor(Color.WHITE);
 
         myDb = new DataBaseHelper(getActivity());
@@ -52,7 +52,7 @@ public class ManageCatFragment extends Fragment {
         res2 = myDb.getAllData_categories();
 
         btn1 = view.findViewById(R.id.gobackBtn);
-        lv = view.findViewById(R.id.manageLv);
+        lv = view.findViewById(R.id.manageCatLv);
 
         managecat_items = new String[]{"Categories to delete", "Delete all categories"};
         adapter_managecat = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, managecat_items);

@@ -36,7 +36,7 @@ public class ManageCycFragment extends Fragment {
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragments_settings_manage, container, false);
+        view = inflater.inflate(R.layout.fragment_managecyc, container, false);
         view.setBackgroundColor(Color.WHITE);
 
         myDb = new DataBaseHelper(getActivity());
@@ -45,10 +45,10 @@ public class ManageCycFragment extends Fragment {
 
         //Variables
         btn1 = view.findViewById(R.id.gobackBtn);
-        lv = view.findViewById(R.id.manageLv);
+        lv = view.findViewById(R.id.manageCycLv);
 
         //create listview for "Manage cycles" setting
-        managecyc_items = new String[]{"Select Monthly Cycle Start Day", "Delete Previous Cycles", "Delete All Cycles"}; //settings in manage cycles
+        managecyc_items = new String[]{"Select Monthly Cycle Start Day", "Delete Previous Cycles", "Reset All Entries"}; //settings in manage cycles
         adapter_managecyc = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, managecyc_items);
         lv.setAdapter(adapter_managecyc); //set the listview with the managecyc_items
 
@@ -163,8 +163,44 @@ public class ManageCycFragment extends Fragment {
 
                 }
 
-                //else if "delete all cycles" is selected
+                //else if "reset all entries" is selected
                 else {
+                    //An alert dialog box pops up to make sure you want to delete/reset everything
+                    AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
+                    alertDialog.setTitle("Alert");
+                    alertDialog.setMessage("Do you want to reset everything?");
+                    //Make an "ok" button
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                            new DialogInterface.OnClickListener() {
+                                //OnClick:
+                                public void onClick(DialogInterface dialog, int which) {
+                                    int deletedRows = 0;
+
+                                    //deleteAll() returns the number of rows in the database table deleted
+                                    deletedRows = myDb.deleteAll();
+
+                                    //makes a toast
+                                    if(deletedRows > 0)
+                                        Toast.makeText(view.getContext(),"Deleted all entries",Toast.LENGTH_SHORT).show();
+//                                else
+//                                    Toast.makeText(SecondActivity.this,"Data not Deleted",Toast.LENGTH_SHORT).show();
+
+                                    //dismiss dialog
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    //make a "cancel" button
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cancel",
+                            new DialogInterface.OnClickListener() {
+                                //OnClick:
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //dismiss dialog
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    alertDialog.show();
 
                 }
 

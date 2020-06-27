@@ -5,7 +5,7 @@
     android:layout_gravity="center">
 
     <FrameLayout
-        android:id="@+id/manage_fragments_container"
+        android:id="@+id/managecat_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="20dp"
@@ -14,9 +14,8 @@
         android:paddingLeft="20dp"
         >
 
-
         <ListView
-            android:id="@+id/manageLv"
+            android:id="@+id/manageCatLv"
             android:layout_width="match_parent"
             android:layout_height="496dp"
             android:gravity="center"
@@ -24,7 +23,7 @@
             android:translationY="75dp" />
 
         <TextView
-            android:id="@+id/manageTv"
+            android:id="@+id/manageCatTv"
             android:layout_width="wrap_content"
             android:layout_height="73dp"
             android:layout_gravity="center_horizontal"
