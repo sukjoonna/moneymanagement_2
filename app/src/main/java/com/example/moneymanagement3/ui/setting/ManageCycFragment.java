@@ -32,7 +32,7 @@ public class ManageCycFragment extends Fragment {
     String[] managecyc_items;
     ArrayAdapter<String> adapter_managecyc;
     Button btn1;
-    String cycle_start_day;
+    String cycle_start_day; String old_cycle_start_day;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,6 +97,12 @@ public class ManageCycFragment extends Fragment {
                         }
                     });
 
+                    //set spinner selection as the previous cycle start day (or "01" by default)
+                    res3.moveToFirst();
+                    old_cycle_start_day = res3.getString(2);
+                    int spn1_position = Integer.parseInt(old_cycle_start_day) - 1;
+                    spn1.setSelection(spn1_position);
+
                     //create an alert dialog1 builder for user to select cycle start day
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
                     builder1.setTitle("Choose the day you want your cycle to begin:");
@@ -117,8 +123,6 @@ public class ManageCycFragment extends Fragment {
                             positiveButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    res3.moveToPosition(0);
-                                    String old_cycle_start_day = res3.getString(2);
                                     boolean wasupdated = myDb.update_cycle_input(old_cycle_start_day, cycle_start_day);
                                     if(wasupdated)
                                         Toast.makeText(view.getContext(),"You changed your cycle start day",Toast.LENGTH_SHORT).show();

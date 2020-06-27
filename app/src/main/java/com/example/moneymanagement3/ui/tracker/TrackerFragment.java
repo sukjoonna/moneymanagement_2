@@ -34,6 +34,7 @@ import com.example.moneymanagement3.R;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
@@ -76,8 +77,13 @@ public class TrackerFragment extends Fragment {
         startdate = LocalDate.parse(res3.getString(0)); // get startdate of cycle from database table3 as a localdate
         enddate = LocalDate.parse(res3.getString(1)); // get enddate of cycle from database table3 as a localdate
 
+        //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+        String startdate_formatted = startdate.format(formatter);
+        String enddate_formatted = enddate.format(formatter);
+
         //Set the cycle textview with the current start and end dates of cycle
-        tv_cycle.setText(startdate + "  to  " + enddate);
+        tv_cycle.setText(startdate_formatted + "  to  " + enddate_formatted);
 
         //Get data from database table1
         res = myDb.getDataDateRange(startdate,enddate);
@@ -109,11 +115,24 @@ public class TrackerFragment extends Fragment {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Public functions
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void build_arrayList() {
         //takes the values out from database and puts it into the arraylist &&&& calculates total amount
         while (res.moveToNext()) {
-            arrayList.add("Description: " + res.getString(1) + "\nAmount: $"+ res.getString(2)
-                    + "\nCategory: " + res.getString(3) + "\nDate: " + res.getString(4));
+            String dscpt = res.getString(1);
+            String amt = res.getString(2);
+            String cat = res.getString(3);
+            LocalDate date = LocalDate.parse(res.getString(4));
+
+            //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+            String date_formatted = date.format(formatter);
+
+            //building arraylist of formatted string entries
+            arrayList.add("Description: " + dscpt + "\nAmount: $"+ amt
+                    + "\nCategory: " + cat + "\nDate: " + date_formatted);
+
+            //summing the total spent
             double amount = Double.parseDouble(res.getString(2));
             amount_total += amount;
         }
@@ -358,6 +377,16 @@ public class TrackerFragment extends Fragment {
         });
 
     }
+
+
+
+
+
+
+
+
+
+
 
 
 
