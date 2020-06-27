@@ -1,7 +1,6 @@
 package com.example.moneymanagement3.ui.home;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
@@ -19,22 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
+import com.example.moneymanagement3.CycleUpdaterFragment;
 import com.example.moneymanagement3.DataBaseHelper;
-import com.example.moneymanagement3.MyDate;
 import com.example.moneymanagement3.R;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.time.LocalDate;
-import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
@@ -68,15 +61,20 @@ public class HomeFragment extends Fragment {
         res2 = myDb.getAllData_categories();
         res3 = myDb.get_setting();
 
-        currentDate = LocalDate.now();
-        String currentDate_string = String.valueOf(currentDate);
-
-        //updates the start and end dates of a cycle
-//        myDb.deleteAll_setting();
-//        myDb.replace_setting(currentDate_string,currentDate_string,"01");
+        //updates the cycle
         cycle_updater();
 
+        //FOR DEVELOPER ONLY: DELETE TABLE3 (MISC/SETTING TABLE) IN DATABASE
+        //////////////////////////////////
+        //                             ///        -uses: for testing startup of app
+        //  myDb.deleteAll_setting();  ///        -Deletes start date, end date, and cycle start day
+        //                             ///        -Uncomment "myDb.deleteAll_setting()" and comment out "cycle_updater()" above to execute
+        //////////////////////////////////
 
+
+
+//        CycleUpdaterFragment updater = new CycleUpdaterFragment();
+//        updater.cycle_updater();
 
         //creates the categories ArrayList and adds the categories from the database table2
         categories = new ArrayList<String>();
@@ -102,17 +100,6 @@ public class HomeFragment extends Fragment {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-//Public Functions
-
-//    public void update_MonthAndYear(String month, String year){
-//        current_month = MyDate.getMonth();
-//        current_year = MyDate.getYear();
-//        if (month==null && year==null){
-//            myDb.replace_MonthAndYear(current_month,current_year);
-//        }
-//
-//    }
 
     public void onClick_addBtn () {
         //Button to add data in database
@@ -245,11 +232,12 @@ public class HomeFragment extends Fragment {
     public void cycle_updater() {
 
         cycle_input = "01"; //sets the default cycle input as the first of the month
-        currentDate = LocalDate.now();
+        currentDate = LocalDate.now(); //get current date
 
         if (res3!=null && res3.moveToFirst()){  //makes sure table3 is not null
             cycle_input = res3.getString(2);;
         }
+
         String currentDate_string = String.valueOf(currentDate);
         String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
 
@@ -271,7 +259,6 @@ public class HomeFragment extends Fragment {
             //update database table3
             myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
         }
-
 
     }
 

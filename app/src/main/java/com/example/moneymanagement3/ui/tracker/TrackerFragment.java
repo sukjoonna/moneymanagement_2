@@ -43,51 +43,54 @@ public class TrackerFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
     Cursor res; Cursor res2; Cursor res3;
-    TextView tv_total;
+    TextView tv_total; TextView tv_cycle;
     Button btn;
     ListView lv;
-    ArrayList<String> arrayList; ArrayList<String> categories;
+    ArrayList<String> arrayList;
     ArrayAdapter<String> adapter;
-    Intent intent2;
     String text;
     double amount_total;
     String category;
-    LocalDate startdate; LocalDate enddate; LocalDate currentDate;
-    String cycle_input;
+    LocalDate startdate; LocalDate enddate;
 
     @RequiresApi(api = Build.VERSION_CODES.O) // this might need to be change to use a different package
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_tracker, container, false);
 
-        myDb = new DataBaseHelper(getActivity());
-
         btn = view.findViewById(R.id.resetBtn);
         lv = view.findViewById(R.id.listView);
         tv_total = view.findViewById(R.id.totalTv);
+        tv_cycle = view.findViewById(R.id.cycleTv);
         text = "";
         amount_total = (double) 0;
 
-        //Cursor res = gets all data in the database table1
-        //res = myDb.getAllData();
-//        res = myDb.getDataDefault(); //testing to see if the default monthly cycle works
+        myDb = new DataBaseHelper(getActivity());
 
+        //Cursor res2 res3 = gets all data in the database table2 and table3
+        res2 = myDb.getAllData_categories();
         res3 = myDb.get_setting();
-        res3.moveToNext();
+        res3.moveToFirst();
+
+        //get startdate and enddate of cycle and convert to localdate
         startdate = LocalDate.parse(res3.getString(0)); // get startdate of cycle from database table3 as a localdate
         enddate = LocalDate.parse(res3.getString(1)); // get enddate of cycle from database table3 as a localdate
 
+        //Set the cycle textview with the current start and end dates of cycle
+        tv_cycle.setText(startdate + "  to  " + enddate);
 
+        //Get data from database table1
         res = myDb.getDataDateRange(startdate,enddate);
-        //Cursor res2 = gets all data in the database table2
-        res2 = myDb.getAllData_categories();
+//        res = myDb.getAllData();
+//        res = myDb.getDataDefault(); //testing to see if the default monthly cycle works
+
 
         //creates an arraylist and adapter that will take the arraylist and place its values into a listview
         arrayList = new ArrayList<String>();
         adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
 
         build_arrayList(); //builds arraylist to pass into listview
-        set_total();
+        set_total(); //set total amount
 
         //puts the arraylist into the listview
         lv.setAdapter(adapter);
@@ -360,39 +363,39 @@ public class TrackerFragment extends Fragment {
 
 
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    //updates the start and end date of the cycle
-    public void cycle_updater() {
-
-        cycle_input = "01"; //sets the default cycle input as the first of the month
-        currentDate = LocalDate.now();
-
-        if (res3!=null && res3.moveToFirst()){  //makes sure table3 is not null
-            cycle_input = res3.getString(2);;
-        }
-        String currentDate_string = String.valueOf(currentDate);
-        String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
-
-        String var_string = ""+currentDate_string.substring(0,5) + currentMonth_string + "-" + cycle_input; //variable to compare current date with
-        LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
-
-        //determine and sets the start and end dates of the cycle
-        if (currentDate.isBefore(var)){
-            LocalDate var_new = var.plusMonths(-1);
-            startdate = var_new;
-            enddate = var;
-            //update database table3
-            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
-        }
-        else {
-            LocalDate var_new = var.plusMonths(1);
-            startdate = var;
-            enddate = var_new;
-            //update database table3
-            myDb.replace_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
-        }
-
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    //updates the start and end date of the cycle
+//    public void cycle_updater() {
+//
+//        cycle_input = "01"; //sets the default cycle input as the first of the month
+//        currentDate = LocalDate.now();
+//
+//        if (res3!=null && res3.moveToFirst()){  //makes sure table3 is not null
+//            cycle_input = res3.getString(2);;
+//        }
+//        String currentDate_string = String.valueOf(currentDate);
+//        String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
+//
+//        String var_string = ""+currentDate_string.substring(0,5) + currentMonth_string + "-" + cycle_input; //variable to compare current date with
+//        LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
+//
+//        //determine and sets the start and end dates of the cycle
+//        if (currentDate.isBefore(var)){
+//            LocalDate var_new = var.plusMonths(-1);
+//            startdate = var_new;
+//            enddate = var;
+//            //update database table3
+//            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+//        }
+//        else {
+//            LocalDate var_new = var.plusMonths(1);
+//            startdate = var;
+//            enddate = var_new;
+//            //update database table3
+//            myDb.replace_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
+//        }
+//
+//    }
 
 
 

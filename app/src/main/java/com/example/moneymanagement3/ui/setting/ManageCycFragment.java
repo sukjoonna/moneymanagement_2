@@ -40,20 +40,21 @@ public class ManageCycFragment extends Fragment {
         view.setBackgroundColor(Color.WHITE);
 
         myDb = new DataBaseHelper(getActivity());
-        //Cursor res = gets all data in the database table2
+        //Cursor res = gets all data in the database table3
         res3 = myDb.get_setting();
 
+        //Variables
         btn1 = view.findViewById(R.id.gobackBtn);
         lv = view.findViewById(R.id.manageLv);
 
-        managecyc_items = new String[]{"Select Monthly Cycle Start Day", "Delete Previous Cycles", "Delete All Cycles"};
+        //create listview for "Manage cycles" setting
+        managecyc_items = new String[]{"Select Monthly Cycle Start Day", "Delete Previous Cycles", "Delete All Cycles"}; //settings in manage cycles
         adapter_managecyc = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, managecyc_items);
-        lv.setAdapter(adapter_managecyc);
+        lv.setAdapter(adapter_managecyc); //set the listview with the managecyc_items
 
-
+        //calling functions
         onClick_itemselectedLv();
         onClick_GoBackBtn ();
-
 
         return view;
     }
@@ -61,46 +62,48 @@ public class ManageCycFragment extends Fragment {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public void onClick_itemselectedLv() {
-        //Delete/edit selected items in the manageCyc listview by selecting an item in the list view
+        //Delete/update selected items in the manageCyc listview by selecting an item in the list view
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, final int position, long id) {
 
                 //if "select cycle start day" is selected
                 if (position == 0) {
 
+                    //gets the view for the spinner layout
                     LayoutInflater inflater = getLayoutInflater();
                     final View spinner_view = inflater.inflate(R.layout.alert_spinner,null);
-
                     //create spinner that shows days 1-28
                     String[] days = new String[] {"01","02","03","04","05","06","07","08","09","10",
                             "11","12","13","14","15","16","17","18","19",
                             "20","21","22","23","24","25","26","27","28"};
                     final Spinner spn1 = spinner_view.findViewById(R.id.the_spinner); //in alert_spinner.xml
-                    ArrayAdapter<String> spn_adapter = new ArrayAdapter<String>(spinner_view.getContext(),
-                            R.layout.spinner_text,days);
+                    ArrayAdapter<String> spn_adapter = new ArrayAdapter<String>(spinner_view.getContext(), R.layout.spinner_text,days);
                     spn1.setAdapter(spn_adapter);
                     spn_adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
                     //What the spinner does when item is selected / not selected
                     spn1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
+                        //when item on spinner is selected
                         public void onItemSelected(AdapterView<?> adapterView, View v, int position, long id) {
                             Object item = adapterView.getItemAtPosition(position);
                             cycle_start_day = item.toString();
                         }
                         @Override
+                        //when it is nothing is selected
                         public void onNothingSelected(AdapterView<?> adapterView) {
                             Object item = adapterView.getItemAtPosition(0);
                             cycle_start_day = item.toString();
                         }
                     });
 
-                    //create an alert dialog1 builder
+                    //create an alert dialog1 builder for user to select cycle start day
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
                     builder1.setTitle("Choose the day you want your cycle to begin:");
                     builder1.setPositiveButton("Update", null);
                     builder1.setNeutralButton("Cancel", null);
-                    builder1.setView(spinner_view);
+                    builder1.setView(spinner_view); //sets the actual spinner in the alertdialog
+
                     //creates the alert dialog from the builder
                     final AlertDialog alertDialog = builder1.create();
 
@@ -118,10 +121,10 @@ public class ManageCycFragment extends Fragment {
                                     String old_cycle_start_day = res3.getString(2);
                                     boolean wasupdated = myDb.update_cycle_input(old_cycle_start_day, cycle_start_day);
                                     if(wasupdated)
-                                        Toast.makeText(view.getContext(),"Data updated",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(view.getContext(),"You changed your cycle start day",Toast.LENGTH_SHORT).show();
                                     else
-                                        Toast.makeText(view.getContext(),"Data not updated",Toast.LENGTH_SHORT).show();
-                                    //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                        Toast.makeText(view.getContext(),"Not updated",Toast.LENGTH_SHORT).show();
+                                    //recreates current Fragment it refreshes after alertdialog closes
                                     getFragmentManager()
                                             .beginTransaction()
                                             .detach(ManageCycFragment.this)
@@ -136,7 +139,7 @@ public class ManageCycFragment extends Fragment {
                             neutralButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                    //recreates current Fragment it refreshes after alertdialog closes
                                     getFragmentManager()
                                             .beginTransaction()
                                             .detach(ManageCycFragment.this)
