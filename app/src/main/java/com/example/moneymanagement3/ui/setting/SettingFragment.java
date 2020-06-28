@@ -57,7 +57,7 @@ public class SettingFragment extends Fragment {
         res2 = myDb.getAllData_categories();
 
         //Building and creating the listview
-        setting_items = new String[]{"Manage Categories","Manage Cycles"};
+        setting_items = new String[]{"Manage Categories","Manage Cycles","Hard Reset"};
         adapter_settings = new ArrayAdapter<String>(view.getContext(),R.layout.setting_listview_texts,R.id.setting_item,setting_items);
         lv_settings.setAdapter(adapter_settings);
 
@@ -86,16 +86,62 @@ public class SettingFragment extends Fragment {
                             .commit();
                 }
                 //If "Manage cycles" is selected"
-                else{
+                else if (position==1){
                     //starts new fragment "ManageCatFragment"
                     ManageCycFragment frag= new ManageCycFragment();
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, frag, "manageCycFrag")
                             .addToBackStack(null)
                             .commit();
-
-
                 }
+                //if hard reset is selected
+                else if (position==2){
+                    //An alert dialog box pops up to make sure you want to delete/reset everything
+                    AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
+                    alertDialog.setTitle("HARD RESET");
+                    alertDialog.setMessage("Do you want to reset the whole app?");
+                    //Make an "ok" button
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Yes, reset",
+                            new DialogInterface.OnClickListener() {
+                                //OnClick:
+                                public void onClick(DialogInterface dialog, int which) {
+                                    int deletedRows1 = 0;
+                                    int deletedRows2 = 0;
+                                    int deletedRows3 = 0;
+                                    int deletedRows4 = 0;
+
+                                    //deleteAll() returns the number of rows in the database table1 deleted
+                                    deletedRows1 = myDb.deleteAll();
+                                    //deleteAll_categories() returns the number of rows in the database table2 deleted
+                                    deletedRows2 = myDb.deleteAll_categories();
+                                    //deleteAll_settings() returns the number of rows in the database table3 deleted
+                                    deletedRows3 = myDb.deleteAll_setting();
+                                    //deleteAll_cycles() returns the number of rows in the database table4 deleted
+                                    deletedRows4 = myDb.deleteAll_cycles();
+
+                                    //makes a toast
+                                    if((deletedRows1 > 0 && deletedRows2 > 0) && (deletedRows3 > 0 && deletedRows4 > 0))
+                                        Toast.makeText(view.getContext(),"App reset",Toast.LENGTH_SHORT).show();
+
+                                    //dismiss dialog
+                                    dialog.dismiss();
+                                }
+                            });
+                    //make a "cancel" button
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                            new DialogInterface.OnClickListener() {
+                                //OnClick:
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //dismiss dialog
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    alertDialog.show();
+                }
+
+
+
 
             }
         });

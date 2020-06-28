@@ -21,6 +21,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "names_table";
     public static final String TABLE_NAME2 = "categories_table";
     public static final String TABLE_NAME3 = "setting_table";
+    public static final String TABLE_NAME4 = "cycles_table";
     public static final String COL_0 = "ID";
     public static final String COL_1 = "NAME";
     public static final String COL_2 = "AMOUNT";
@@ -43,6 +44,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP )");
         db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT)");
         db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT)");
+        db.execSQL("create table " + TABLE_NAME4 +" (START_DATE TEXT, END_DATE TEXT)");
 
 //        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT)");
     }
@@ -52,6 +54,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME2);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME3);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_NAME4);
         onCreate(db);
     }
 
@@ -111,7 +114,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         //Table 1
         // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
         SQLiteDatabase db = this.getWritableDatabase();
-        //Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 > datetime(" + StartDate +")"+ "& DATE_TIMESTAMP1 < datetime(" + EndDate+")" ,null);
         Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ")",null);
         return res;
     }
@@ -194,10 +196,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     };
 
 
-    public void deleteAll_setting () {
+    public Integer deleteAll_setting () {
         //Table 3
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME3,"1",null);
+        int deleted_rows = db.delete(TABLE_NAME3,"1",null);
+        db.close();
+        return deleted_rows;
     };
 
     public void insert_setting (String startdate, String enddate, String cycle_input) {
@@ -216,6 +220,46 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from "+TABLE_NAME3,null);
         return res;
     }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public Integer deleteAll_cycles () {
+        //Table 3
+        SQLiteDatabase db = this.getWritableDatabase();
+        int deleted_rows = db.delete(TABLE_NAME4,"1",null);
+        db.close();
+        return deleted_rows;
+    };
+
+    public void insert_cycle(String startdate, String enddate) {
+        //Table 3
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_5,startdate);
+        contentValues.put(COL_6,enddate);
+        long result = db.insert(TABLE_NAME4,null ,contentValues);
+    };
+
+    public Cursor get_cycles() {
+        //Table 3
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME4,null);
+        return res;
+    }
+
+//    public boolean update_cycles (String old_cycle_input, String new_cycle_input) {
+//        //Table 3
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(COL_8,new_cycle_input);
+//        long result = db.update(TABLE_NAME3, contentValues, "CYCLE_INPUT = ?",new String[]{old_cycle_input});
+//        if (result > 0)
+//            return true;
+//        else
+//            return false;
+//    };
+
 
 
 }
