@@ -30,7 +30,6 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 
@@ -39,7 +38,7 @@ public class TrackerFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
     Cursor res; Cursor res2; Cursor res3; Cursor res4;
-    TextView tv_total; TextView tv_cycle;
+    TextView tv_total; TextView tv_today;
     Button btn;
     ListView lv;
     ArrayList<String> arrayList; ArrayList<String> cycles;
@@ -49,20 +48,23 @@ public class TrackerFragment extends Fragment {
     String category; String cycle_input;
     LocalDate startdate; LocalDate enddate; LocalDate currentDate;
     Spinner spinner_cycles;
+    DateTimeFormatter formatter;
 
     @RequiresApi(api = Build.VERSION_CODES.O) // this might need to be change to use a different package
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_tracker, container, false);
 
+        //variable declarations
         btn = view.findViewById(R.id.resetBtn);
         lv = view.findViewById(R.id.listView);
         tv_total = view.findViewById(R.id.totalTv);
-        tv_cycle = view.findViewById(R.id.cycleTv);
+        tv_today = view.findViewById(R.id.todayTv);
         spinner_cycles = view.findViewById(R.id.cycleSpn);
         text = "";
         amount_total = (double) 0;
 
+        //get database
         myDb = new DataBaseHelper(getActivity());
 
         //Cursor res2 res3 = gets all data in the database table2 and table3
@@ -70,14 +72,14 @@ public class TrackerFragment extends Fragment {
         res3 = myDb.get_setting();
         res3.moveToFirst();
 
+
         //update cycle dates
         cycle_updater();
 
-        //get startdate and enddate of cycle and convert to localdate
-        res3 = myDb.get_setting(); //this is called again to account for the changes in cycle dates
-        res3.moveToFirst();
-        startdate = LocalDate.parse(res3.getString(0)); // get startdate of cycle from database table3 as a localdate
-        enddate = LocalDate.parse(res3.getString(1)); // get enddate of cycle from database table3 as a localdate
+
+        //Set current date Tv
+        formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+        tv_today.setText("Today: " + currentDate.format(formatter));
 
 
         //Create Cycle Spinner
@@ -86,7 +88,15 @@ public class TrackerFragment extends Fragment {
         while(res4.moveToNext()){
             String cyc_startdate = res4.getString(0);
             String cyc_enddate = res4.getString(1);
-            String formatted_dates = cyc_startdate + " to " + cyc_enddate;
+            LocalDate cyc_startdate_localdate = LocalDate.parse(cyc_startdate);
+            LocalDate cyc_enddate_localdate = LocalDate.parse(cyc_enddate);
+
+            //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+            DateTimeFormatter cyc_formatter = DateTimeFormatter.ofPattern("LLL dd, yy");
+            String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
+            String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
+
+            String formatted_dates = cyc_startdate_formatted + " - " + cyc_enddate_formatted;
             cycles.add(formatted_dates);
         }
         Collections.reverse(cycles);
@@ -95,30 +105,9 @@ public class TrackerFragment extends Fragment {
 //        spn_cyc_adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
 
-        //Formatting the localdate ==> custom string format (Month name dd, yyyy)
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
-        String startdate_formatted = startdate.format(formatter);
-        String enddate_formatted = enddate.format(formatter);
-
-        //Set the cycle textview with the current start and end dates of cycle
-        tv_cycle.setText(startdate_formatted + "  to  " + enddate_formatted);
-
-        //Get data from database table1
-        res = myDb.getDataDateRange(startdate.minusDays(1),enddate); // (startdate,enddate]
-//        res = myDb.getAllData();
-//        res = myDb.getDataDefault(); //testing to see if the default monthly cycle works
-
-
-        //creates an arraylist and adapter that will take the arraylist and place its values into a listview
-        arrayList = new ArrayList<String>();
-        adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
-
-        build_arrayList(); //builds arraylist to pass into listview
+        build_List(); //builds listview
         set_total(); //set total amount
 
-        //puts the arraylist into the listview
-        lv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
         //calls function when entry/item is selected from Listview
         onClick_itemselectedLv();
@@ -126,8 +115,9 @@ public class TrackerFragment extends Fragment {
         //calls function to reset the data and listview
         onClick_resetBtn();
 
-        //
+        //calls onselect cycle spinner
         onSelect_CycleSpinner();
+
 
 
         return view;
@@ -139,7 +129,18 @@ public class TrackerFragment extends Fragment {
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void build_arrayList() {
+    public void build_List() {
+
+        //Get data from database table1
+        LocalDate startdate_selected = startdate;
+        res = myDb.getDataDateRange(startdate_selected.minusDays(1),enddate); // (startdate,enddate]
+
+
+        //creates an arraylist and adapter that will take the arraylist and place its values into a listview
+        arrayList = new ArrayList<String>();
+        adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
+
+
         amount_total = 0;
         //takes the values out from database and puts it into the arraylist &&&& calculates total amount
         while (res.moveToNext()) {
@@ -149,7 +150,7 @@ public class TrackerFragment extends Fragment {
             LocalDate date = LocalDate.parse(res.getString(4));
 
             //Formatting the localdate ==> custom string format (Month name dd, yyyy)
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+            formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
             String date_formatted = date.format(formatter);
 
             //building arraylist of formatted string entries
@@ -159,6 +160,12 @@ public class TrackerFragment extends Fragment {
             //summing the total spent
             double amount = Double.parseDouble(res.getString(2));
             amount_total += amount;
+
+
+            //puts the arraylist into the listview
+            lv.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+
         }
     }
 
@@ -170,48 +177,41 @@ public class TrackerFragment extends Fragment {
 
 
     public void onSelect_CycleSpinner() {
-//        //What the spinner does when item is selected / not selected
-//        spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.O)
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
-//
-//                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-//                int inverted_pos = (cycles.size() - 1) - position;
-//
-//                res4.moveToPosition(inverted_pos);
-//                LocalDate selected_startdate = LocalDate.parse(res4.getString(0));
-//                LocalDate selected_enddate = LocalDate.parse(res4.getString(1));
-//
-//                //creates an arraylist and adapter that will take the arraylist and place its values into a listview
-//                arrayList = new ArrayList<String>();
-//                adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
-//
-//                //gets the entries from selected cycle
-//                res = myDb.getDataDateRange(selected_startdate,selected_enddate);
-//
-//                build_arrayList(); //builds arraylist to pass into listview
-//                set_total(); //set total amount
-//
-//                //puts the arraylist into the listview
-//                lv.setAdapter(adapter);
-//                adapter.notifyDataSetChanged();
-//
-//                //calls function when entry/item is selected from Listview
-//                onClick_itemselectedLv();
-//
-//
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                Object item = adapterView.getItemAtPosition(0);
-//
-//            }
-//        });
+
+        //What the spinner does when item is selected / not selected
+        spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+
+                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+                int inverted_pos = (cycles.size() - 1) - position;
+
+                res4.moveToPosition(inverted_pos);
+                startdate = LocalDate.parse(res4.getString(0));
+                enddate = LocalDate.parse(res4.getString(1));
+
+                //creates an arraylist and adapter that will take the arraylist and place its values into a listview
+                arrayList = new ArrayList<String>();
+                adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
+
+                build_List(); //builds arraylist to pass into listview
+                set_total(); //set total amount
+
+                //calls function when entry/item is selected from Listview
+                onClick_itemselectedLv();
+
+
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Object item = adapterView.getItemAtPosition(0);
+
+            }
+        });
+
 
     }
-
-
 
 
 
@@ -232,6 +232,7 @@ public class TrackerFragment extends Fragment {
 
                 //Delete button
                 adb.setPositiveButton("Delete", new AlertDialog.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     public void onClick(DialogInterface dialog, int which) {
                         //deletes the entry from the listview
                         arrayList.remove(position_ind);
@@ -248,12 +249,14 @@ public class TrackerFragment extends Fragment {
                         else
                             Toast.makeText(view.getContext(),"Data not Deleted",Toast.LENGTH_SHORT).show();
 
-                        //recreates TrackerFragement to update all changes
-                        getFragmentManager()
-                                .beginTransaction()
-                                .detach(TrackerFragment.this)
-                                .attach(TrackerFragment.this)
-                                .commit();
+                        build_List();
+                        set_total(); //set total amount
+//                        //recreates TrackerFragement to update all changes
+//                        getFragmentManager()
+//                                .beginTransaction()
+//                                .detach(TrackerFragment.this)
+//                                .attach(TrackerFragment.this)
+//                                .commit();
                     }
                 });
 
@@ -332,7 +335,7 @@ public class TrackerFragment extends Fragment {
                                         String edited_text = et2.getText().toString();
                                         String edited_category = category;
                                         String edited_date = et3.getText().toString();
-                                        LocalDate text5 = LocalDate.now();
+                                        LocalDate text5 = LocalDate.parse(edited_date); //in format yyyy-mm-dd
 
                                         int decimal_places = 0;
                                         //divide the amount string at "." to get the number of decimal places if there is a "."
@@ -342,7 +345,7 @@ public class TrackerFragment extends Fragment {
                                         }
 
 
-                                        if (edited_amount.equals("") || edited_text.equals("") ) {
+                                        if ((edited_amount.equals("") || edited_text.equals("")) || edited_date.equals("") ) {
                                             Toast.makeText(view.getContext(),"There are Blank Fields",Toast.LENGTH_SHORT).show();
                                         }
                                         else if (decimal_places > 2){
@@ -360,21 +363,13 @@ public class TrackerFragment extends Fragment {
                                             DecimalFormat df = new DecimalFormat("0.00");
                                             String edited_amount_formatted = df.format(amount_float);
 
-                                            //update the listview
-                                            String updated_entry = "Description: " + edited_text + "\nAmount: $"+ edited_amount_formatted
-                                                    + "\nCategory: " + edited_category + "\nDate: " + edited_date;
-                                            arrayList.set(position_ind,updated_entry);
-                                            adapter.notifyDataSetChanged();
 
                                             //update data in database
                                             boolean wasUpdated = myDb.updateData(entry_id,edited_text,edited_amount_formatted,edited_category,edited_date,text5);
 
-                                            //recreates TrackerFragement to update all changes
-                                            getFragmentManager()
-                                                    .beginTransaction()
-                                                    .detach(TrackerFragment.this)
-                                                    .attach(TrackerFragment.this)
-                                                    .commit();
+
+                                            build_List();
+                                            set_total(); //set total amount
 
                                             //makes a toast to check if data was updated
                                             if(wasUpdated == Boolean.TRUE)
@@ -392,16 +387,13 @@ public class TrackerFragment extends Fragment {
                                 //cancel button
                                 Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
                                 neutralButton.setOnClickListener(new View.OnClickListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
                                     @Override
                                     public void onClick(View v) {
 
-                                        //recreates TrackerFragement to update all changes
-                                        getFragmentManager()
-                                                .beginTransaction()
-                                                .detach(TrackerFragment.this)
-                                                .attach(TrackerFragment.this)
-                                                .commit();
-                                        //CLOSE THE DIALOG
+                                        build_List();
+                                        set_total(); //set total amount
+
                                         dialog.dismiss();
                                     }
                                 });
@@ -430,7 +422,7 @@ public class TrackerFragment extends Fragment {
         currentDate = LocalDate.now();
 
         if (res3!=null && res3.moveToFirst()){  //makes sure table3 is not null
-            cycle_input = res3.getString(2);;
+            cycle_input = res3.getString(2);
         }
         String currentDate_string = String.valueOf(currentDate);
         String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
