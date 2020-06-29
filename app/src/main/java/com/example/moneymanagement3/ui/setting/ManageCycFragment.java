@@ -3,6 +3,7 @@ package com.example.moneymanagement3.ui.setting;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,23 +17,29 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ManageCycFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
-    Cursor res3;
+    Cursor res3; Cursor res4;
     ListView lv;
     String[] managecyc_items;
     ArrayAdapter<String> adapter_managecyc;
+    ArrayList<String> cycles;
     Button btn1;
     String cycle_start_day; String old_cycle_start_day;
+    CharSequence[] cycles_list;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +71,7 @@ public class ManageCycFragment extends Fragment {
     public void onClick_itemselectedLv() {
         //Delete/update selected items in the manageCyc listview by selecting an item in the list view
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onItemClick(AdapterView<?> a, View v, final int position, long id) {
 
                 //if "select cycle start day" is selected
@@ -158,10 +166,133 @@ public class ManageCycFragment extends Fragment {
 
                 }
 
+
+
                 //if "delete previous cycles" is selected
                 else if (position==1){
 
+                    //creates the cycles arraylist from database table4
+                    res4 = myDb.get_cycles();
+                    cycles = new ArrayList<String>();
+                    while(res4.moveToNext()){
+                        String cyc_startdate = res4.getString(0);
+                        String cyc_enddate = res4.getString(1);
+                        LocalDate cyc_startdate_localdate = LocalDate.parse(cyc_startdate);
+                        LocalDate cyc_enddate_localdate = LocalDate.parse(cyc_enddate);
+
+                        //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+                        DateTimeFormatter cyc_formatter = DateTimeFormatter.ofPattern("LLL dd, yy");
+                        String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
+                        String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
+
+                        String formatted_dates = cyc_startdate_formatted + " - " + cyc_enddate_formatted;
+                        cycles.add(formatted_dates);
+                    }
+                    Collections.reverse(cycles);
+
+                    //creates boolean array of falses
+                    final boolean[] bool_list = new boolean[cycles.size()];
+                    //converts cycles arraylist to char sequence array
+                    cycles_list = new CharSequence[cycles.size()];
+                    for (int i = 0; i < cycles.size(); i++) {
+                        cycles_list[i] = cycles.get(i);
+                    }
+
+                    //if there are no cycles, show an alert saying "there are no categories"
+                    if (cycles_list.length == 0) {
+                        AlertDialog.Builder builder0 = new AlertDialog.Builder(view.getContext());
+                        builder0.setTitle("Alert");
+                        builder0.setMessage("There are no cycles");
+                        builder0.setPositiveButton("Okay", null);
+                        builder0.show();
+                    }
+
+                    //otherwise
+                    else {
+                        //create an alert dialog1 builder - "Select Cycles to delete"
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+                        builder1.setTitle("Select Cycles to Delete");
+                        builder1.setPositiveButton("Delete", null);
+                        builder1.setNeutralButton("Cancel", null);
+
+                        //set the checkbox listview
+                        builder1.setMultiChoiceItems(cycles_list, bool_list,
+                                new DialogInterface.OnMultiChoiceClickListener() {
+                                    @Override
+                                    // indexSelected contains the index of item (of which checkbox checked)
+                                    //checks and unchecks the boxes when clicked
+                                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                                        bool_list[indexSelected] = isChecked;
+                                        String current_item = cycles_list[indexSelected].toString();
+                                    }
+                                });
+                        //creates the alert dialog from the builder
+                        final AlertDialog alertDialog = builder1.create();
+
+                        //display the alert dialog with the buttons
+                        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                            @Override
+                            public void onShow(final DialogInterface dialog) {
+
+                                //delete button
+                                Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                                positiveButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        //deletes the cycles from database table4 and table1 if the boxes are checked
+                                        for (int i = 0; i < cycles_list.length; i++) {
+                                            boolean checked = bool_list[i];
+                                            if (checked) {
+                                                //delete the physical cycle in database table4
+                                                int inverted_pos = (cycles.size() - 1)- i; //this is important bc multichoice list shows new-->old, but in the database table4, it's indexed old--->new
+                                                res4.moveToPosition(inverted_pos); //move to correct row in table2
+                                                String cycle_startdate = res4.getString(0);
+                                                String cycle_enddate = res4.getString(1);
+                                                myDb.delete_cycle(cycle_startdate,cycle_enddate);
+
+                                                //delete the actual entries within that cycle in database table1
+                                                LocalDate cycle_startdate_ld = LocalDate.parse(cycle_startdate).minusDays(1); //(startdate,enddate]
+                                                LocalDate cycle_enddate_ld = LocalDate.parse(cycle_enddate);
+                                                myDb.deletedDataDateRange(cycle_startdate_ld,cycle_enddate_ld);
+
+                                            }
+                                        }
+                                        //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                        getFragmentManager()
+                                                .beginTransaction()
+                                                .detach(ManageCycFragment.this)
+                                                .attach(ManageCycFragment.this)
+                                                .commit();
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                //Cancel button
+                                Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                                neutralButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                        getFragmentManager()
+                                                .beginTransaction()
+                                                .detach(ManageCycFragment.this)
+                                                .attach(ManageCycFragment.this)
+                                                .commit();
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        });
+                        alertDialog.show();
+                    }
+
+
                 }
+
+
+
+
 
                 //else if "reset all entries" is selected
                 else {
@@ -203,7 +334,6 @@ public class ManageCycFragment extends Fragment {
                     alertDialog.show();
 
                 }
-
 
             }
         });

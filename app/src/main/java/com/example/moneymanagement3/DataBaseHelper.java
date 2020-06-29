@@ -1,7 +1,6 @@
 package com.example.moneymanagement3;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -10,8 +9,6 @@ import android.os.Build;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
-
-import com.example.moneymanagement3.ui.home.HomeFragment;
 
 import java.time.LocalDate;
 
@@ -102,6 +99,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return deletedrows;
     }
 
+    public void deletedDataDateRange(LocalDate StartDate, LocalDate EndDate) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ")");
+    }
 
     public Cursor getAllData() {
         //Table 1
@@ -109,7 +110,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
         return res;
     }
-
+;
     public Cursor getDataDateRange(LocalDate StartDate, LocalDate EndDate) {
         //Table 1
         // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
@@ -117,6 +118,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ")",null);
         return res;
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O) //okay so this requires android oreo to run
     public Cursor getDataDefault() {
@@ -223,6 +225,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public void delete_cycle(String cycle_startdate, String cycle_enddate) {
+        //table2
+        SQLiteDatabase db = this.getWritableDatabase();
+        int deleted_startdate =  db.delete(TABLE_NAME4, "START_DATE = ?",new String[] {cycle_startdate});
+        int deleted_enddate = db.delete(TABLE_NAME4, "END_DATE = ?",new String[] {cycle_enddate});
+    }
 
     public Integer deleteAll_cycles () {
         //Table 3
