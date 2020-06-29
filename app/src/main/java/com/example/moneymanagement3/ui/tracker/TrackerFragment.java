@@ -69,18 +69,16 @@ public class TrackerFragment extends Fragment {
 
         //Cursor res2 res3 = gets all data in the database table2 and table3
         res2 = myDb.getAllData_categories();
+
+
+        //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
         res3 = myDb.get_setting();
         res3.moveToFirst();
 
-
-        //update cycle dates
+        //Cycle updater
         cycle_updater();
 
-
-        //Set current date Tv
-        formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
-        tv_today.setText("Today: " + currentDate.format(formatter));
-
+        spinner_cycles = view.findViewById(R.id.cycleSpn);
 
         //Create Cycle Spinner
         cycles = new ArrayList<String>();
@@ -102,8 +100,13 @@ public class TrackerFragment extends Fragment {
         Collections.reverse(cycles);
         ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text,cycles);
         spinner_cycles.setAdapter(spn_cyc_adapter);
-//        spn_cyc_adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
+        //------------------------------------------------END-----------------------------------------------//
+
+
+        //Set current date Tv
+        formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+        tv_today.setText("Today: " + currentDate.format(formatter));
 
         build_List(); //builds listview
         set_total(); //set total amount
