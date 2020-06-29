@@ -138,38 +138,41 @@ public class TrackerFragment extends Fragment {
         LocalDate startdate_selected = startdate;
         res = myDb.getDataDateRange(startdate_selected.minusDays(1),enddate); // (startdate,enddate]
 
+        if(res!=null){
+            //creates an arraylist and adapter that will take the arraylist and place its values into a listview
+            arrayList = new ArrayList<String>();
+            adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
 
-        //creates an arraylist and adapter that will take the arraylist and place its values into a listview
-        arrayList = new ArrayList<String>();
-        adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
+
+            amount_total = 0;
+            //takes the values out from database and puts it into the arraylist &&&& calculates total amount
+            while (res.moveToNext()) {
+                String dscpt = res.getString(1);
+                String amt = res.getString(2);
+                String cat = res.getString(3);
+                LocalDate date = LocalDate.parse(res.getString(4));
+
+                //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+                formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+                String date_formatted = date.format(formatter);
+
+                //building arraylist of formatted string entries
+                arrayList.add("Description: " + dscpt + "\nAmount: $"+ amt
+                        + "\nCategory: " + cat + "\nDate: " + date_formatted);
+
+                //summing the total spent
+                double amount = Double.parseDouble(res.getString(2));
+                amount_total += amount;
 
 
-        amount_total = 0;
-        //takes the values out from database and puts it into the arraylist &&&& calculates total amount
-        while (res.moveToNext()) {
-            String dscpt = res.getString(1);
-            String amt = res.getString(2);
-            String cat = res.getString(3);
-            LocalDate date = LocalDate.parse(res.getString(4));
-
-            //Formatting the localdate ==> custom string format (Month name dd, yyyy)
-            formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
-            String date_formatted = date.format(formatter);
-
-            //building arraylist of formatted string entries
-            arrayList.add("Description: " + dscpt + "\nAmount: $"+ amt
-                    + "\nCategory: " + cat + "\nDate: " + date_formatted);
-
-            //summing the total spent
-            double amount = Double.parseDouble(res.getString(2));
-            amount_total += amount;
-
+            }
 
             //puts the arraylist into the listview
             lv.setAdapter(adapter);
             adapter.notifyDataSetChanged();
 
         }
+
     }
 
     public void set_total() {
@@ -193,10 +196,6 @@ public class TrackerFragment extends Fragment {
                 res4.moveToPosition(inverted_pos);
                 startdate = LocalDate.parse(res4.getString(0));
                 enddate = LocalDate.parse(res4.getString(1));
-
-                //creates an arraylist and adapter that will take the arraylist and place its values into a listview
-                arrayList = new ArrayList<String>();
-                adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
 
                 build_List(); //builds arraylist to pass into listview
                 set_total(); //set total amount
