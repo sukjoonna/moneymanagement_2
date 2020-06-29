@@ -104,7 +104,7 @@ public class TrackerFragment extends Fragment {
         tv_cycle.setText(startdate_formatted + "  to  " + enddate_formatted);
 
         //Get data from database table1
-        res = myDb.getDataDateRange(startdate,enddate);
+        res = myDb.getDataDateRange(startdate.minusDays(1),enddate); // (startdate,enddate]
 //        res = myDb.getAllData();
 //        res = myDb.getDataDefault(); //testing to see if the default monthly cycle works
 
@@ -170,44 +170,44 @@ public class TrackerFragment extends Fragment {
 
 
     public void onSelect_CycleSpinner() {
-        //What the spinner does when item is selected / not selected
-        spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
-
-                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                int inverted_pos = (cycles.size() - 1) - position;
-
-                res4.moveToPosition(inverted_pos);
-                LocalDate selected_startdate = LocalDate.parse(res4.getString(0));
-                LocalDate selected_enddate = LocalDate.parse(res4.getString(1));
-
-                //creates an arraylist and adapter that will take the arraylist and place its values into a listview
-                arrayList = new ArrayList<String>();
-                adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
-
-                //gets the entries from selected cycle
-                res = myDb.getDataDateRange(selected_startdate,selected_enddate);
-
-                build_arrayList(); //builds arraylist to pass into listview
-                set_total(); //set total amount
-
-                //puts the arraylist into the listview
-                lv.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-
-                //calls function when entry/item is selected from Listview
-                onClick_itemselectedLv();
-
-
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Object item = adapterView.getItemAtPosition(0);
-
-            }
-        });
+//        //What the spinner does when item is selected / not selected
+//        spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @RequiresApi(api = Build.VERSION_CODES.O)
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+//
+//                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+//                int inverted_pos = (cycles.size() - 1) - position;
+//
+//                res4.moveToPosition(inverted_pos);
+//                LocalDate selected_startdate = LocalDate.parse(res4.getString(0));
+//                LocalDate selected_enddate = LocalDate.parse(res4.getString(1));
+//
+//                //creates an arraylist and adapter that will take the arraylist and place its values into a listview
+//                arrayList = new ArrayList<String>();
+//                adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
+//
+//                //gets the entries from selected cycle
+//                res = myDb.getDataDateRange(selected_startdate,selected_enddate);
+//
+//                build_arrayList(); //builds arraylist to pass into listview
+//                set_total(); //set total amount
+//
+//                //puts the arraylist into the listview
+//                lv.setAdapter(adapter);
+//                adapter.notifyDataSetChanged();
+//
+//                //calls function when entry/item is selected from Listview
+//                onClick_itemselectedLv();
+//
+//
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//                Object item = adapterView.getItemAtPosition(0);
+//
+//            }
+//        });
 
     }
 
