@@ -432,7 +432,7 @@ public class TrackerFragment extends Fragment {
         String var_string = ""+currentDate_string.substring(0,5) + currentMonth_string + "-" + cycle_input; //variable to compare current date with
         LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
 
-        //determine and sets the start and end dates of the cycle
+        //determine and sets the new start and end dates of the cycle
         if (currentDate.isBefore(var)){
             LocalDate var_new = var.plusMonths(-1);
             startdate = var_new;

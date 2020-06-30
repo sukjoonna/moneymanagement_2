@@ -27,19 +27,22 @@ import com.example.moneymanagement3.R;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 public class ManageCycFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
-    Cursor res3; Cursor res4;
+    Cursor res3; Cursor res4; Cursor res;
     ListView lv;
     String[] managecyc_items;
     ArrayAdapter<String> adapter_managecyc;
     ArrayList<String> cycles;
     Button btn1;
-    String cycle_start_day; String old_cycle_start_day;
+    String cycle_start_day; String old_cycle_start_day; String cycle_input;
     CharSequence[] cycles_list;
+    LocalDate startdate; LocalDate enddate; LocalDate currentDate;
+
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -131,11 +134,60 @@ public class ManageCycFragment extends Fragment {
                             positiveButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+
+                                    //Update the cycle start day in table3
                                     boolean wasupdated = myDb.update_cycle_input(old_cycle_start_day, cycle_start_day);
                                     if(wasupdated)
                                         Toast.makeText(view.getContext(),"You changed your cycle start day",Toast.LENGTH_SHORT).show();
                                     else
                                         Toast.makeText(view.getContext(),"Not updated",Toast.LENGTH_SHORT).show();
+
+                                    ///// updates table4////////////////////////////////////////////////////////
+                                    //--------------------only works in the condition that between cycles are not deleted
+
+                                    cycle_updater();
+
+                                    res4 = myDb.get_cycles();
+                                    int number_of_cycles = 0;
+                                    while (res4.moveToNext()){
+                                        number_of_cycles++;
+                                    }
+
+                                    res3 = myDb.get_setting();
+                                    res3.moveToFirst();
+                                    String cyc_startdate = res3.getString(0);
+                                    String cyc_enddate = res3.getString(1);
+                                    LocalDate cyc_startdate_ld = LocalDate.parse(cyc_startdate);
+                                    LocalDate cyc_enddate_ld = LocalDate.parse(cyc_enddate);
+
+                                    ArrayList<String> new_startdates = new ArrayList<String>();
+                                    ArrayList<String> new_enddates = new ArrayList<String>();
+
+                                    for(int i = 0; i < number_of_cycles-1; i++){
+                                        cyc_startdate_ld = cyc_startdate_ld.minusMonths(1);
+                                        cyc_enddate_ld = cyc_enddate_ld.minusMonths(1);
+                                        cyc_startdate = String.valueOf(cyc_startdate_ld);
+                                        cyc_enddate = String.valueOf(cyc_enddate_ld);
+
+                                        new_startdates.add(cyc_startdate);
+                                        new_enddates.add(cyc_enddate);
+                                    }
+                                    Collections.reverse(new_startdates);
+                                    Collections.reverse(new_enddates);
+
+                                    myDb.deleteAll_cycles();
+                                    myDb.get_cycles();
+                                    for(int i = 0; i < number_of_cycles-1; i++){
+                                        myDb.insert_cycle(new_startdates.get(i), new_enddates.get(i));
+                                    }
+
+                                    res4 = myDb.get_cycles();
+                                    res4.moveToFirst();
+                                    myDb.delete_cycle(res4.getString(0),res4.getString(1));
+                                    /////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
                                     //recreates current Fragment it refreshes after alertdialog closes
                                     getFragmentManager()
                                             .beginTransaction()
@@ -143,6 +195,9 @@ public class ManageCycFragment extends Fragment {
                                             .attach(ManageCycFragment.this)
                                             .commit();
                                     dialog.dismiss();
+
+
+
                                 }
                             });
 
@@ -351,4 +406,55 @@ public class ManageCycFragment extends Fragment {
             }
         });
     }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    //updates the start and end date of the cycle
+    public void cycle_updater() {
+
+        cycle_input = cycle_start_day;
+        currentDate = LocalDate.now();
+
+        String currentDate_string = String.valueOf(currentDate);
+        String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
+
+        String var_string = ""+currentDate_string.substring(0,5) + currentMonth_string + "-" + cycle_input; //variable to compare current date with
+        LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
+
+        //determine and sets the new start and end dates of the cycle
+        if (currentDate.isBefore(var)){
+            LocalDate var_new = var.plusMonths(-1);
+            startdate = var_new;
+            enddate = var.minusDays(1);
+            //update database table3
+            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+        }
+        else {
+            LocalDate var_new = var.plusMonths(1);
+            startdate = var;
+            enddate = var_new.minusDays(1);
+            //update database table3
+            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+        }
+
+        //dealing with table4 (cycle table) ---- for cycle spinner
+        res4 = myDb.get_cycles();
+        if (res4!=null && res4.moveToLast()){  //makes sure table3 is not null
+            String past_startdate = res4.getString(0);
+            String past_enddate = res4.getString(1);
+            if (!past_startdate.equals(String.valueOf(startdate))  &&  !past_enddate.equals(String.valueOf(enddate))   ){
+                //inserts the start and end date of the cycle only if the dates changed
+                myDb.insert_cycle(String.valueOf(startdate),String.valueOf(enddate));
+            }
+        }
+        else {
+            //inserts the start and end date of the cycle for when the first time app is run
+            myDb.insert_cycle(String.valueOf(startdate),String.valueOf(enddate));
+        }
+
+    }
+
+
+
+
 }
