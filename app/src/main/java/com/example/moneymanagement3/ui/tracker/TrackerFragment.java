@@ -80,7 +80,7 @@ public class TrackerFragment extends Fragment {
 
         spinner_cycles = view.findViewById(R.id.cycleSpn);
 
-        //Create Cycle Spinner
+        //Create Cycle Spinner --- from table4
         cycles = new ArrayList<String>();
         res4 = myDb.get_cycles();
         while(res4.moveToNext()){
@@ -379,6 +379,13 @@ public class TrackerFragment extends Fragment {
                                             else
                                                 Toast.makeText(view.getContext(),"Data not Updated",Toast.LENGTH_SHORT).show();
 
+                                             //recreates TrackerFragement to update all changes
+                                            getFragmentManager()
+                                                    .beginTransaction()
+                                                    .detach(TrackerFragment.this)
+                                                    .attach(TrackerFragment.this)
+                                                    .commit();
+
                                             dialog.dismiss();
 
                                         }
@@ -395,6 +402,12 @@ public class TrackerFragment extends Fragment {
 
                                         build_List();
                                         set_total(); //set total amount
+                                        //recreates TrackerFragement to update all changes --mainly for categories spinner to be recreated each time
+                                        getFragmentManager()
+                                                .beginTransaction()
+                                                .detach(TrackerFragment.this)
+                                                .attach(TrackerFragment.this)
+                                                .commit();
 
                                         dialog.dismiss();
                                     }
