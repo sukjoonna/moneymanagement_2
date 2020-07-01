@@ -43,6 +43,8 @@ public class TrackerFragment extends Fragment {
     ListView lv;
     ArrayList<String> arrayList; ArrayList<String> cycles;
     ArrayAdapter<String> adapter; ArrayAdapter<String> spn_cyc_adapter;
+    ArrayList<Entry> entries_arraylist;
+    EntryListAdapter entries_adapter;
     String text;
     double amount_total;
     String category; String cycle_input;
@@ -139,26 +141,25 @@ public class TrackerFragment extends Fragment {
         res = myDb.getDataDateRange(startdate_selected.minusDays(1),enddate); // (startdate,enddate]
 
         if(res!=null){
-            //creates an arraylist and adapter that will take the arraylist and place its values into a listview
-            arrayList = new ArrayList<String>();
-            adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
 
+            entries_arraylist = new ArrayList<Entry>();
+            entries_adapter = new EntryListAdapter(view.getContext(),R.layout.adapter_view_layout,entries_arraylist);
 
             amount_total = 0;
             //takes the values out from database and puts it into the arraylist &&&& calculates total amount
             while (res.moveToNext()) {
                 String dscpt = res.getString(1);
-                String amt = res.getString(2);
+                String amt = "-$" + res.getString(2);
                 String cat = res.getString(3);
                 LocalDate date = LocalDate.parse(res.getString(4));
 
                 //Formatting the localdate ==> custom string format (Month name dd, yyyy)
-                formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+                formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
                 String date_formatted = date.format(formatter);
 
-                //building arraylist of formatted string entries
-                arrayList.add("Description: " + dscpt + "\nAmount: $"+ amt
-                        + "\nCategory: " + cat + "\nDate: " + date_formatted);
+                //creating the entry object and putting it into the entries arraylist
+                Entry entry = new Entry(dscpt,cat,amt,date_formatted);
+                entries_arraylist.add(entry);
 
                 //summing the total spent
                 double amount = Double.parseDouble(res.getString(2));
@@ -168,8 +169,46 @@ public class TrackerFragment extends Fragment {
             }
 
             //puts the arraylist into the listview
-            lv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            lv.setAdapter(entries_adapter);
+            entries_adapter.notifyDataSetChanged();
+
+
+
+//            //creates an arraylist and adapter that will take the arraylist and place its values into a listview
+//            arrayList = new ArrayList<String>();
+//            adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
+//
+//
+//
+//            amount_total = 0;
+//            //takes the values out from database and puts it into the arraylist &&&& calculates total amount
+//            while (res.moveToNext()) {
+//                String dscpt = res.getString(1);
+//                String amt = res.getString(2);
+//                String cat = res.getString(3);
+//                LocalDate date = LocalDate.parse(res.getString(4));
+//
+//                //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+//                formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
+//                String date_formatted = date.format(formatter);
+//
+//
+//
+//
+//                //building arraylist of formatted string entries
+//                arrayList.add("Description: " + dscpt + "\nAmount: $"+ amt
+//                        + "\nCategory: " + cat + "\nDate: " + date_formatted);
+//
+//                //summing the total spent
+//                double amount = Double.parseDouble(res.getString(2));
+//                amount_total += amount;
+//
+//
+//            }
+//
+//            //puts the arraylist into the listview
+//            lv.setAdapter(adapter);
+//            adapter.notifyDataSetChanged();
 
         }
 
