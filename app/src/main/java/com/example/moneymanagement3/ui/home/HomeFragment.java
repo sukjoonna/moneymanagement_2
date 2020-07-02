@@ -48,8 +48,6 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        //Variable declarations
         et_name = view.findViewById(R.id.textEt);     //edit text
         et_amount = view.findViewById(R.id.amountEt);
         btn_add = view.findViewById(R.id.add1Btn);   //add button

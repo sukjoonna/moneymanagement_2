@@ -43,7 +43,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP )");
         db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT, CATEGORY_BUDGET TEXT)");
         db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT, CYCLE_BUDGET TEXT)");
-        db.execSQL("create table " + TABLE_NAME4 +" (START_DATE TEXT, END_DATE TEXT)");
+        db.execSQL("create table " + TABLE_NAME4 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_BUDGET TEXT, CATEGORY TEXT,CATEGORY_BUDGET TEXT)");
 
 //        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT)");
     }
@@ -299,6 +299,58 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 //        else
 //            return false;
 //    };
+
+
+    public void insert_filler_cycles_table_onStartup (String startDate, String endDate, String Category){ //only utilized on first time run
+        //Table 4
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_5,startDate);
+        contentValues.put(COL_6,endDate);
+        contentValues.put(COL_9,"");
+        contentValues.put(COL_3,Category);
+        contentValues.put(COL_10,"");
+        long result = db.insert(TABLE_NAME4,null ,contentValues);
+    }
+
+    public boolean update_cycles_table_dates (String old_cycle_startDate,String new_cycle_startDate, String new_cycle_endDate) {
+        //Table 4
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_5,new_cycle_startDate);
+        contentValues.put(COL_6,new_cycle_endDate);
+        long result = db.update(TABLE_NAME4, contentValues, "START_DATE = ?",new String[]{old_cycle_startDate});
+        if (result > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean update_cycles_table_Budget (String startDate,String newBudget) {
+        //Table 4
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_9,newBudget);
+        long result = db.update(TABLE_NAME4, contentValues, "START_DATE = ?",new String[]{startDate});
+        if (result > 0)
+            return true;
+        else
+            return false;
+    }
+
+    public boolean update_cycles_table_Category_CatBudget (String startDate,String newCategory,String newBudget) {
+        //Table 4
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_3,newCategory);
+        contentValues.put(COL_10,newBudget);
+        long result = db.update(TABLE_NAME4, contentValues, "START_DATE = ?",new String[]{startDate});
+        if (result > 0)
+            return true;
+        else
+            return false;
+    }
+
 
 
 
