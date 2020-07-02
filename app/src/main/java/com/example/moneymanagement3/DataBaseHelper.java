@@ -28,6 +28,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COL_6 = "END_DATE";
     public static final String COL_7 = "DATE_TIMESTAMP1";
     public static final String COL_8 = "CYCLE_INPUT";
+    public static final String COL_9 = "CYCLE_BUDGET";
+    public static final String COL_10 = "CATEGORY_BUDGET";
 
 //    public static final String COL_2 = "NAME";
 
@@ -39,8 +41,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         //creating table "names_table" with 2 cols
         db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP )");
-        db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT)");
-        db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT)");
+        db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT, CATEGORY_BUDGET TEXT)");
+        db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT, CYCLE_BUDGET TEXT)");
         db.execSQL("create table " + TABLE_NAME4 +" (START_DATE TEXT, END_DATE TEXT)");
 
 //        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT)");
@@ -173,16 +175,43 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public void replace_setting ( String startdate, String enddate, String cycle_input) {
+//
+    //    public void update_cycle_setting ( String startdate, String enddate, String cycle_input) {
+//        //Table 3
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        db.delete(TABLE_NAME3,"1",null);
+//
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put(COL_5,startdate);
+//        contentValues.put(COL_6,enddate);
+//        contentValues.put(COL_8,cycle_input);
+//        long result = db.insert(TABLE_NAME3,null ,contentValues);
+//    };
+
+
+    public void create_filler_setting_onStartup (String cycle_input){ //only utilized on first time run
         //Table 3
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME3,"1",null);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_5,"start date");
+        contentValues.put(COL_6,"end date");
+        contentValues.put(COL_8,cycle_input);
+        contentValues.put(COL_9,"0.00");
+        long result = db.insert(TABLE_NAME3,null ,contentValues);
+    }
 
+
+    public void update_cycle_setting (String startdate, String enddate, String old_cycle_input) {
+        //Table 3
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_5,startdate);
         contentValues.put(COL_6,enddate);
-        contentValues.put(COL_8,cycle_input);
-        long result = db.insert(TABLE_NAME3,null ,contentValues);
+        contentValues.put(COL_8,old_cycle_input);
+        long result = db.update(TABLE_NAME3, contentValues, "CYCLE_INPUT = ?",new String[]{old_cycle_input});
+        if (result > 0) {
+        }
+
     };
 
     public boolean update_cycle_input (String old_cycle_input, String new_cycle_input) {
@@ -191,6 +220,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_8,new_cycle_input);
         long result = db.update(TABLE_NAME3, contentValues, "CYCLE_INPUT = ?",new String[]{old_cycle_input});
+        if (result > 0)
+            return true;
+        else
+            return false;
+    };
+
+    public boolean update_cycle_budget (String old_cycle_budget, String new_cycle_budget) {
+        //Table 3
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_9,new_cycle_budget);
+        long result = db.update(TABLE_NAME3, contentValues, "CYCLE_BUDGET = ?",new String[]{old_cycle_budget});
         if (result > 0)
             return true;
         else
@@ -206,15 +247,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return deleted_rows;
     };
 
-    public void insert_setting (String startdate, String enddate, String cycle_input) {
-        //Table 3
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_5,startdate);
-        contentValues.put(COL_6,enddate);
-        contentValues.put(COL_8,cycle_input);
-        long result = db.insert(TABLE_NAME3,null ,contentValues);
-    };
 
     public Cursor get_setting() {
         //Table 3

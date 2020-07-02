@@ -275,9 +275,6 @@ public class TrackerFragment extends Fragment {
                 adb.setPositiveButton("Delete", new AlertDialog.OnClickListener() {
                     @RequiresApi(api = Build.VERSION_CODES.O)
                     public void onClick(DialogInterface dialog, int which) {
-                        //deletes the entry from the listview
-                        arrayList.remove(position_ind);
-                        adapter.notifyDataSetChanged();
 
                         //Deletes the applicable row in database
                         int deletedRow = 0;
@@ -473,11 +470,15 @@ public class TrackerFragment extends Fragment {
     public void cycle_updater() {
 
         cycle_input = "01"; //sets the default cycle input as the first of the month
-        currentDate = LocalDate.now();
+        currentDate = LocalDate.now(); //get current date
 
         if (res3!=null && res3.moveToFirst()){  //makes sure table3 is not null
             cycle_input = res3.getString(2);
         }
+        else{
+            myDb.create_filler_setting_onStartup(cycle_input);
+        }
+
         String currentDate_string = String.valueOf(currentDate);
         String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
 
@@ -485,19 +486,20 @@ public class TrackerFragment extends Fragment {
         LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
 
         //determine and sets the new start and end dates of the cycle
+        res3.moveToFirst();
         if (currentDate.isBefore(var)){
             LocalDate var_new = var.plusMonths(-1);
             startdate = var_new;
             enddate = var.minusDays(1);
             //update database table3
-            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+            myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , res3.getString(2) );
         }
         else {
             LocalDate var_new = var.plusMonths(1);
             startdate = var;
             enddate = var_new.minusDays(1);
             //update database table3
-            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+            myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , res3.getString(2) );
         }
 
         //dealing with table4 (cycle table) ---- for cycle spinner

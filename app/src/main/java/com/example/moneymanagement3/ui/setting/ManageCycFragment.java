@@ -427,14 +427,14 @@ public class ManageCycFragment extends Fragment {
             startdate = var_new;
             enddate = var.minusDays(1);
             //update database table3
-            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+            myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
         }
         else {
             LocalDate var_new = var.plusMonths(1);
             startdate = var;
             enddate = var_new.minusDays(1);
             //update database table3
-            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+            myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
         }
 
         //dealing with table4 (cycle table) ---- for cycle spinner

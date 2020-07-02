@@ -22,7 +22,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.example.moneymanagement3.CycleUpdaterFragment;
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 
@@ -259,6 +258,9 @@ public class HomeFragment extends Fragment {
         if (res3!=null && res3.moveToFirst()){  //makes sure table3 is not null
             cycle_input = res3.getString(2);
         }
+        else{
+            myDb.create_filler_setting_onStartup(cycle_input);
+        }
 
         String currentDate_string = String.valueOf(currentDate);
         String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
@@ -272,14 +274,14 @@ public class HomeFragment extends Fragment {
             startdate = var_new;
             enddate = var.minusDays(1);
             //update database table3
-            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+            myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
         }
         else {
             LocalDate var_new = var.plusMonths(1);
             startdate = var;
             enddate = var_new.minusDays(1);
             //update database table3
-            myDb.replace_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
+            myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
         }
 
     }
