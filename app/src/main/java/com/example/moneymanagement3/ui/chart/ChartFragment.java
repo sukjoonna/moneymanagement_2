@@ -1,6 +1,7 @@
 package com.example.moneymanagement3.ui.chart;
 
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -32,16 +39,34 @@ public class ChartFragment extends Fragment {
     String cycle_input;
     ArrayList<String> cycles;
     Spinner spinner_cycles;
+    PieChart pieChart;
+    PieData pieData;
+    PieDataSet pieDataSet;
+    ArrayList pieEntries;
+    ArrayList PieEntryLabels;
     /////
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        //View view = inflater.inflate(R.layout.fragment_chart, container, false);
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
-
+       // View view2 = inflater.inflate(R.layout.activity_pie_chart, container, false); ///
         //get database
         myDb = new DataBaseHelper(getActivity());
 
+
+        ///
+        pieChart = view.findViewById(R.id.pieChart);
+        getEntries();
+        pieDataSet = new PieDataSet(pieEntries, "");
+        pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        pieDataSet.setSliceSpace(2f);
+        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextSize(10f);
+        pieDataSet.setSliceSpace(5f);
         //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
         res3 = myDb.get_setting();
         res3.moveToFirst();
@@ -50,6 +75,7 @@ public class ChartFragment extends Fragment {
         cycle_updater();
 
         spinner_cycles = view.findViewById(R.id.cycleSpn);
+        pieChart = view.findViewById(R.id.pieChart); ///
 
         //Create Cycle Spinner
         cycles = new ArrayList<String>();
@@ -73,10 +99,8 @@ public class ChartFragment extends Fragment {
         spinner_cycles.setAdapter(spn_cyc_adapter);
 
         //------------------------------------------------END-----------------------------------------------//
-
-
-
         return view;
+
     }
 
 
@@ -134,6 +158,16 @@ public class ChartFragment extends Fragment {
             myDb.insert_cycle(String.valueOf(startdate),String.valueOf(enddate));
         }
 
+    }
+
+    private void getEntries() {
+        pieEntries = new ArrayList<>();
+        pieEntries.add(new PieEntry(2f, 0));
+        pieEntries.add(new PieEntry(4f, 1));
+        pieEntries.add(new PieEntry(6f, 2));
+        pieEntries.add(new PieEntry(8f, 3));
+        pieEntries.add(new PieEntry(7f, 4));
+        pieEntries.add(new PieEntry(3f, 5));
     }
 
 
