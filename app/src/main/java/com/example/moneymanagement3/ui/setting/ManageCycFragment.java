@@ -188,6 +188,9 @@ public class ManageCycFragment extends Fragment {
 
 
 
+
+
+
                                     //recreates current Fragment it refreshes after alertdialog closes
                                     getFragmentManager()
                                             .beginTransaction()

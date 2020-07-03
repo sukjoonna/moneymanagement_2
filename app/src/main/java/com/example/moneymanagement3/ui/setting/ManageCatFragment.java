@@ -27,7 +27,9 @@ import com.example.moneymanagement3.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class ManageCatFragment extends Fragment {
@@ -35,7 +37,7 @@ public class ManageCatFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
     Cursor res;
-    Cursor res2;
+    Cursor res2; Cursor res4; Cursor res3;
     ListView lv;
     ArrayList<String> categories;
     String[] managecat_items;
@@ -131,6 +133,17 @@ public class ManageCatFragment extends Fragment {
                                 positiveButton.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+
+                                        //********************************************************** new added
+
+                                        //converts categories budget string in table4 into arraylist
+                                        res4 = myDb.get_cycles();
+                                        res4.moveToLast();
+                                        String categories_budget = res4.getString(4);
+                                        String[] categories_budget_list = categories_budget.split("\\;");
+                                        List<String> categories_budget_arr = new ArrayList<String>(Arrays.asList(categories_budget_list));
+                                        categories_budget_arr.remove(0); // gets rid of the extra "" which is counted as an index
+
                                         //deletes the categories from database table2 if the boxes are checked
                                         for (int i = 0; i < categories_list.length; i++) {
                                             boolean checked = bool_list[i];
@@ -138,8 +151,26 @@ public class ManageCatFragment extends Fragment {
                                                 res2.moveToPosition(i); //move to correct row in table2
                                                 String category_id = res2.getString(0); //get the ID of category
                                                 myDb.delete_categories(category_id);
+
+                                                //delete the value for categories budget corresponding to that category
+                                                categories_budget_arr.remove(i);
                                             }
                                         }
+
+                                        //updates the categories budget col in table4
+                                        StringBuilder string_list = new StringBuilder("");
+                                        for (int i = 0; i < categories_budget_arr.size(); i++){
+                                            string_list.append(";").append(categories_budget_arr.get(i));
+                                        }
+                                        res3 = myDb.get_setting();
+                                        res3.moveToFirst();
+                                        String startdate = res3.getString(0);
+                                        myDb.update_cycles_table_CatBudget(startdate,string_list.toString());
+
+                                        //********************************************************** new added
+
+
+
                                         //recreates SettingFragment so the checkbox list appears again after alertdialog closes
                                         getFragmentManager()
                                                 .beginTransaction()
