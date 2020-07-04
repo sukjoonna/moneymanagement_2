@@ -48,6 +48,7 @@ public class SettingFragment extends Fragment {
     LocalDate startdate; LocalDate enddate; LocalDate currentDate;
     String cycle_input;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_setting, container, false);
@@ -59,6 +60,8 @@ public class SettingFragment extends Fragment {
         myDb = new DataBaseHelper(getActivity());
         //Cursor res = gets all data in the database table2
         res2 = myDb.getAllData_categories();
+
+        cycle_updater();
 
         //Building and creating the listview
         setting_items = new String[]{"Manage Categories","Manage Cycles","Hard Reset"};
@@ -153,116 +156,94 @@ public class SettingFragment extends Fragment {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    //updates the start and end date of the cycle
+    public void cycle_updater() {
 
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    //updates the start and end date of the cycle
-//    public void cycle_updater() {
-//
-//        cycle_input = "01"; //sets the default cycle input as the first of the month
-//        currentDate = LocalDate.now(); //get current date
-//
-//        if (res3 != null && res3.moveToFirst()) {  //makes sure table3 is not null
-//            cycle_input = res3.getString(2);
-//        }
-//        else {
-//            myDb.create_filler_setting_onStartup(cycle_input);
-//        }
-//
-//        String currentDate_string = String.valueOf(currentDate);
-//        String currentMonth_string = "" + currentDate_string.substring(5, 7); //"MM" -- [start ind,end ind)
-//
-//        String var_string = "" + currentDate_string.substring(0, 5) + currentMonth_string + "-" + cycle_input; //variable to compare current date with
-//        LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
-//
-//        //determine and sets the start and end dates of the cycle in table3
-//        if (currentDate.isBefore(var)) {
-//            LocalDate var_new = var.plusMonths(-1);
-//            startdate = var_new;
-//            enddate = var.minusDays(1);
-//            //update database table3
-//            myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
-//        }
-//        else {
-//            LocalDate var_new = var.plusMonths(1);
-//            startdate = var;
-//            enddate = var_new.minusDays(1);
-//            //update database table3
-//            myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
-//        }
-//
-//
-//        //******************************************************************************new added
-//
-//
-//        //dealing with table4 (cycle table) ---- for cycle spinner
-//        if (res4!=null && res4.moveToLast()) { //if table4 is not null on startup (run basically every time this fragment is selected)
-//            String past_startdate = res3.getString(0);
-//            String past_enddate = res3.getString(1);
-//
-//            if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
-//                StringBuilder categories_budget_list_as_string = new StringBuilder("");
-//                StringBuilder categories_list_as_string = new StringBuilder("");
-//                res2 = myDb.getAllData_categories();
-//                if (res2 != null) { // if categories table3 is not empty
-//                    while (res2.moveToNext()) {
-//                        String category = res2.getString(1);
-//                        categories_list_as_string.append(";").append(category);
-//                        categories_budget_list_as_string.append(";").append("0.00");
-//                    }
-//                }
-//                //inserts the start and end date of the cycle only if the dates changed
-//                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
-//                        categories_list_as_string.toString(), categories_budget_list_as_string.toString());
-//            } else { //if new cycle not started
-//                res4.moveToLast();
-//                StringBuilder categories_budget_list_as_string = new StringBuilder(res4.getString(4));
-//                StringBuilder categories_list_as_string = new StringBuilder("");
-//                String[] categories_budget_list = categories_budget_list_as_string.toString().split("\\;");
-//                int categories_list_length = 0;
-//
-//                if (res2 != null) { // if categories table3 is not empty
-//                    res2 = myDb.getAllData_categories();
-//                    while (res2.moveToNext()) {
-//                        String category = res2.getString(1);
-//                        categories_list_as_string.append(";").append(category);
-//                        categories_list_length++;
-//                    }
-//                }
-//
-//                int list_size_difference = categories_list_length - (categories_budget_list.length-1);
-//                if (list_size_difference > 0) { //more categories than cat budget
-//                    for (int i = 0; i < list_size_difference; i++) {
-//                        categories_budget_list_as_string.append(";0.00");
-//                    }
-//                }
-//
-//                //updates table4
-//                myDb.update_cycles_table_Category(String.valueOf(startdate), categories_list_as_string.toString());
-//                myDb.update_cycles_table_CatBudget(String.valueOf(startdate), categories_budget_list_as_string.toString());
-//            }
-//        }
-//        else { //if table4 null (only when first run)
-//
-//            StringBuilder categories_budget_list_as_string = new StringBuilder("");
-//            StringBuilder categories_list_as_string = new StringBuilder("");
-//            res2 = myDb.getAllData_categories();
-//            if (res2 != null) { // if categories table3 is not empty
-//                while (res2.moveToNext()) {
-//                    String category = res2.getString(1);
-//                    categories_list_as_string.append(";").append(category);
-//                    categories_budget_list_as_string.append(";").append("0.00");
-//                }
-//            }
-//            //inserts the start and end date of the cycle only if the dates changed
-//            myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
-//                    categories_list_as_string.toString(), categories_budget_list_as_string.toString());
-//
-//
-//        }
-//
-//        //******************************************************************************new added
-//
-//    }
+        cycle_input = "01"; //sets the default cycle input as the first of the month
+        currentDate = LocalDate.now(); //get current date
+
+        if (res3!=null && res3.moveToFirst()){  //makes sure table3 is not null
+            cycle_input = res3.getString(2);
+        }
+        else{
+            myDb.create_filler_setting_onStartup(cycle_input);
+        }
+
+        String currentDate_string = String.valueOf(currentDate);
+        String currentMonth_string = ""+ currentDate_string.substring(5,7); //"MM" -- [start ind,end ind)
+
+        String var_string = ""+currentDate_string.substring(0,5) + currentMonth_string + "-" + cycle_input; //variable to compare current date with
+        LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
+
+        //determine and sets the new start and end dates of the cycle
+        res3 = myDb.get_setting();
+        res3.moveToFirst();
+        if (currentDate.isBefore(var)){
+            LocalDate var_new = var.plusMonths(-1);
+            startdate = var_new;
+            enddate = var.minusDays(1);
+            //update database table3
+            myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , res3.getString(2) );
+        }
+        else {
+            LocalDate var_new = var.plusMonths(1);
+            startdate = var;
+            enddate = var_new.minusDays(1);
+            //update database table3
+            myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , res3.getString(2) );
+        }
+
+
+        //******************************************************************************new added
+
+
+        //dealing with table4 (cycle table) ---- for cycle spinner
+        res4 = myDb.get_cycles();
+        if (res4!=null && res4.moveToLast()) { //if table4 is not null on startup (run basically every time this fragment is selected)
+            String past_startdate = res4.getString(0);
+            String past_enddate = res4.getString(1);
+
+            if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
+                StringBuilder categories_budget_list_as_string = new StringBuilder();
+                StringBuilder categories_list_as_string = new StringBuilder();
+                res2 = myDb.getAllData_categories();
+                if (res2 != null) { // if categories table3 is not empty
+                    while (res2.moveToNext()) {
+                        String category = res2.getString(1);
+                        categories_list_as_string.append(category).append(";");
+                        categories_budget_list_as_string.append("0.00").append(";");
+                    }
+                }
+                //inserts the start and end date of the cycle only if the dates changed
+                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
+                        categories_list_as_string.toString(), categories_budget_list_as_string.toString());
+            }
+        }
+
+        else { //if table4 null (only when first run)
+
+            StringBuilder categories_budget_list_as_string = new StringBuilder();
+            StringBuilder categories_list_as_string = new StringBuilder();
+            res2 = myDb.getAllData_categories();
+            if (res2 != null) { // if categories table3 is not empty
+                while (res2.moveToNext()) {
+                    String category = res2.getString(1);
+                    categories_list_as_string.append(category).append(";");
+                    categories_budget_list_as_string.append("0.00").append(";");
+                }
+            }
+            //inserts the start and end date of the cycle only if the dates changed
+            myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
+                    categories_list_as_string.toString(), categories_budget_list_as_string.toString());
+
+
+        }
+
+        //******************************************************************************new added
+
+    }
+
 
 
 

@@ -248,7 +248,6 @@ public class BudgetFragment extends Fragment {
             myDb.update_cycle_setting(String.valueOf(startdate) , String.valueOf(enddate) , cycle_input );
         }
 
-
         //******************************************************************************new added
 
 
@@ -259,57 +258,32 @@ public class BudgetFragment extends Fragment {
             String past_enddate = res4.getString(1);
 
             if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
-                StringBuilder categories_budget_list_as_string = new StringBuilder("");
-                StringBuilder categories_list_as_string = new StringBuilder("");
+                StringBuilder categories_budget_list_as_string = new StringBuilder();
+                StringBuilder categories_list_as_string = new StringBuilder();
                 res2 = myDb.getAllData_categories();
                 if (res2 != null) { // if categories table3 is not empty
                     while (res2.moveToNext()) {
                         String category = res2.getString(1);
-                        categories_list_as_string.append(";").append(category);
-                        categories_budget_list_as_string.append(";").append("0.00");
+                        categories_list_as_string.append(category).append(";");
+                        categories_budget_list_as_string.append("0.00").append(";");
                     }
                 }
                 //inserts the start and end date of the cycle only if the dates changed
                 myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
                         categories_list_as_string.toString(), categories_budget_list_as_string.toString());
-            } else { //if new cycle not started
-                res4.moveToLast();
-                StringBuilder categories_budget_list_as_string = new StringBuilder(res4.getString(4));
-                StringBuilder categories_list_as_string = new StringBuilder("");
-                String[] categories_budget_list = categories_budget_list_as_string.toString().split("\\;");
-                int categories_list_length = 0;
-
-                if (res2 != null) { // if categories table3 is not empty
-                    res2 = myDb.getAllData_categories();
-                    while (res2.moveToNext()) {
-                        String category = res2.getString(1);
-                        categories_list_as_string.append(";").append(category);
-                        categories_list_length++;
-                    }
-                }
-
-                int list_size_difference = categories_list_length - (categories_budget_list.length-1);
-                if (list_size_difference > 0) { //more categories than cat budget
-                    for (int i = 0; i < list_size_difference; i++) {
-                        categories_budget_list_as_string.append(";0.00");
-                    }
-                }
-
-                //updates table4
-                myDb.update_cycles_table_Category(String.valueOf(startdate), categories_list_as_string.toString());
-                myDb.update_cycles_table_CatBudget(String.valueOf(startdate), categories_budget_list_as_string.toString());
             }
         }
+
         else { //if table4 null (only when first run)
 
-            StringBuilder categories_budget_list_as_string = new StringBuilder("");
-            StringBuilder categories_list_as_string = new StringBuilder("");
+            StringBuilder categories_budget_list_as_string = new StringBuilder();
+            StringBuilder categories_list_as_string = new StringBuilder();
             res2 = myDb.getAllData_categories();
             if (res2 != null) { // if categories table3 is not empty
                 while (res2.moveToNext()) {
                     String category = res2.getString(1);
-                    categories_list_as_string.append(";").append(category);
-                    categories_budget_list_as_string.append(";").append("0.00");
+                    categories_list_as_string.append(category).append(";");
+                    categories_budget_list_as_string.append("0.00").append(";");
                 }
             }
             //inserts the start and end date of the cycle only if the dates changed

@@ -139,10 +139,12 @@ public class ManageCatFragment extends Fragment {
                                         //converts categories budget string in table4 into arraylist
                                         res4 = myDb.get_cycles();
                                         res4.moveToLast();
+                                        String cat = res4.getString(3);
                                         String categories_budget = res4.getString(4);
+                                        String[] cat_list = cat.split("\\;");
                                         String[] categories_budget_list = categories_budget.split("\\;");
-                                        List<String> categories_budget_arr = new ArrayList<String>(Arrays.asList(categories_budget_list));
-                                        categories_budget_arr.remove(0); // gets rid of the extra "" which is counted as an index
+                                        ArrayList<String> cat_arr = new ArrayList<>();
+                                        ArrayList<String> categories_budget_arr = new ArrayList<>();
 
                                         //deletes the categories from database table2 if the boxes are checked
                                         for (int i = 0; i < categories_list.length; i++) {
@@ -151,21 +153,28 @@ public class ManageCatFragment extends Fragment {
                                                 res2.moveToPosition(i); //move to correct row in table2
                                                 String category_id = res2.getString(0); //get the ID of category
                                                 myDb.delete_categories(category_id);
-
-                                                //delete the value for categories budget corresponding to that category
-                                                categories_budget_arr.remove(i);
+                                            }
+                                            else{
+                                                //build new array of categories to remain after deleting
+                                                cat_arr.add(cat_list[i]);
+                                                categories_budget_arr.add(categories_budget_list[i]);
                                             }
                                         }
 
                                         //updates the categories budget col in table4
-                                        StringBuilder string_list = new StringBuilder("");
+                                        StringBuilder new_cat_list = new StringBuilder();
+                                        StringBuilder new_cat_bud_list = new StringBuilder();
                                         for (int i = 0; i < categories_budget_arr.size(); i++){
-                                            string_list.append(";").append(categories_budget_arr.get(i));
+                                            new_cat_bud_list.append(categories_budget_arr.get(i)).append(";");
+                                            new_cat_list.append(cat_arr.get(i)).append(";");
                                         }
+                                        //get startdate of current cycle
                                         res3 = myDb.get_setting();
                                         res3.moveToFirst();
                                         String startdate = res3.getString(0);
-                                        myDb.update_cycles_table_CatBudget(startdate,string_list.toString());
+
+                                        myDb.update_cycles_table_Category(startdate,new_cat_list.toString());
+                                        myDb.update_cycles_table_CatBudget(startdate,new_cat_bud_list.toString());
 
                                         //********************************************************** new added
 
