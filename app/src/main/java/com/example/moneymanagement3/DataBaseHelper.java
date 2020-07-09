@@ -121,6 +121,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getCategoricalBudgetDateRange(LocalDate StartDate, LocalDate EndDate) {
+        //Table 1
+        // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select CATEGORY,SUM(AMOUNT) FROM " + TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ") " + " GROUP BY CATEGORY",null);
+        return res;
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O) //okay so this requires android oreo to run
     public Cursor getDataDefault() {
