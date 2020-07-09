@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center">
+
+    <FrameLayout
+        android:id="@+id/managecyc_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        >
+
+
+        <ListView
+            android:id="@+id/manageCycLv"
+            android:layout_width="match_parent"
+            android:layout_height="496dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:translationY="75dp" />
+
+        <TextView
+            android:id="@+id/manageCycTv"
+            android:layout_width="wrap_content"
+            android:layout_height="73dp"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-black"
+            android:text="@string/manage_cycles"
+            android:textColor="#1C1B1B"
+            android:textSize="30sp"
+            android:translationY="20dp" />
+
+        <Button
+            android:id="@+id/gobackBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="61dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/go_back"
+            android:translationY="500dp" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

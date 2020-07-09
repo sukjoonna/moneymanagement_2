@@ -6,16 +6,72 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/text_budget"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/budget_fragment"
-        android:textSize="30sp"
+        android:id="@+id/totalTv"
+        android:layout_width="211dp"
+        android:layout_height="64dp"
+        android:gravity="center"
+        android:text="@string/_0_00"
+        android:textColor="#7E1D1D"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.375"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.103" />
+
+    <TextView
+        android:id="@+id/cycleBudgetAmountTv"
+        android:layout_width="112dp"
+        android:layout_height="57dp"
+        android:gravity="center"
+        android:text="@string/outof0_00"
+        android:textColor="#554747"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.123" />
+
+    <TextView
+        android:id="@+id/cycleAmountLeftTv"
+        android:layout_width="181dp"
+        android:layout_height="24dp"
+        android:gravity="center"
+        android:text="@string/plus0_00"
+        android:textColor="#E3BA27"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.486"/>
+        app:layout_constraintVertical_bias="0.176" />
+
+    <Spinner
+        android:id="@+id/cycleSpn"
+        android:layout_width="342dp"
+        android:layout_height="46dp"
+        android:gravity="center"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.843"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.023" />
+
+    <Button
+        android:id="@+id/setBudgetBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/set_budget"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.9" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

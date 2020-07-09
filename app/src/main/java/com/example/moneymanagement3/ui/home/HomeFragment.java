@@ -1,10 +1,11 @@
 package com.example.moneymanagement3.ui.home;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,19 +19,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 
-import java.text.SimpleDateFormat;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -40,29 +40,51 @@ public class HomeFragment extends Fragment {
     Button btn_add;
     ArrayList<String> categories;
     Spinner spn_category;
-    String category; String currentDate;
+    String category;
+    LocalDate currentDate;
     Cursor res2;
+    Cursor res3;
+    Cursor res4;
     View view;
+    LocalDate startdate;
+    LocalDate enddate;
+    String cycle_input;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        //creates database
-        myDb = new DataBaseHelper(getActivity());
-        //Cursor res = gets all data in the database table2
-        res2 = myDb.getAllData_categories();
-
-        //Variable declarations
         et_name = view.findViewById(R.id.textEt);     //edit text
         et_amount = view.findViewById(R.id.amountEt);
         btn_add = view.findViewById(R.id.add1Btn);   //add button
         spn_category = view.findViewById(R.id.categorySpn);
 
+        //creates database
+        myDb = new DataBaseHelper(getActivity());
+        //Cursor res = gets all data in the database table2 and table3
+        res2 = myDb.getAllData_categories();
+        res3 = myDb.get_setting();
+        res4 = myDb.get_cycles();
+
+        //updates the cycle
+        cycle_updater();
+
+        //FOR DEVELOPER ONLY: DELETE TABLE3 (MISC/SETTING TABLE) IN DATABASE
+        //////////////////////////////////
+        //                             ///        -uses: for testing startup of app
+        //  myDb.deleteAll_setting();  ///        -Deletes start date, end date, and cycle start day
+        //                             ///        -Uncomment "myDb.deleteAll_setting()" and comment out "cycle_updater()" above to execute
+        //////////////////////////////////
+
+
+//        CycleUpdaterFragment updater = new CycleUpdaterFragment();
+//        updater.cycle_updater();
+
         //creates the categories ArrayList and adds the categories from the database table2
         categories = new ArrayList<String>();
-        categories.add(0,"SELECT CATEGORY:");  //this is created as default to prevent bugs when there are no categories
+        categories.add(0, "SELECT CATEGORY:");  //this is created as default to prevent bugs when there are no categories
+        res2 = myDb.getAllData_categories();
         while (res2.moveToNext()) {
             String category = res2.getString(1);
             categories.add(category);
@@ -71,7 +93,7 @@ public class HomeFragment extends Fragment {
 
 
         //Creating the categories spinner using spinner_of_categories xml file in layout
-        ArrayAdapter<String> spn_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_of_categories,categories);
+        ArrayAdapter<String> spn_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text, categories);
         spn_category.setAdapter(spn_adapter);
         spn_adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
@@ -85,25 +107,30 @@ public class HomeFragment extends Fragment {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-//Public Functions
-
-    public void onClick_addBtn () {
+    public void onClick_addBtn() {
         //Button to add data in database
         btn_add.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
-
-                currentDate = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()).format(new Date());
 
                 String text1 = et_name.getText().toString();     //gets text from edit text widget: name
                 String text2 = et_amount.getText().toString();  //gets text from edit text widget: amount
                 String text3 = category;
-                String text4 = currentDate;
+                String text4 = String.valueOf(currentDate);
+                LocalDate text5 = LocalDate.now();
+
+                int decimal_places = 0;
+                //divide the amount string at "." to get the number of decimal places if there is a "."
+                if (text2.contains(".")) {
+                    String[] divided_parts = text2.split("\\.");
+                    decimal_places = divided_parts[1].length();
+                }
 
 
                 //if "+Add New" or "SELECT CATEGORY:" is selected for category, display a warning message
                 if (category.equals("+Add New") || category.equals("SELECT CATEGORY:")) {
                     //create an alert dialog
-                    AlertDialog.Builder adb1 =new AlertDialog.Builder(view.getContext());
+                    AlertDialog.Builder adb1 = new AlertDialog.Builder(view.getContext());
                     TextView msg1 = new TextView(view.getContext());    //create a message Tv for adb1
                     msg1.setText(R.string.select_category); //the message
                     msg1.setGravity(Gravity.CENTER);    //center
@@ -123,18 +150,32 @@ public class HomeFragment extends Fragment {
                     adb1.show();
                 }
                 //if text1 or text2 is empty
-                else if (text1.equals("")||text2.equals("")){
+                else if (text1.equals("") || text2.equals("")) {
                     //create an alert dialog
-                    AlertDialog.Builder adb2 =new AlertDialog.Builder(view.getContext());
+                    AlertDialog.Builder adb2 = new AlertDialog.Builder(view.getContext());
                     adb2.setTitle("Notice");
                     adb2.setMessage("Enter all information");
                     adb2.setNeutralButton("Okay", null);
                     adb2.show();
+                } else if (decimal_places > 2) {
+                    //create an alert dialog
+                    AlertDialog.Builder adb3 = new AlertDialog.Builder(view.getContext());
+                    adb3.setTitle("Notice");
+                    adb3.setMessage("Too many decimal places");
+                    adb3.setNeutralButton("Okay", null);
+                    adb3.show();
                 }
                 //otherwise, store all the inputed values into database table1
                 else {
-                    boolean isInserted = myDb.insertData(text1, text2, text3, text4); //insert data into database
-                    if (isInserted == true)
+
+                    //formats the "amount" to two decimal places
+                    float amount_float = Float.parseFloat(text2);
+                    DecimalFormat df = new DecimalFormat("0.00");
+                    String text2_formatted = df.format(amount_float);
+
+                    boolean isInserted = myDb.insertData(text1, text2_formatted, text3, text4, text5); //insert data into database
+
+                    if (isInserted)
                         Toast.makeText(view.getContext(), "Data Inserted", Toast.LENGTH_SHORT).show();
                     else
                         Toast.makeText(view.getContext(), "Data not Inserted", Toast.LENGTH_SHORT).show();
@@ -159,13 +200,13 @@ public class HomeFragment extends Fragment {
                 category = item.toString();
 
                 //if "+Add New" is selected
-                if (category.equals("+Add New")){
+                if (category.equals("+Add New")) {
                     //create an alert dialog
-                    AlertDialog.Builder adb=new AlertDialog.Builder(view.getContext());
+                    AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
 
                     //create an edit text in this alert dialog by linking to add_new_category xml file
                     LayoutInflater inflater = getLayoutInflater();
-                    final View view = inflater.inflate(R.layout.add_new_category,null); //xml file used
+                    final View view = inflater.inflate(R.layout.add_new_category, null); //xml file used
                     final EditText et_addcategory = view.findViewById(R.id.add_categoryEt);
 
                     adb.setTitle("Alert");
@@ -183,19 +224,50 @@ public class HomeFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             String new_category = et_addcategory.getText().toString();
                             //Checks if it is empty or not
-                            if (new_category.equals("")){
+                            if (new_category.equals("")) {
                                 Toast.makeText(view.getContext(), "Nothing was Added", Toast.LENGTH_SHORT).show();
                                 spn_category.setSelection(0);
-                            }
-                            else{
+                            } else {
                                 //Adds the new category to spinner
-                                categories.add(position_ind,new_category);
-
-                                //Add the new category to database
+                                categories.add(position_ind, new_category);
+                                //Add the new category to database table 3
                                 myDb.insertData_categories(new_category);
-
                                 //after new category is added, the spinner is set to 0
                                 spn_category.setSelection(0);
+
+//----------------------------------
+                                res4 = myDb.get_cycles();
+                                StringBuilder categories_budget_list_as_string = new StringBuilder();
+                                int categories_budget_list_length = 0;
+                                if (res4.moveToLast()){
+                                    categories_budget_list_as_string = new StringBuilder(res4.getString(4));
+                                }
+                                StringBuilder categories_list_as_string = new StringBuilder();
+                                String[] categories_budget_list = categories_budget_list_as_string.toString().split("\\;");
+                                int categories_list_length = 0;
+
+                                res2 = myDb.getAllData_categories();
+                                while (res2.moveToNext()) {
+                                    String category = res2.getString(1);
+                                    categories_list_as_string.append(category).append(";");
+                                    categories_list_length++;
+                                }
+
+                                if (!categories_budget_list[0].equals("")){
+                                    categories_budget_list_length = categories_budget_list.length;
+                                }
+
+                                int list_size_difference = categories_list_length - (categories_budget_list_length);
+                                for (int i = 0; i < list_size_difference; i++) {
+                                    categories_budget_list_as_string.append("0.00;");
+                                }
+
+                                //updates table4
+                                myDb.update_cycles_table_Category(String.valueOf(startdate), categories_list_as_string.toString());
+
+                                myDb.update_cycles_table_CatBudget(String.valueOf(startdate), categories_budget_list_as_string.toString());
+//----------------------------------
+
                             }
 
                         }
@@ -203,6 +275,7 @@ public class HomeFragment extends Fragment {
                     adb.show();
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
                 Object item = adapterView.getItemAtPosition(0);
@@ -211,6 +284,106 @@ public class HomeFragment extends Fragment {
         });
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    //updates the start and end date of the cycle
+    public void cycle_updater() {
+
+        cycle_input = "01"; //sets the default cycle input as the first of the month
+        currentDate = LocalDate.now(); //get current date
+
+        if (res3 != null && res3.moveToFirst()) {  //makes sure table3 is not null
+            cycle_input = res3.getString(2);
+        }
+        else {
+            myDb.create_filler_setting_onStartup(cycle_input);
+        }
+
+        String currentDate_string = String.valueOf(currentDate);
+        String currentMonth_string = "" + currentDate_string.substring(5, 7); //"MM" -- [start ind,end ind)
+
+        String var_string = "" + currentDate_string.substring(0, 5) + currentMonth_string + "-" + cycle_input; //variable to compare current date with
+        LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
+
+        //determine and sets the start and end dates of the cycle in table3
+        if (currentDate.isBefore(var)) {
+            LocalDate var_new = var.plusMonths(-1);
+            startdate = var_new;
+            enddate = var.minusDays(1);
+            //update database table3
+            myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
+        }
+        else {
+            LocalDate var_new = var.plusMonths(1);
+            startdate = var;
+            enddate = var_new.minusDays(1);
+            //update database table3
+            myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
+        }
+
+
+        //******************************************************************************new added
+
+
+        //dealing with table4 (cycle table) ---- for cycle spinner
+        res4 = myDb.get_cycles();
+        if (res4!=null && res4.moveToLast()) { //if table4 is not null on startup (run basically every time this fragment is selected)
+            String past_startdate = res4.getString(0);
+            String past_enddate = res4.getString(1);
+
+            if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
+                StringBuilder categories_budget_list_as_string = new StringBuilder();
+                StringBuilder categories_list_as_string = new StringBuilder();
+                res2 = myDb.getAllData_categories();
+                if (res2 != null) { // if categories table3 is not empty
+                    while (res2.moveToNext()) {
+                        String category = res2.getString(1);
+                        categories_list_as_string.append(category).append(";");
+                        categories_budget_list_as_string.append("0.00").append(";");
+                    }
+                }
+                //inserts the start and end date of the cycle only if the dates changed
+                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
+                        categories_list_as_string.toString(), categories_budget_list_as_string.toString());
+            }
+        }
+
+        else { //if table4 null (only when first run)
+
+                StringBuilder categories_budget_list_as_string = new StringBuilder();
+                StringBuilder categories_list_as_string = new StringBuilder();
+                res2 = myDb.getAllData_categories();
+                if (res2 != null) { // if categories table3 is not empty
+                    while (res2.moveToNext()) {
+                        String category = res2.getString(1);
+                        categories_list_as_string.append(category).append(";");
+                        categories_budget_list_as_string.append("0.00").append(";");
+                    }
+                }
+                //inserts the start and end date of the cycle only if the dates changed
+                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
+                        categories_list_as_string.toString(), categories_budget_list_as_string.toString());
+
+
+            }
+
+            //******************************************************************************new added
+
+
+//        if (res4 != null && res4.moveToLast()) {  //makes sure table3 is not null
+//            String past_startdate = res4.getString(0);
+//            String past_enddate = res4.getString(1);
+//            if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) {
+//                //inserts the start and end date of the cycle only if the dates changed
+//                myDb.insert_cycle(String.valueOf(startdate), String.valueOf(enddate));
+//            }
+//        } else {
+//            //inserts the start and end date of the cycle for when the first time app is run
+//            myDb.insert_cycle(String.valueOf(startdate), String.valueOf(enddate));
+
+
+    }
+
 
 
 }

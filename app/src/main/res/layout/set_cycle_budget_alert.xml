@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/setBudgetEt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="@string/Amount"
+        android:inputType="numberDecimal"
+        android:lines="8"
+        android:maxLines="3"
+        android:minLines="6"
+        android:scrollbars="vertical"
+        android:importantForAutofill="no" />
+
+
+</LinearLayout>
