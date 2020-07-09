@@ -3,6 +3,7 @@ package com.example.moneymanagement3.ui.chart;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,7 +190,32 @@ public class ChartFragment extends Fragment {
         //******************************************************************************new added
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void getEntries() {
+        Cursor table3Res = myDb.get_setting();
+        Cursor dataInRangeRes;
+        pieEntries = new ArrayList<>();
+
+        table3Res.moveToFirst();
+
+        LocalDate startDate1 = LocalDate.parse(table3Res.getString(1));
+        LocalDate endDate1 = LocalDate.parse(table3Res.getString(1));
+
+        dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate1,endDate1);
+        Log.d("myTag", "This is my message");
+       while(dataInRangeRes.moveToNext()){
+           Log.d("myTag", "This is my while loop!");
+           String cyc_startdate = res4.getString(0);
+           String cyc_enddate = res4.getString(1);
+           pieEntries.add(new PieEntry(33.8f, "Blue"));
+
+       }
+
+
+    }
+
+    private void getEntries(LocalDate theDate) {
         pieEntries = new ArrayList<>();
         pieEntries.add(new PieEntry(18.5f, "Green"));
         pieEntries.add(new PieEntry(26.7f, "Yellow"));
