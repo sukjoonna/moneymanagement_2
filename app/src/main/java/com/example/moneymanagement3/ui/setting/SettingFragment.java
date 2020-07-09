@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -31,6 +33,7 @@ import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 import com.example.moneymanagement3.ui.tracker.TrackerFragment;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class SettingFragment extends Fragment {
@@ -38,12 +41,14 @@ public class SettingFragment extends Fragment {
     View view;
     Button btn_reset;
     DataBaseHelper myDb;
-    Cursor res2;
+    Cursor res2; Cursor res3; Cursor res4;
     ListView lv_settings;
     String[] setting_items;
     ArrayAdapter<String> adapter_settings;
-    ArrayList<String> categories;
+    LocalDate startdate; LocalDate enddate; LocalDate currentDate;
+    String cycle_input;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_setting, container, false);
@@ -55,6 +60,8 @@ public class SettingFragment extends Fragment {
         myDb = new DataBaseHelper(getActivity());
         //Cursor res = gets all data in the database table2
         res2 = myDb.getAllData_categories();
+
+//        cycle_updater();
 
         //Building and creating the listview
         setting_items = new String[]{"Manage Categories","Manage Cycles","Hard Reset"};
@@ -147,6 +154,7 @@ public class SettingFragment extends Fragment {
         });
 
     }
+
 
 
 

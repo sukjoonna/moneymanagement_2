@@ -37,7 +37,7 @@ public class ManageBudFragment extends Fragment {
     String[] managebud_items;
     ArrayAdapter<String> adapter_managebud;
     Button btn1;
-    Cursor res3; Cursor res2;
+    Cursor res3; Cursor res2; Cursor res4;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_managebud, container, false);
@@ -79,9 +79,10 @@ public class ManageBudFragment extends Fragment {
                     LayoutInflater inflater = getLayoutInflater();
                     final View setCycleBudget_view = inflater.inflate(R.layout.set_cycle_budget_alert,null); //xml file used
                     final EditText et = setCycleBudget_view.findViewById(R.id.setBudgetEt);
-                    res3 = myDb.get_setting();
-                    res3.moveToFirst();
-                    final String old_cycle_budget = res3.getString(3);
+                    res4 = myDb.get_cycles();
+                    res4.moveToLast();
+                    final String old_cycle_budget = res4.getString(2);
+                    final String old_startdate = res4.getString(0);
                     et.setText(old_cycle_budget);
                     adb.setView(setCycleBudget_view);
 
@@ -99,7 +100,7 @@ public class ManageBudFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             double budget_amount = Double.parseDouble(et.getText().toString());
                             String new_cycle_budget = String.format("%.2f",budget_amount);
-                            myDb.update_cycle_budget(old_cycle_budget,new_cycle_budget);
+                            myDb.update_cycles_table_Budget(old_startdate,new_cycle_budget);
 
                         //recreates TrackerFragement to update all changes
                         getFragmentManager()
@@ -116,6 +117,10 @@ public class ManageBudFragment extends Fragment {
 
                 //if "Set Budget per Category" is selected
                 else {
+
+
+
+
 
 
                 }
