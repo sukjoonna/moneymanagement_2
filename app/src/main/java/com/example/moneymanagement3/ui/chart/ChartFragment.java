@@ -25,6 +25,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import android.graphics.Color;
+
+
 public class ChartFragment extends Fragment {
 
     //cycle updater variables
@@ -37,6 +45,11 @@ public class ChartFragment extends Fragment {
     String cycle_input;
     ArrayList<String> cycles;
     Spinner spinner_cycles;
+    PieChart pieChart;
+    PieData pieData;
+    PieDataSet pieDataSet;
+    ArrayList pieEntries;
+    ArrayList PieEntryLabels;
     /////
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -79,6 +92,17 @@ public class ChartFragment extends Fragment {
 
         //------------------------------------------------END-----------------------------------------------//
 
+        //Pie Chart
+        pieChart = view.findViewById(R.id.pieChart);
+        getEntries();
+        pieDataSet = new PieDataSet(pieEntries, "");
+        pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        pieDataSet.setSliceSpace(2f);
+        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextSize(10f);
+        pieDataSet.setSliceSpace(5f);
 
         return view;
     }
@@ -163,6 +187,14 @@ public class ChartFragment extends Fragment {
         }
 
         //******************************************************************************new added
+
+    }
+    private void getEntries() {
+        pieEntries = new ArrayList<>();
+        pieEntries.add(new PieEntry(18.5f, "Green"));
+        pieEntries.add(new PieEntry(26.7f, "Yellow"));
+        pieEntries.add(new PieEntry(24.0f, "Red"));
+        pieEntries.add(new PieEntry(30.8f, "Blue"));
 
     }
 }
