@@ -55,6 +55,12 @@ public class BudgetFragment extends Fragment {
         //get database
         myDb = new DataBaseHelper(getActivity());
 
+        btn_setBudget = view.findViewById(R.id.setBudgetBtn);
+        tv_cycleAmountTotal = view.findViewById(R.id.totalTv);
+        tv_cycleBudgetAmount = view.findViewById(R.id.cycleBudgetAmountTv);
+        tv_amountLeft = view.findViewById(R.id.cycleAmountLeftTv);
+
+
         //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
         res3 = myDb.get_setting();
         res3.moveToFirst();
@@ -87,20 +93,18 @@ public class BudgetFragment extends Fragment {
 
         //------------------------------------------------END-----------------------------------------------//
 
-        btn_setBudget = view.findViewById(R.id.setBudgetBtn);
-        tv_cycleAmountTotal = view.findViewById(R.id.totalTv);
-        tv_cycleBudgetAmount = view.findViewById(R.id.cycleBudgetAmountTv);
-        tv_amountLeft = view.findViewById(R.id.cycleAmountLeftTv);
-
-
 
         calculate_and_set_cycleAmount();
-        calculate_and_set_cycleBudget();
+
+        res4.moveToLast();
+        calculate_and_set_cycleBudget(res4.getPosition());
 
         onClick_Btn_setBudget();
 
-
         onSelect_CycleSpinner();
+
+
+
 
         return view;
     }
@@ -112,8 +116,9 @@ public class BudgetFragment extends Fragment {
         return myDb.getDataDateRange(startdate,enddate);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void calculate_and_set_cycleAmount(){
-        res = getDataInRange(startdate,enddate);
+        res = getDataInRange(startdate.minusDays(1),enddate);
         amount_total = 0;
         if (res!=null){
             while(res.moveToNext()){
@@ -126,11 +131,11 @@ public class BudgetFragment extends Fragment {
         }
     }
 
-    public void calculate_and_set_cycleBudget(){
+    public void calculate_and_set_cycleBudget(int position){
         //get and set cycle budget from table3
-        res3 = myDb.get_setting();
-        res3.moveToFirst();
-        String cycle_budget = res3.getString(3);
+        res4 = myDb.get_cycles();
+        res4.moveToPosition(position);
+        String cycle_budget = res4.getString(2);
         tv_cycleBudgetAmount.setText("/$"+cycle_budget);
 
         //calculate difference between total amount and cycle budget and set
@@ -188,8 +193,7 @@ public class BudgetFragment extends Fragment {
                 enddate = LocalDate.parse(res4.getString(1));
 
                 calculate_and_set_cycleAmount();
-                calculate_and_set_cycleBudget();
-
+                calculate_and_set_cycleBudget(inverted_pos);
 
                 onClick_Btn_setBudget();
 
@@ -205,6 +209,7 @@ public class BudgetFragment extends Fragment {
 
             }
         });
+
 
 
     }

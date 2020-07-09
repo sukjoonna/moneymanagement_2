@@ -41,8 +41,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         //creating table "names_table" with 2 cols
         db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP )");
-        db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT, CATEGORY_BUDGET TEXT)");
-        db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT, CYCLE_BUDGET TEXT)");
+        db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT)");
+        db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT)");
         db.execSQL("create table " + TABLE_NAME4 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_BUDGET TEXT, CATEGORY TEXT,CATEGORY_BUDGET TEXT)");
 
 //        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT)");
@@ -196,7 +196,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_5,"start date");
         contentValues.put(COL_6,"end date");
         contentValues.put(COL_8,cycle_input);
-        contentValues.put(COL_9,"0.00");
         long result = db.insert(TABLE_NAME3,null ,contentValues);
     }
 
@@ -226,17 +225,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return false;
     };
 
-    public boolean update_cycle_budget (String old_cycle_budget, String new_cycle_budget) {
-        //Table 3
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_9,new_cycle_budget);
-        long result = db.update(TABLE_NAME3, contentValues, "CYCLE_BUDGET = ?",new String[]{old_cycle_budget});
-        if (result > 0)
-            return true;
-        else
-            return false;
-    };
 
 
     public Integer deleteAll_setting () {
