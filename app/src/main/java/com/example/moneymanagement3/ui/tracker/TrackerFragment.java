@@ -515,19 +515,13 @@ public class TrackerFragment extends Fragment {
             String past_enddate = res4.getString(1);
 
             if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
-                StringBuilder categories_budget_list_as_string = new StringBuilder();
-                StringBuilder categories_list_as_string = new StringBuilder();
-                res2 = myDb.getAllData_categories();
-                if (res2 != null) { // if categories table3 is not empty
-                    while (res2.moveToNext()) {
-                        String category = res2.getString(1);
-                        categories_list_as_string.append(category).append(";");
-                        categories_budget_list_as_string.append("0.00").append(";");
-                    }
-                }
+                res4.moveToLast();
+                String cycle_budget = res4.getString(2);
+                String categories_list_as_string = res4.getString(3);
+                String categories_budget_list_as_string = res4.getString(4);
                 //inserts the start and end date of the cycle only if the dates changed
-                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
-                        categories_list_as_string.toString(), categories_budget_list_as_string.toString());
+                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), cycle_budget,
+                        categories_list_as_string, categories_budget_list_as_string);
             }
         }
 
