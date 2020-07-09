@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="100"
+    android:baselineAligned="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:layout_weight="40"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/categoryTv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingBottom="5dp"
+            android:text="@string/category"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_weight="60"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/entry_amountTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="7dp"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:text="@string/Amount"
+            android:textColor="#2C2929"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/budgetTv"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:gravity="end"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingBottom="5dp"
+            android:text="@string/budget" />
+    </LinearLayout>
+
+</LinearLayout>

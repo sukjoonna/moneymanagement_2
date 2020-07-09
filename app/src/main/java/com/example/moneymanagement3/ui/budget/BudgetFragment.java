@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 import com.example.moneymanagement3.ui.setting.ManageCatFragment;
+import com.example.moneymanagement3.ui.tracker.Entry;
+import com.example.moneymanagement3.ui.tracker.EntryListAdapter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -46,11 +49,15 @@ public class BudgetFragment extends Fragment {
     Button btn_setBudget;
     double amount_total;
     TextView tv_cycleAmountTotal; TextView tv_cycleBudgetAmount; TextView tv_amountLeft;
+    ListView budget_lv;
+    ArrayList<CategoryBudget> category_budget_arraylist;
+    CategoryBudgetListAdapter categoryBudgetListAdapter;
+    View view;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_budget, container, false);
+        view = inflater.inflate(R.layout.fragment_budget, container, false);
 
         //get database
         myDb = new DataBaseHelper(getActivity());
@@ -60,6 +67,7 @@ public class BudgetFragment extends Fragment {
         tv_cycleBudgetAmount = view.findViewById(R.id.cycleBudgetAmountTv);
         tv_amountLeft = view.findViewById(R.id.cycleAmountLeftTv);
 
+        budget_lv = view.findViewById(R.id.budgetLv);
 
         //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
         res3 = myDb.get_setting();
@@ -99,6 +107,8 @@ public class BudgetFragment extends Fragment {
         res4.moveToLast();
         calculate_and_set_cycleBudget(res4.getPosition());
 
+        build_List();
+
         onClick_Btn_setBudget();
 
         onSelect_CycleSpinner();
@@ -111,6 +121,41 @@ public class BudgetFragment extends Fragment {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void build_List() {
+
+        //Get data from database table1
+        LocalDate startdate_selected = startdate;
+        res = myDb.getDataDateRange(startdate_selected.minusDays(1),enddate); // (startdate,enddate]
+
+        if(res!=null){
+
+            category_budget_arraylist = new ArrayList<CategoryBudget>();
+            categoryBudgetListAdapter = new CategoryBudgetListAdapter(view.getContext(),R.layout.adapter_budgetview_layout,category_budget_arraylist);
+
+            amount_total = 0;
+            //takes the values out from database and puts it into the arraylist &&&& calculates total amount
+            while (res.moveToNext()) {
+
+                //creating the entry object and putting it into the entries arraylist
+                CategoryBudget categoryBudget = new CategoryBudget("Category","Amount","/Budget");
+                category_budget_arraylist.add(categoryBudget);
+
+                //summing the total spent
+                double amount = Double.parseDouble(res.getString(2));
+                amount_total += amount;
+
+
+            }
+            //puts the arraylist into the listview
+            budget_lv.setAdapter(categoryBudgetListAdapter);
+            categoryBudgetListAdapter.notifyDataSetChanged();
+
+        }
+
+    }
 
     public Cursor getDataInRange(LocalDate startdate, LocalDate enddate) {
         return myDb.getDataDateRange(startdate,enddate);
