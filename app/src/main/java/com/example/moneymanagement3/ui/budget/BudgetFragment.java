@@ -182,10 +182,13 @@ public class BudgetFragment extends Fragment {
                 double max_amount = Collections.max(amounts_arraylist);
                 int max_amount_ind = amounts_arraylist.indexOf(max_amount);
 
+                String rank = String.valueOf(i+1);
+
                 //creating the entry object and putting it into the entries arraylist
-                CategoryBudget categoryBudget = new CategoryBudget(categories_arraylist.get(max_amount_ind),
+                CategoryBudget categoryBudget = new CategoryBudget(
+                        rank + ". " + categories_arraylist.get(max_amount_ind),
                         "-$" + String.format("%.2f",max_amount),
-                         "/$" + cat_budget_arraylist.get(max_amount_ind));
+                        "/$" + cat_budget_arraylist.get(max_amount_ind));
                 category_budget_arraylist.add(categoryBudget);
 
                 difference_arraylist_sorted.add(difference_arraylist.get(max_amount_ind));
@@ -376,9 +379,6 @@ public class BudgetFragment extends Fragment {
                 adb1.setView(msg1);
                 adb1.setCustomTitle(title1);
                 adb1.show();
-
-
-
 
             }
         });

@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -22,7 +26,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
+import com.example.moneymanagement3.ui.tracker.TrackerFragment;
 
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class SetBudgetCatFragment extends Fragment {
@@ -45,7 +52,7 @@ public class SetBudgetCatFragment extends Fragment {
         btn1 = view.findViewById(R.id.gobackBtn);
         lv = view.findViewById(R.id.manageBudLv);
         TextView title = view.findViewById(R.id.manageBudTv);
-        title.setText("Set Category Budget");
+        title.setText("Set Category by Budget");
 
 
         categories_list = get_categories_from_Table4();
@@ -69,56 +76,113 @@ public class SetBudgetCatFragment extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, final int position, long id) {
 
-                AlertDialog.Builder adb=new AlertDialog.Builder(view.getContext());
-                adb.setTitle("Enter budget amount");
-//                    adb.setMessage("What would you like to do with this entry?");
+                //create a custom alert dialog
+                AlertDialog.Builder adb1 = new AlertDialog.Builder(view.getContext());
+                //create views
+                final EditText et1 = new EditText(view.getContext());
+                TextView msg1 = new TextView(view.getContext());    //create a message Tv for adb1
+                TextView title1 = new TextView(view.getContext());    //create a message Tv for adb1
 
-                //budget_edittext.xml --- show edittext in alert
-                LayoutInflater inflater = getLayoutInflater();
-                final View setCycleBudget_view = inflater.inflate(R.layout.set_cycle_budget_alert,null); //xml file used
-                final EditText et = setCycleBudget_view.findViewById(R.id.setBudgetEt);
+                //get necessary data from database
                 res4 = myDb.get_cycles();
                 res4.moveToLast();
                 final String old_category_budget = categories_budget_list[position];
                 final String old_startdate = res4.getString(0);
-                et.setText(old_category_budget);
-                adb.setView(setCycleBudget_view);
+                final String old_cycle_budget = res4.getString(2);
 
-                //Cancel button
-                adb.setNeutralButton("Cancel", new AlertDialog.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    public void onClick(DialogInterface dialog, int which) {
+                //initialize and set views
+                et1.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                et1.setText(old_category_budget);
+
+                double sum = 0;
+                for (int i = 0; i < categories_budget_list.length; i++){ //sum the category budgets
+                    sum += Double.parseDouble(categories_budget_list[i]);
+                }
+                final double difference = Double.parseDouble(old_cycle_budget) - (sum - Double.parseDouble(old_category_budget));
+
+                title1.setText("Enter budget amount:"); //the title
+                String msg = "Notice: Enter up to $" + String.format("%.2f",difference) + ".\n"
+                        + "(Amount remaining from your monthly budget)";
+                msg1.setText(msg); //the message
+
+
+                //customize views
+                et1.setGravity(Gravity.CENTER);
+                msg1.setTextColor(Color.parseColor("#B3BDAC"));
+                msg1.setTextSize(15);
+                msg1.setPadding(50, 5, 20, 10);
+                title1.setGravity(Gravity.CENTER);    //center
+                title1.setTextSize(20);
+                title1.setPadding(10, 50, 10, 10);
+                title1.setTextColor(Color.BLACK);
+
+                //buttons
+                adb1.setPositiveButton("Set", null);
+                adb1.setNeutralButton("Cancel", null);
+
+                //add the et and msg into a linear layout
+                LinearLayout linearLayout = new LinearLayout(view.getContext());
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                linearLayout.addView(msg1);
+                linearLayout.addView(et1);
+
+                adb1.setView(linearLayout);
+                adb1.setCustomTitle(title1);
+
+                final AlertDialog alertDialog = adb1.create();
+
+                final double finalSum = sum - Double.parseDouble(categories_budget_list[position]);
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(final DialogInterface dialog) {
+                        //set button
+                        Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                        positiveButton.setOnClickListener(new View.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void onClick(View v) {
+
+                                double budget_amount = Double.parseDouble(et1.getText().toString());
+
+                                double new_difference = Double.parseDouble(old_cycle_budget) - (finalSum + budget_amount);
+
+                                if (new_difference >= 0){
+
+                                    String new_category_budget = String.format("%.2f",budget_amount);
+
+                                    categories_budget_list[position] = new_category_budget;
+                                    StringBuilder categories_budget_list_stringbuilder = new StringBuilder();
+
+                                    for (String s : categories_budget_list) {
+                                        categories_budget_list_stringbuilder.append(s).append(";");
+                                    }
+
+                                    myDb.update_cycles_table_CatBudget(old_startdate,categories_budget_list_stringbuilder.toString());
+
+
+                                    //recreates TrackerFragement to update all changes
+                                    getFragmentManager()
+                                            .beginTransaction()
+                                            .detach(SetBudgetCatFragment.this)
+                                            .attach(SetBudgetCatFragment.this)
+                                            .commit();
+
+                                    dialog.dismiss();
+                                }
+                                else{
+                                    Toast.makeText(view.getContext(),"Amount exceeds monthly budget",Toast.LENGTH_LONG).show();
+                                }
+
+
+                            }
+
+
+                        });
 
                     }
                 });
 
-                //Set button
-                adb.setPositiveButton("Set", new AlertDialog.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    public void onClick(DialogInterface dialog, int which) {
-                        double budget_amount = Double.parseDouble(et.getText().toString());
-                        String new_category_budget = String.format("%.2f",budget_amount);
-
-                        categories_budget_list[position] = new_category_budget;
-                        StringBuilder categories_budget_list_stringbuilder = new StringBuilder();
-
-                        for (int i = 0; i < categories_budget_list.length; i++){
-                            categories_budget_list_stringbuilder.append(categories_budget_list[i]).append(";");
-                        }
-
-                        myDb.update_cycles_table_CatBudget(old_startdate,categories_budget_list_stringbuilder.toString());
-
-                        //recreates TrackerFragement to update all changes
-                        getFragmentManager()
-                                .beginTransaction()
-                                .detach(SetBudgetCatFragment.this)
-                                .attach(SetBudgetCatFragment.this)
-                                .commit();
-                    }
-                });
-
-                adb.show();
-
+                alertDialog.show();
 
             }
         });
