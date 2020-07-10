@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#AED692</color> <!-- NAVIGATION BAR (BOTTOM) COLOR -->
+    <color name="colorPrimaryDark">#7FA564</color> <!-- NOTIFICATION BAR (TOP) COLOR -->
+    <color name="colorAccent">#799367</color> <!-- ALERT DIALOG BUTTON TEXT COLOR  -->
 </resources>
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<resources>-->
+    <!--    <color name="colorPrimary">#6200EE</color>-->
+    <!--    <color name="colorPrimaryDark">#3700B3</color>-->
+    <!--    <color name="colorAccent">#03DAC5</color>-->
+    <!--</resources>-->

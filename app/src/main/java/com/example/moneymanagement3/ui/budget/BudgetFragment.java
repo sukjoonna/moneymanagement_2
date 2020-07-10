@@ -6,12 +6,14 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,7 +32,9 @@ import com.example.moneymanagement3.R;
 import com.example.moneymanagement3.ui.setting.ManageCatFragment;
 import com.example.moneymanagement3.ui.tracker.Entry;
 import com.example.moneymanagement3.ui.tracker.EntryListAdapter;
+import com.example.moneymanagement3.ui.tracker.TrackerFragment;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,7 +44,7 @@ public class BudgetFragment extends Fragment {
 
     //cycle updater variables
     DataBaseHelper myDb;
-    Cursor res3; Cursor res4; Cursor res; Cursor res2;
+    Cursor res3; Cursor res4; Cursor res; Cursor res2; Cursor res_cat_amounts;
     LocalDate startdate; LocalDate enddate; LocalDate currentDate;
     String cycle_input;
     ArrayList<String> cycles;
@@ -53,6 +57,11 @@ public class BudgetFragment extends Fragment {
     ArrayList<CategoryBudget> category_budget_arraylist;
     CategoryBudgetListAdapter categoryBudgetListAdapter;
     View view;
+    String categories; String categories_budget;
+    ArrayList<String> categories_arraylist; ArrayList<Double> amounts_arraylist;ArrayList<String> cat_budget_arraylist;
+    ArrayList<String> difference_arraylist; ArrayList<String> difference_arraylist_sorted;
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -68,6 +77,12 @@ public class BudgetFragment extends Fragment {
         tv_amountLeft = view.findViewById(R.id.cycleAmountLeftTv);
 
         budget_lv = view.findViewById(R.id.budgetLv);
+
+        categories_arraylist = new ArrayList<String>();
+        cat_budget_arraylist = new ArrayList<String>();
+        amounts_arraylist = new ArrayList<Double>();
+        difference_arraylist = new ArrayList<String>();
+
 
         //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
         res3 = myDb.get_setting();
@@ -108,6 +123,7 @@ public class BudgetFragment extends Fragment {
         calculate_and_set_cycleBudget(res4.getPosition());
 
         build_List();
+        onClick_itemselectedLv();
 
         onClick_Btn_setBudget();
 
@@ -128,33 +144,122 @@ public class BudgetFragment extends Fragment {
 
         //Get data from database table1
         LocalDate startdate_selected = startdate;
-        res = myDb.getDataDateRange(startdate_selected.minusDays(1),enddate); // (startdate,enddate]
+        String[] categories_budget_aslist = get_categories_budget_from_Table4();
+        String[] categories_aslist = get_categories_from_Table4();
+        res_cat_amounts = myDb.getCategoricalBudgetDateRange(startdate_selected.minusDays(1),enddate); // (startdate,enddate]
 
-        if(res!=null){
+        if(res_cat_amounts!=null){
 
             category_budget_arraylist = new ArrayList<CategoryBudget>();
             categoryBudgetListAdapter = new CategoryBudgetListAdapter(view.getContext(),R.layout.adapter_budgetview_layout,category_budget_arraylist);
 
-            amount_total = 0;
-            //takes the values out from database and puts it into the arraylist &&&& calculates total amount
-            while (res.moveToNext()) {
+            //create arraylist for each category, amount, budget, difference, so we can sort it in descending order
+            while (res_cat_amounts.moveToNext()) {
+                String category = res_cat_amounts.getString(0);
+                String amount = res_cat_amounts.getString(1);
+
+                //find the index of budget of category
+                int ind = 0;
+                for (int i = 0; i < categories_aslist.length; i++) {
+                    if (category.equals(categories_aslist[i])) {
+                        ind = i;
+                    }
+                }
+                String budget = categories_budget_aslist[ind];
+
+                double difference = Double.parseDouble(budget) - Double.parseDouble(amount);
+
+                categories_arraylist.add(category);
+                amounts_arraylist.add(Double.parseDouble(amount));
+                cat_budget_arraylist.add(budget);
+                difference_arraylist.add(String.format("%.2f",difference));
+            }
+
+            //building the adapter for listview
+            difference_arraylist_sorted = new ArrayList<String>();
+            int size = categories_arraylist.size();
+            for (int i = 0; i <size; i++){
+                double max_amount = Collections.max(amounts_arraylist);
+                int max_amount_ind = amounts_arraylist.indexOf(max_amount);
 
                 //creating the entry object and putting it into the entries arraylist
-                CategoryBudget categoryBudget = new CategoryBudget("Category","Amount","/Budget");
+                CategoryBudget categoryBudget = new CategoryBudget(categories_arraylist.get(max_amount_ind),
+                        "-$" + String.format("%.2f",max_amount),
+                         "/$" + cat_budget_arraylist.get(max_amount_ind));
                 category_budget_arraylist.add(categoryBudget);
 
-                //summing the total spent
-                double amount = Double.parseDouble(res.getString(2));
-                amount_total += amount;
+                difference_arraylist_sorted.add(difference_arraylist.get(max_amount_ind));
 
-
+                categories_arraylist.remove(max_amount_ind);
+                amounts_arraylist.remove(max_amount_ind);
+                cat_budget_arraylist.remove(max_amount_ind);
+                difference_arraylist.remove(max_amount_ind);
             }
+
             //puts the arraylist into the listview
             budget_lv.setAdapter(categoryBudgetListAdapter);
             categoryBudgetListAdapter.notifyDataSetChanged();
 
         }
 
+    }
+
+
+
+
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public void build_List() {
+//
+//        //Get data from database table1
+//        LocalDate startdate_selected = startdate;
+//        String[] categories_budget_aslist = get_categories_budget_from_Table4();
+//        String[] categories_aslist = get_categories_from_Table4();
+//        res_cat_amounts = myDb.getCategoricalBudgetDateRange(startdate_selected.minusDays(1),enddate); // (startdate,enddate]
+//
+//        if(res_cat_amounts!=null){
+//
+//            category_budget_arraylist = new ArrayList<CategoryBudget>();
+//            categoryBudgetListAdapter = new CategoryBudgetListAdapter(view.getContext(),R.layout.adapter_budgetview_layout,category_budget_arraylist);
+//
+//            while (res_cat_amounts.moveToNext()) {
+//                String category = res_cat_amounts.getString(0);
+//                String amount = res_cat_amounts.getString(1);
+//
+//                //find the index of budget of category
+//                int ind = 0;
+//                for (int i = 0; i < categories_aslist.length; i++){
+//                    if (category.equals(categories_aslist[i])){
+//                        ind = i;
+//                    }
+//                }
+//
+//                String budget = categories_budget_aslist[ind];
+//
+//                //creating the entry object and putting it into the entries arraylist
+//                CategoryBudget categoryBudget = new CategoryBudget(category,"-$" + String.format("%.2f",Double.parseDouble(amount)),budget);
+//                category_budget_arraylist.add(categoryBudget);
+//
+//            }
+//            //puts the arraylist into the listview
+//            budget_lv.setAdapter(categoryBudgetListAdapter);
+//            categoryBudgetListAdapter.notifyDataSetChanged();
+//
+//        }
+//
+//    }
+
+    public String[] get_categories_from_Table4 (){
+        res4 = myDb.get_cycles();
+        res4.moveToLast();
+        categories = res4.getString(3);
+        return categories.split("\\;");
+    }
+
+    public String[] get_categories_budget_from_Table4 (){
+        res4 = myDb.get_cycles();
+        res4.moveToLast();
+        categories_budget = res4.getString(4);
+        return categories_budget.split("\\;");
     }
 
     public Cursor getDataInRange(LocalDate startdate, LocalDate enddate) {
@@ -222,6 +327,68 @@ public class BudgetFragment extends Fragment {
 
 
 
+    public void onClick_itemselectedLv() {
+        //Delete/edit selected items in the listview by selecting an item in the list view
+        budget_lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> a, View v, final int position, long id) {
+
+                String difference = difference_arraylist_sorted.get(position);
+
+                //create a custom alert dialog
+                AlertDialog.Builder adb1 = new AlertDialog.Builder(view.getContext());
+                TextView msg1 = new TextView(view.getContext());    //create a message Tv for adb1
+                TextView title1 = new TextView(view.getContext());    //create a message Tv for adb1
+
+                if (Double.parseDouble(difference) < 0) { //if over budget
+                    String msg = "-$" + difference.substring(1);
+
+                    msg1.setText(msg); //the message
+                    msg1.setTextColor(Color.parseColor("#C62828"));
+
+                    title1.setText("You have exceeded your budget"); //the title
+                }
+                else if (Double.parseDouble(difference) > 0){ //if under budget
+                    String msg = "+$" + difference;
+
+                    msg1.setText(msg); //the message
+                    msg1.setTextColor(Color.parseColor("#258C4A"));
+
+                    title1.setText("How much you have left:"); //the title
+                }
+                else{ //if difference is 0
+                    String msg = "$" + difference;
+
+                    msg1.setText(msg); //the message
+                    msg1.setTextColor(Color.parseColor("#E3BA27"));
+
+                    title1.setText("How much you have left:"); //the title
+                }
+
+                msg1.setGravity(Gravity.CENTER);    //center
+                msg1.setTextSize(20);
+                msg1.setPadding(10, 30, 10, 10);
+                title1.setGravity(Gravity.CENTER);    //center
+                title1.setTextSize(20);
+                title1.setPadding(10, 50, 10, 50);
+                title1.setTextColor(Color.BLACK);
+//                    adb1.setTitle("Notice");
+                adb1.setPositiveButton("Okay", null);
+                adb1.setView(msg1);
+                adb1.setCustomTitle(title1);
+                adb1.show();
+
+
+
+
+            }
+        });
+
+    }
+
+
+
+
+
     public void onSelect_CycleSpinner() {
 
         //What the spinner does when item is selected / not selected
@@ -242,10 +409,8 @@ public class BudgetFragment extends Fragment {
 
                 onClick_Btn_setBudget();
 
-
-
-//                build_List(); //builds arraylist to pass into listview
-//                onClick_itemselectedLv();
+                build_List(); //builds arraylist to pass into listview
+                onClick_itemselectedLv();
 
             }
             @Override

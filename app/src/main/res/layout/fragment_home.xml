@@ -23,9 +23,15 @@
 
     <Button
         android:id="@+id/add1Btn"
+        style="@style/Widget.AppCompat.Button"
+        android:stateListAnimator="@animator/button_state_list_anim"
         android:layout_width="105dp"
         android:layout_height="69dp"
+        android:background="#93B17D"
+        android:backgroundTintMode="multiply"
+        android:fontFamily="sans-serif-medium"
         android:text="@string/add"
+        android:textColor="#F6F3F3"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -21,7 +21,7 @@
             android:paddingTop="6dp"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:text="@string/Description"
-            android:textColor="#3A3737"
+            android:textColor="#516741"
             android:textSize="18sp" />
 
         <TextView
@@ -52,7 +52,7 @@
             android:paddingTop="4dp"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:text="@string/Amount"
-            android:textColor="#BC1E2C"
+            android:textColor="#1A1A1B"
             android:textSize="25sp" />
 
         <TextView
