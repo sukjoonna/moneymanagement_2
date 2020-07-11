@@ -285,6 +285,7 @@ public class TrackerFragment extends Fragment {
 
                         final LocalDate date_ld = LocalDate.parse(res.getString(4));
                         tv3.setText(date_ld.format(formatter));
+                        new_date = String.valueOf(date_ld);
 
                         //Creating the categories spinner (from xml spinner of categories) in second alert dialog (code copied from MainActivity)
                         ArrayList<String> categories = new ArrayList<String>();
