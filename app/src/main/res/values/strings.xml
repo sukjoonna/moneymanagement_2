@@ -37,7 +37,6 @@
     <string name="dollar_amount">$ Amount</string>
     <string name="manage_cycles">Manage Cycles</string>
     <string name="category">Category</string>
-    <string name="date">Date</string>
     <string name="outof0_00">/$0.00</string>
     <string name="difference_0_00">Difference: $0.00</string>
     <string name="plus0_00">+$0.00</string>
@@ -46,4 +45,5 @@
     <string name="budget">budget</string>
     <string name="e_g_groceries">e.g. Groceries</string>
     <string name="by_category">By Category:</string>
+    <string name="date">Date</string>
 </resources>

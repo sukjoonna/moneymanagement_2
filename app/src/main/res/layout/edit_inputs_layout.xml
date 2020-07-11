@@ -31,15 +31,15 @@
         android:minLines="6"
         android:gravity="center"/>
 
-    <EditText
-        android:id="@+id/edit_dateEt"
+
+    <TextView
+        android:id="@+id/edit_dateTv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/edit_date"
-        android:ems="10"
-        android:inputType="date"
-        android:importantForAutofill="no"
-        android:gravity="center"/>
+        android:layout_height="47dp"
+        android:gravity="center"
+        android:text="@string/date"
+        android:textColor="#201E1E"
+        android:textSize="18sp" />
 
     <Spinner
         android:id="@+id/edit_spinner"

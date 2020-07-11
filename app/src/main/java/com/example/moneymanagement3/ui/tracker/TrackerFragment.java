@@ -1,8 +1,11 @@
 package com.example.moneymanagement3.ui.tracker;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -30,6 +34,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 
@@ -46,10 +51,11 @@ public class TrackerFragment extends Fragment {
     EntryListAdapter entries_adapter;
     String text;
     double amount_total;
-    String category; String cycle_input;
+    String category; String cycle_input; String new_date;
     LocalDate startdate; LocalDate enddate; LocalDate currentDate;
     Spinner spinner_cycles;
     DateTimeFormatter formatter;
+    DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @RequiresApi(api = Build.VERSION_CODES.O) // this might need to be change to use a different package
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -258,6 +264,7 @@ public class TrackerFragment extends Fragment {
 
                 //edit button
                 adb.setNegativeButton("Edit", new AlertDialog.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     public void onClick(DialogInterface dialog, int which) {
 
                         //creates a second alert dialog
@@ -268,14 +275,16 @@ public class TrackerFragment extends Fragment {
                         final View view = inflater.inflate(R.layout.edit_inputs_layout,null); //xml file used
                         final EditText et1 = view.findViewById(R.id.edit_amountEt);
                         final EditText et2 = view.findViewById(R.id.edit_textEt);
-                        final EditText et3 = view.findViewById(R.id.edit_dateEt);
+                        final TextView tv3 = view.findViewById(R.id.edit_dateTv);
+
 //                      //sets default values in these edit texts as the values previously inputted
                         res.moveToPosition(position_ind);
                         et1.setText(res.getString(2));
                         et2.setText(res.getString(1));
-                        et3.setText(res.getString(4));
                         String entry_category = res.getString(3);
 
+                        final LocalDate date_ld = LocalDate.parse(res.getString(4));
+                        tv3.setText(date_ld.format(formatter));
 
                         //Creating the categories spinner (from xml spinner of categories) in second alert dialog (code copied from MainActivity)
                         ArrayList<String> categories = new ArrayList<String>();
@@ -292,6 +301,52 @@ public class TrackerFragment extends Fragment {
                         //Sets default spinner location to previous entry
                         int spn1_ind = categories.indexOf(entry_category);
                         spn1.setSelection(spn1_ind);
+
+
+                        //datepicker for edit date textview
+                        tv3.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Calendar cal = Calendar.getInstance();
+                                java.util.Date date_date = java.sql.Date.valueOf(String.valueOf(date_ld));
+                                cal.setTime(date_date);
+                                int year = cal.get(Calendar.YEAR);
+                                int month = cal.get(Calendar.MONTH);
+                                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+
+                                DatePickerDialog dialog = new DatePickerDialog(
+                                        view.getContext(),
+                                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                                        mDateSetListener,
+                                        year,month,day);
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                dialog.show();
+                            }
+                        });
+
+                        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                month = month + 1;
+
+                                String month_string = String.valueOf(month);
+                                String day_string = String.valueOf(day);
+                                if (month_string.length() < 2){
+                                    month_string = "0" + month_string;
+                                }
+                                if (day_string.length() < 2){
+                                    day_string = "0" + day_string;
+                                }
+                                String date = year + "-" + month_string + "-" + day_string;
+                                LocalDate date_ld = LocalDate.parse(date);
+                                tv3.setText(date_ld.format(formatter));
+                                new_date = date;
+                            }
+                        };
+
+
 
                         //What the spinner does when item is selected / not selected
                         spn1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -330,7 +385,7 @@ public class TrackerFragment extends Fragment {
                                         String edited_amount = et1.getText().toString();
                                         String edited_text = et2.getText().toString();
                                         String edited_category = category;
-                                        String edited_date = et3.getText().toString();
+                                        String edited_date = new_date;
                                         LocalDate text5 = LocalDate.parse(edited_date); //in format yyyy-mm-dd
 
                                         int decimal_places = 0;
