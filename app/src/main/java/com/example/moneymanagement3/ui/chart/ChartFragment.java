@@ -30,6 +30,7 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import android.graphics.Color;
 
@@ -95,6 +96,7 @@ public class ChartFragment extends Fragment {
 
         //Pie Chart
         pieChart = view.findViewById(R.id.pieChart);
+
         getEntries();
         pieDataSet = new PieDataSet(pieEntries, "");
         pieData = new PieData(pieDataSet);
@@ -104,6 +106,9 @@ public class ChartFragment extends Fragment {
         pieDataSet.setValueTextColor(Color.WHITE);
         pieDataSet.setValueTextSize(10f);
         pieDataSet.setSliceSpace(5f);
+        pieChart.setUsePercentValues(true);
+        pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
+        pieChart.setUsePercentValues(true);
 
         return view;
     }
@@ -216,7 +221,7 @@ public class ChartFragment extends Fragment {
 
        while(dataInRangeRes.moveToPrevious()){
            percentUsage = (float) (Float.parseFloat(dataInRangeRes.getString(1)) / monthlyTotal);
-           percentUsage = percentUsage * 100;
+           //percentUsage = percentUsage * 100;
            Log.d("myTag", "This is my while loop!");
           pieEntries.add(new PieEntry(percentUsage, dataInRangeRes.getString(0)));
        }
