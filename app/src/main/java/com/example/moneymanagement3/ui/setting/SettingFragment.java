@@ -106,7 +106,7 @@ public class SettingFragment extends Fragment {
                     alertDialog.setTitle("HARD RESET");
                     alertDialog.setMessage("Do you want to reset the whole app?");
                     //Make an "ok" button
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Yes, reset",
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes, reset",
                             new DialogInterface.OnClickListener() {
                                 //OnClick:
                                 public void onClick(DialogInterface dialog, int which) {
@@ -133,7 +133,7 @@ public class SettingFragment extends Fragment {
                                 }
                             });
                     //make a "cancel" button
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cancel",
                             new DialogInterface.OnClickListener() {
                                 //OnClick:
                                 public void onClick(DialogInterface dialog, int which) {

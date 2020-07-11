@@ -84,7 +84,7 @@ public class ChartFragment extends Fragment {
             String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
             String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
 
-            String formatted_dates = cyc_startdate_formatted + " - " + cyc_enddate_formatted;
+            String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
             cycles.add(formatted_dates);
         }
         Collections.reverse(cycles);
