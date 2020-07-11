@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment {
 
         //creates the categories ArrayList and adds the categories from the database table2
         categories = new ArrayList<String>();
-        categories.add(0, "SELECT CATEGORY:");  //this is created as default to prevent bugs when there are no categories
+        categories.add(0, "SELECT CATEGORY");  //this is created as default to prevent bugs when there are no categories
         res2 = myDb.getAllData_categories();
         while (res2.moveToNext()) {
             String category = res2.getString(1);
@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment {
 
 
                 //if "+Add New" or "SELECT CATEGORY:" is selected for category, display a warning message
-                if (category.equals("+Add New") || category.equals("SELECT CATEGORY:")) {
+                if (category.equals("+Add New") || category.equals("SELECT CATEGORY")) {
                     //create an alert dialog
                     AlertDialog.Builder adb1 = new AlertDialog.Builder(view.getContext());
                     TextView msg1 = new TextView(view.getContext());    //create a message Tv for adb1

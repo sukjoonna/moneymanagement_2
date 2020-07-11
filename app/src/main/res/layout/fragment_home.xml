@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/decal1"
+        android:layout_width="335dp"
+        android:layout_height="358dp"
+        android:background="@drawable/light_rectangle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.273" />
+
     <EditText
         android:id="@+id/textEt"
         android:layout_width="198dp"
@@ -15,15 +26,16 @@
         android:hint="@string/Description"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
+        android:textColor="#383E34"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.575" />
+        app:layout_constraintVertical_bias="0.395" />
 
     <Button
         android:id="@+id/add1Btn"
-        android:text="@string/add"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="150dp"
         android:layout_height="67dp"
@@ -31,13 +43,15 @@
         android:backgroundTintMode="multiply"
         android:fontFamily="sans-serif-medium"
         android:stateListAnimator="@animator/button_state_list_anim"
+        android:text="@string/add"
         android:textColor="#F6F3F3"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.756" />
+        app:layout_constraintVertical_bias="0.777" />
 
     <EditText
         android:id="@+id/amountEt"
@@ -48,25 +62,26 @@
         android:hint="@string/dollar_amount"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
+        android:textColor="#383E34"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.236" />
+        app:layout_constraintVertical_bias="0.222" />
 
     <Spinner
         android:id="@+id/categorySpn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100sp"
         android:gravity="center"
+        android:textSize="100sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.542"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.441" />
+        app:layout_constraintVertical_bias="0.536" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
