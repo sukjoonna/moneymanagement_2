@@ -39,6 +39,7 @@ public class HomeFragment extends Fragment {
     EditText et_name, et_amount;
     Button btn_add;
     ArrayList<String> categories;
+    ArrayAdapter<String> spn_adapter;
     Spinner spn_category;
     String category;
     LocalDate currentDate;
@@ -48,7 +49,8 @@ public class HomeFragment extends Fragment {
     View view;
     LocalDate startdate;
     LocalDate enddate;
-    String cycle_input;
+    String cycle_input; String new_category;
+    boolean category_added = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -83,7 +85,7 @@ public class HomeFragment extends Fragment {
 
         //creates the categories ArrayList and adds the categories from the database table2
         categories = new ArrayList<String>();
-        categories.add(0, "SELECT CATEGORY:");  //this is created as default to prevent bugs when there are no categories
+        categories.add(0, "SELECT CATEGORY");  //this is created as default to prevent bugs when there are no categories
         res2 = myDb.getAllData_categories();
         while (res2.moveToNext()) {
             String category = res2.getString(1);
@@ -93,7 +95,7 @@ public class HomeFragment extends Fragment {
 
 
         //Creating the categories spinner using spinner_of_categories xml file in layout
-        ArrayAdapter<String> spn_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text, categories);
+        spn_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text, categories);
         spn_category.setAdapter(spn_adapter);
         spn_adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
@@ -127,8 +129,8 @@ public class HomeFragment extends Fragment {
                 }
 
 
-                //if "+Add New" or "SELECT CATEGORY:" is selected for category, display a warning message
-                if (category.equals("+Add New") || category.equals("SELECT CATEGORY:")) {
+                //if "+Add New" or "SELECT CATEGORY" is selected for category, display a warning message
+                if (category.equals("+Add New") || category.equals("SELECT CATEGORY")) {
                     //create an alert dialog
                     AlertDialog.Builder adb1 = new AlertDialog.Builder(view.getContext());
                     TextView msg1 = new TextView(view.getContext());    //create a message Tv for adb1
@@ -149,15 +151,17 @@ public class HomeFragment extends Fragment {
                     adb1.setCustomTitle(title1);
                     adb1.show();
                 }
-                //if text1 or text2 is empty
-                else if (text1.equals("") || text2.equals("")) {
+                //if text2 is empty
+                else if (text2.equals("")) {
                     //create an alert dialog
                     AlertDialog.Builder adb2 = new AlertDialog.Builder(view.getContext());
                     adb2.setTitle("Notice");
-                    adb2.setMessage("Enter all information");
+                    adb2.setMessage("Enter Amount");
                     adb2.setNeutralButton("Okay", null);
                     adb2.show();
-                } else if (decimal_places > 2) {
+
+                }
+                else if (decimal_places > 2) {
                     //create an alert dialog
                     AlertDialog.Builder adb3 = new AlertDialog.Builder(view.getContext());
                     adb3.setTitle("Notice");
@@ -173,7 +177,14 @@ public class HomeFragment extends Fragment {
                     DecimalFormat df = new DecimalFormat("0.00");
                     String text2_formatted = df.format(amount_float);
 
+                    if (text1.equals("")){ //if description is empty, make it the category by default
+                        text1 = text3;
+                    }
+
                     boolean isInserted = myDb.insertData(text1, text2_formatted, text3, text4, text5); //insert data into database
+
+                    //set spinner to 0
+                    spn_category.setSelection(0);
 
                     if (isInserted)
                         Toast.makeText(view.getContext(), "Data Inserted", Toast.LENGTH_SHORT).show();
@@ -199,6 +210,12 @@ public class HomeFragment extends Fragment {
                 Object item = adapterView.getItemAtPosition(position);
                 category = item.toString();
 
+                //if new category was added, point to that category
+                if (category_added){
+                    spn_category.setSelection(categories.size()-2);
+                    category_added = false;
+                }
+
                 //if "+Add New" is selected
                 if (category.equals("+Add New")) {
                     //create an alert dialog
@@ -222,14 +239,15 @@ public class HomeFragment extends Fragment {
                     //Add new category button
                     adb.setPositiveButton("Add", new AlertDialog.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            String new_category = et_addcategory.getText().toString();
+                            new_category = et_addcategory.getText().toString();
                             //Checks if it is empty or not
                             if (new_category.equals("")) {
                                 Toast.makeText(view.getContext(), "Nothing was Added", Toast.LENGTH_SHORT).show();
                                 spn_category.setSelection(0);
                             } else {
                                 //Adds the new category to spinner
-                                categories.add(position_ind, new_category);
+//                                categories.add(position_ind, new_category);
+                                categories.add(categories.size()-1,new_category);
                                 //Add the new category to database table 3
                                 myDb.insertData_categories(new_category);
                                 //after new category is added, the spinner is set to 0
@@ -267,6 +285,7 @@ public class HomeFragment extends Fragment {
 
                                 myDb.update_cycles_table_CatBudget(String.valueOf(startdate), categories_budget_list_as_string.toString());
 //----------------------------------
+                                category_added = true;
 
                             }
 

@@ -39,7 +39,6 @@ import java.util.ArrayList;
 public class SettingFragment extends Fragment {
 
     View view;
-    Button btn_reset;
     DataBaseHelper myDb;
     Cursor res2; Cursor res3; Cursor res4;
     ListView lv_settings;
@@ -53,7 +52,6 @@ public class SettingFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_setting, container, false);
 
-        btn_reset = view.findViewById(R.id.resetBtn);
         lv_settings = view.findViewById(R.id.settingsLv);
 
 

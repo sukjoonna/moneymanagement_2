@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,8 +34,8 @@ public class ManageBudFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
     ListView lv;
-    ArrayList<String> categories;
     String[] managebud_items;
+    String categories; String categories_budget;
     ArrayAdapter<String> adapter_managebud;
     Button btn1;
     Cursor res3; Cursor res2; Cursor res4;
@@ -47,6 +48,8 @@ public class ManageBudFragment extends Fragment {
 
         btn1 = view.findViewById(R.id.gobackBtn);
         lv = view.findViewById(R.id.manageBudLv);
+        TextView title = view.findViewById(R.id.manageBudTv);
+        title.setText("Manage Budget");
 
         managebud_items = new String[]{"Set Monthly Cycle Budget", "Set Budget per Category"};
         adapter_managebud = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, managebud_items);
@@ -118,10 +121,12 @@ public class ManageBudFragment extends Fragment {
                 //if "Set Budget per Category" is selected
                 else {
 
-
-
-
-
+                    //starts new fragment "SetBudgetCatFragment"
+                    SetBudgetCatFragment frag= new SetBudgetCatFragment();
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, frag, "setbudcatfrag")
+                            .addToBackStack(null)
+                            .commit();
 
                 }
             }

@@ -39,7 +39,6 @@ public class TrackerFragment extends Fragment {
     DataBaseHelper myDb;
     Cursor res; Cursor res2; Cursor res3; Cursor res4;
     TextView tv_total; TextView tv_today;
-    Button btn;
     ListView lv;
     ArrayList<String> arrayList; ArrayList<String> cycles;
     ArrayAdapter<String> adapter; ArrayAdapter<String> spn_cyc_adapter;
@@ -58,7 +57,6 @@ public class TrackerFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_tracker, container, false);
 
         //variable declarations
-        btn = view.findViewById(R.id.resetBtn);
         lv = view.findViewById(R.id.listView);
         tv_total = view.findViewById(R.id.totalTv);
         tv_today = view.findViewById(R.id.todayTv);
@@ -108,7 +106,7 @@ public class TrackerFragment extends Fragment {
 
         //Set current date Tv
         formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
-        tv_today.setText("Today: " + currentDate.format(formatter));
+        tv_today.setText("Today\n" + currentDate.format(formatter));
 
         build_List(); //builds listview
         set_total(); //set total amount
@@ -116,9 +114,6 @@ public class TrackerFragment extends Fragment {
 
         //calls function when entry/item is selected from Listview
         onClick_itemselectedLv();
-
-        //calls function to reset the data and listview
-        onClick_resetBtn();
 
         //calls onselect cycle spinner
         onSelect_CycleSpinner();
@@ -172,43 +167,6 @@ public class TrackerFragment extends Fragment {
             lv.setAdapter(entries_adapter);
             entries_adapter.notifyDataSetChanged();
 
-
-
-//            //creates an arraylist and adapter that will take the arraylist and place its values into a listview
-//            arrayList = new ArrayList<String>();
-//            adapter = new ArrayAdapter<String>(view.getContext(),android.R.layout.simple_list_item_1,arrayList);
-//
-//
-//
-//            amount_total = 0;
-//            //takes the values out from database and puts it into the arraylist &&&& calculates total amount
-//            while (res.moveToNext()) {
-//                String dscpt = res.getString(1);
-//                String amt = res.getString(2);
-//                String cat = res.getString(3);
-//                LocalDate date = LocalDate.parse(res.getString(4));
-//
-//                //Formatting the localdate ==> custom string format (Month name dd, yyyy)
-//                formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
-//                String date_formatted = date.format(formatter);
-//
-//
-//
-//
-//                //building arraylist of formatted string entries
-//                arrayList.add("Description: " + dscpt + "\nAmount: $"+ amt
-//                        + "\nCategory: " + cat + "\nDate: " + date_formatted);
-//
-//                //summing the total spent
-//                double amount = Double.parseDouble(res.getString(2));
-//                amount_total += amount;
-//
-//
-//            }
-//
-//            //puts the arraylist into the listview
-//            lv.setAdapter(adapter);
-//            adapter.notifyDataSetChanged();
 
         }
 
@@ -551,68 +509,59 @@ public class TrackerFragment extends Fragment {
 
 
 
-
-
-
-
-
-
-
-
-
-
-    public void onClick_resetBtn () {
-        //deletes all data in the list and resets the listview
-        btn.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            public void onClick(View v) {
-
-                //An alert dialog box pops up to make sure you want to delete/reset everything
-                AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
-                alertDialog.setTitle("Alert");
-                alertDialog.setMessage("Do you want to reset everything?");
-                //Make an "ok" button
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                        new DialogInterface.OnClickListener() {
-                            //OnClick:
-                            public void onClick(DialogInterface dialog, int which) {
-                                int deletedRows = 0;
-
-                                //deleteAll() returns the number of rows in the database table deleted
-                                deletedRows = myDb.deleteAll();
-
-                                //clears the listview
-                                adapter.clear();
-
-                                //makes a toast
-                                if(deletedRows > 0)
-                                    Toast.makeText(view.getContext(),"Deleted all entries",Toast.LENGTH_SHORT).show();
-//                                else
-//                                    Toast.makeText(SecondActivity.this,"Data not Deleted",Toast.LENGTH_SHORT).show();
-
-                                //set total to 0
-                                tv_total.setText("-$0.00");
-
-                                //dismiss dialog
-                                dialog.dismiss();
-                            }
-                        });
-
-                //make a "cancel" button
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-                        new DialogInterface.OnClickListener() {
-                            //OnClick:
-                            public void onClick(DialogInterface dialog, int which) {
-                                //dismiss dialog
-                                dialog.dismiss();
-                            }
-                        });
-
-                alertDialog.show();
-
-            }
-        });
-    }
+//
+//    public void onClick_resetBtn () {
+//        //deletes all data in the list and resets the listview
+//        btn.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("SetTextI18n")
+//            public void onClick(View v) {
+//
+//                //An alert dialog box pops up to make sure you want to delete/reset everything
+//                AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
+//                alertDialog.setTitle("Alert");
+//                alertDialog.setMessage("Do you want to reset everything?");
+//                //Make an "ok" button
+//                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+//                        new DialogInterface.OnClickListener() {
+//                            //OnClick:
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                int deletedRows = 0;
+//
+//                                //deleteAll() returns the number of rows in the database table deleted
+//                                deletedRows = myDb.deleteAll();
+//
+//                                //clears the listview
+//                                adapter.clear();
+//
+//                                //makes a toast
+//                                if(deletedRows > 0)
+//                                    Toast.makeText(view.getContext(),"Deleted all entries",Toast.LENGTH_SHORT).show();
+////                                else
+////                                    Toast.makeText(SecondActivity.this,"Data not Deleted",Toast.LENGTH_SHORT).show();
+//
+//                                //set total to 0
+//                                tv_total.setText("-$0.00");
+//
+//                                //dismiss dialog
+//                                dialog.dismiss();
+//                            }
+//                        });
+//
+//                //make a "cancel" button
+//                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+//                        new DialogInterface.OnClickListener() {
+//                            //OnClick:
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                //dismiss dialog
+//                                dialog.dismiss();
+//                            }
+//                        });
+//
+//                alertDialog.show();
+//
+//            }
+//        });
+//    }
 
 
 

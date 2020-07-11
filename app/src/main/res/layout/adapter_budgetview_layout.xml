@@ -7,42 +7,31 @@
     android:baselineAligned="false">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="43">
-
-        <TextView
-            android:id="@+id/descriptionTv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingStart="30dp"
-            android:paddingTop="6dp"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
-            android:text="@string/Description"
-            android:textColor="#516741"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        android:layout_height="56dp"
+        android:layout_weight="40"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/categoryTv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:paddingStart="30dp"
+            android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:paddingBottom="5dp"
-            android:text="@string/category" />
+            android:text="@string/category"
+            android:textColor="#5E7E47"
+            android:textSize="27sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 
-
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="58">
+        android:layout_weight="60"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/entry_amountTv"
@@ -51,21 +40,20 @@
             android:gravity="end"
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingTop="4dp"
-            android:paddingEnd="30dp"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
             android:text="@string/Amount"
-            android:textColor="#1A1A1B"
+            android:textColor="#1F201F"
             android:textSize="25sp" />
 
         <TextView
-            android:id="@+id/dateTv"
+            android:id="@+id/budgetTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
             android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingEnd="30dp"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
             android:paddingBottom="5dp"
-            android:text="@string/date"
-            android:textStyle="italic" />
+            android:text="@string/budget" />
     </LinearLayout>
 
 </LinearLayout>
