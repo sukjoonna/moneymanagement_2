@@ -46,4 +46,5 @@
     <string name="e_g_groceries">e.g. Groceries</string>
     <string name="by_category">By Category:</string>
     <string name="date">Date</string>
+    <string name="to_pie_chart">To Pie Chart</string>
 </resources>
