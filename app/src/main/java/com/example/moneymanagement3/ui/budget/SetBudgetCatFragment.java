@@ -159,6 +159,7 @@ public class SetBudgetCatFragment extends Fragment {
 
                                     myDb.update_cycles_table_CatBudget(old_startdate,categories_budget_list_stringbuilder.toString());
 
+                                    Toast.makeText(view.getContext(),"Budget set",Toast.LENGTH_LONG).show();
 
                                     //recreates TrackerFragement to update all changes
                                     getFragmentManager()

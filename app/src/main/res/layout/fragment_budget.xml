@@ -41,7 +41,7 @@
         android:layout_height="24dp"
         android:gravity="center"
         android:text="@string/plus0_00"
-        android:textColor="#B3BDAC"
+        android:textColor="#5A7049"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,15 +64,22 @@
 
     <Button
         android:id="@+id/setBudgetBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="144dp"
+        android:layout_height="48dp"
+        android:background="@drawable/button_drawable"
+        android:backgroundTintMode="multiply"
+        android:fontFamily="sans-serif-medium"
+        android:stateListAnimator="@animator/button_state_list_anim"
         android:text="@string/set_budget"
+        android:textColor="#F6F3F3"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9" />
+        app:layout_constraintVertical_bias="0.856" />
 
     <ListView
         android:id="@+id/budgetLv"
@@ -82,7 +89,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.546" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

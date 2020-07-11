@@ -36,11 +36,13 @@
 
         <Button
             android:id="@+id/gobackBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="61dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
-            android:text="@string/go_back"
-            android:translationY="500dp" />
+            android:autoText="false"
+            android:background="@drawable/back_arrow"
+            android:translationY="500dp"
+            android:stateListAnimator="@animator/button_state_list_anim"/>
 
     </FrameLayout>
 
