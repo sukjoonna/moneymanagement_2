@@ -106,7 +106,7 @@ public class TrackerFragment extends Fragment {
 
         //Set current date Tv
         formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
-        tv_today.setText("Today: " + currentDate.format(formatter));
+        tv_today.setText("Today\n" + currentDate.format(formatter));
 
         build_List(); //builds listview
         set_total(); //set total amount

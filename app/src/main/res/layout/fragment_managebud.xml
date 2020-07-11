@@ -40,8 +40,8 @@
             android:layout_gravity="center_horizontal"
             android:autoText="false"
             android:background="@drawable/back_arrow"
-            android:translationY="500dp"
-            android:stateListAnimator="@animator/button_state_list_anim"/>
+            android:stateListAnimator="@animator/button_state_list_anim"
+            android:translationY="530dp" />
 
     </FrameLayout>
 

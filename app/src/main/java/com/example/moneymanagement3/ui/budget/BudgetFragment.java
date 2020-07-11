@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +54,7 @@ public class BudgetFragment extends Fragment {
     /////
     Button btn_setBudget;
     double amount_total;
-    TextView tv_cycleAmountTotal; TextView tv_cycleBudgetAmount; TextView tv_amountLeft;
+    TextView tv_cycleAmountTotal; TextView tv_cycleBudgetAmount; TextView tv_amountLeft; TextView tv_by_cat;
     ListView budget_lv;
     ArrayList<CategoryBudget> category_budget_arraylist;
     CategoryBudgetListAdapter categoryBudgetListAdapter;
@@ -75,6 +77,7 @@ public class BudgetFragment extends Fragment {
         tv_cycleAmountTotal = view.findViewById(R.id.totalTv);
         tv_cycleBudgetAmount = view.findViewById(R.id.cycleBudgetAmountTv);
         tv_amountLeft = view.findViewById(R.id.cycleAmountLeftTv);
+        tv_by_cat = view.findViewById(R.id.by_cat_tv);
 
         budget_lv = view.findViewById(R.id.budgetLv);
 
@@ -82,6 +85,12 @@ public class BudgetFragment extends Fragment {
         cat_budget_arraylist = new ArrayList<String>();
         amounts_arraylist = new ArrayList<Double>();
         difference_arraylist = new ArrayList<String>();
+
+        //underline "by category:"
+        SpannableString content = new SpannableString("By Category:");
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        tv_by_cat.setText(content);
+
 
 
         //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
@@ -289,7 +298,7 @@ public class BudgetFragment extends Fragment {
         res4 = myDb.get_cycles();
         res4.moveToPosition(position);
         String cycle_budget = res4.getString(2);
-        tv_cycleBudgetAmount.setText("/$"+cycle_budget);
+        tv_cycleBudgetAmount.setText("Budget: $"+cycle_budget);
 
         //calculate difference between total amount and cycle budget and set
         double cycle_budget_double = Double.parseDouble(cycle_budget);

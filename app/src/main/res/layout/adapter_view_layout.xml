@@ -10,26 +10,27 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="37">
+        android:layout_weight="43">
 
         <TextView
             android:id="@+id/descriptionTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingStart="30dp"
             android:paddingTop="6dp"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:text="@string/Description"
             android:textColor="#516741"
-            android:textSize="18sp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/categoryTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingStart="30dp"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:paddingBottom="5dp"
             android:text="@string/category" />
@@ -41,7 +42,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="63">
+        android:layout_weight="58">
 
         <TextView
             android:id="@+id/entry_amountTv"
@@ -50,7 +51,7 @@
             android:gravity="end"
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingTop="4dp"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingEnd="30dp"
             android:text="@string/Amount"
             android:textColor="#1A1A1B"
             android:textSize="25sp" />
@@ -61,9 +62,10 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingEnd="30dp"
             android:paddingBottom="5dp"
-            android:text="@string/date" />
+            android:text="@string/date"
+            android:textStyle="italic" />
     </LinearLayout>
 
 </LinearLayout>

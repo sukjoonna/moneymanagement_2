@@ -7,47 +7,57 @@
 
     <TextView
         android:id="@+id/totalTv"
-        android:layout_width="211dp"
-        android:layout_height="64dp"
+        android:layout_width="232dp"
+        android:layout_height="75dp"
+        android:background="@drawable/decal2"
+        android:elevation="5dp"
         android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="5dp"
         android:text="@string/_0_00"
-        android:textColor="#7E1D1D"
+        android:textColor="#3C4E30"
         android:textSize="50sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.375"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.103" />
+        app:layout_constraintVertical_bias="0.108" />
 
     <TextView
         android:id="@+id/cycleBudgetAmountTv"
-        android:layout_width="112dp"
-        android:layout_height="57dp"
+        android:layout_width="237dp"
+        android:layout_height="24dp"
+        android:fontFamily="sans-serif-condensed-light"
         android:gravity="center"
         android:text="@string/outof0_00"
         android:textColor="#554747"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.956"
+        app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.123" />
+        app:layout_constraintVertical_bias="0.224" />
 
     <TextView
         android:id="@+id/cycleAmountLeftTv"
-        android:layout_width="181dp"
-        android:layout_height="24dp"
+        android:layout_width="138dp"
+        android:layout_height="21dp"
+        android:fontFamily="sans-serif-condensed-light"
         android:gravity="center"
         android:text="@string/plus0_00"
-        android:textColor="#319FC384"
+        android:textColor="#31B4CDA0"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.176" />
+        app:layout_constraintVertical_bias="0.256" />
 
     <Spinner
         android:id="@+id/cycleSpn"
@@ -79,16 +89,32 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.856" />
+        app:layout_constraintVertical_bias="0.879" />
 
     <ListView
         android:id="@+id/budgetLv"
-        android:layout_width="366dp"
-        android:layout_height="347dp"
+        android:layout_width="373dp"
+        android:layout_height="321dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.662" />
+
+    <TextView
+        android:id="@+id/by_cat_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/by_category"
+        android:textColor="#60655C"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.321" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
