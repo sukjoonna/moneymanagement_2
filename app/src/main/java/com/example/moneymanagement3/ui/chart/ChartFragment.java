@@ -1,5 +1,6 @@
 package com.example.moneymanagement3.ui.chart;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -91,24 +93,40 @@ public class ChartFragment extends Fragment {
         Collections.reverse(cycles);
         ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text, cycles);
         spinner_cycles.setAdapter(spn_cyc_adapter);
-
         //------------------------------------------------END-----------------------------------------------//
 
         //Pie Chart
         pieChart = view.findViewById(R.id.pieChart);
+        startdate = LocalDate.parse(res3.getString(0));
+        enddate = LocalDate.parse(res3.getString(1));
+        pieChartMaker(startdate,enddate);
 
-        getEntries();
-        pieDataSet = new PieDataSet(pieEntries, "");
-        pieData = new PieData(pieDataSet);
-        pieChart.setData(pieData);
-        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        pieDataSet.setSliceSpace(2f);
-        pieDataSet.setValueTextColor(Color.WHITE);
-        pieDataSet.setValueTextSize(10f);
-        pieDataSet.setSliceSpace(5f);
-        pieChart.setUsePercentValues(true);
-        pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
-        pieChart.setUsePercentValues(true);
+        ////////////////////////
+            //What the spinner does when item is selected / not selected
+            spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+                    //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+                    int inverted_pos = (cycles.size() - 1) - position;
+                    res4.moveToPosition(inverted_pos);
+                    startdate = LocalDate.parse(res4.getString(0));
+                    enddate = LocalDate.parse(res4.getString(1));
+                    pieChartMaker(startdate,enddate);
+                    Log.d("onselect", "onItemSelected: ");
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    //Object item = adapterView.getItemAtPosition(0);
+                    res3.moveToFirst();
+                    startdate = LocalDate.parse(res3.getString(0));
+                    enddate = LocalDate.parse(res3.getString(1));
+                    pieChartMaker(startdate,enddate);
+                    Log.d("noneselect", "onNothingSelected: ");
+
+                }
+            });
+        /////////////////////////////////
 
         return view;
     }
@@ -197,44 +215,50 @@ public class ChartFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getEntries() {
+
+    public void pieChartMaker(LocalDate startDate,LocalDate endDate){
+        pieChart.invalidate();////
+        getEntries(startDate,endDate);
+        pieDataSet = new PieDataSet(pieEntries, "");
+        pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        pieDataSet.setSliceSpace(2f);
+        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextSize(10f);
+        pieDataSet.setSliceSpace(5f);
+        pieChart.setUsePercentValues(true);
+        pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
+        pieChart.setUsePercentValues(true);
+        pieData.notifyDataChanged();////
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getEntries(LocalDate startDate,LocalDate endDate) {
         Cursor table3Res = myDb.get_setting();
         Cursor dataInRangeRes;
         Double monthlyTotal = 0.0;
         pieEntries = new ArrayList<>();
         float percentUsage;
 
-        table3Res.moveToFirst();
+        dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate.minusDays(1),endDate);
 
-        LocalDate startDate1 = LocalDate.parse(table3Res.getString(0));
-        Log.d("myTag", table3Res.getString(0));
-        LocalDate endDate1 = LocalDate.parse(table3Res.getString(1));
 
-        dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate1.minusDays(1),endDate1);
-
-        Log.d("myTag", "This is my message");
-
+        // sums the total amount of money used
         while(dataInRangeRes.moveToNext()){
-            Log.d("myTag", "This is my while loop!");
+       //     Log.d("myTag", "This is my while loop!");
             monthlyTotal = monthlyTotal + Double.valueOf(dataInRangeRes.getString(1));
         }
 
+        // reverses the direction and then put in the amount as a percent of total used
        while(dataInRangeRes.moveToPrevious()){
            percentUsage = (float) (Float.parseFloat(dataInRangeRes.getString(1)) / monthlyTotal);
-           //percentUsage = percentUsage * 100;
-           Log.d("myTag", "This is my while loop!");
           pieEntries.add(new PieEntry(percentUsage, dataInRangeRes.getString(0)));
        }
 
 
     }
 
-    private void getEntries(LocalDate theDate) {
-        pieEntries = new ArrayList<>();
-        pieEntries.add(new PieEntry(18.5f, "Green"));
-        pieEntries.add(new PieEntry(26.7f, "Yellow"));
-        pieEntries.add(new PieEntry(24.0f, "Red"));
-        pieEntries.add(new PieEntry(30.8f, "Blue"));
 
-    }
 }
