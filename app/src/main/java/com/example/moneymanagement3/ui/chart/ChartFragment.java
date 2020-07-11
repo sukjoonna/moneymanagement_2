@@ -195,21 +195,30 @@ public class ChartFragment extends Fragment {
     private void getEntries() {
         Cursor table3Res = myDb.get_setting();
         Cursor dataInRangeRes;
+        Double monthlyTotal = 0.0;
         pieEntries = new ArrayList<>();
+        float percentUsage;
 
         table3Res.moveToFirst();
 
-        LocalDate startDate1 = LocalDate.parse(table3Res.getString(1));
+        LocalDate startDate1 = LocalDate.parse(table3Res.getString(0));
+        Log.d("myTag", table3Res.getString(0));
         LocalDate endDate1 = LocalDate.parse(table3Res.getString(1));
 
-        dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate1,endDate1);
-        Log.d("myTag", "This is my message");
-       while(dataInRangeRes.moveToNext()){
-           Log.d("myTag", "This is my while loop!");
-           String cyc_startdate = res4.getString(0);
-           String cyc_enddate = res4.getString(1);
-           pieEntries.add(new PieEntry(33.8f, "Blue"));
+        dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate1.minusDays(1),endDate1);
 
+        Log.d("myTag", "This is my message");
+
+        while(dataInRangeRes.moveToNext()){
+            Log.d("myTag", "This is my while loop!");
+            monthlyTotal = monthlyTotal + Double.valueOf(dataInRangeRes.getString(1));
+        }
+
+       while(dataInRangeRes.moveToPrevious()){
+           percentUsage = (float) (Float.parseFloat(dataInRangeRes.getString(1)) / monthlyTotal);
+           percentUsage = percentUsage * 100;
+           Log.d("myTag", "This is my while loop!");
+          pieEntries.add(new PieEntry(percentUsage, dataInRangeRes.getString(0)));
        }
 
 
