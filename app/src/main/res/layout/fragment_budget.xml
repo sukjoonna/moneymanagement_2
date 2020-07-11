@@ -50,7 +50,7 @@
         android:fontFamily="sans-serif-condensed-light"
         android:gravity="center"
         android:text="@string/plus0_00"
-        android:textColor="#31B4CDA0"
+        android:textColor="#807979"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

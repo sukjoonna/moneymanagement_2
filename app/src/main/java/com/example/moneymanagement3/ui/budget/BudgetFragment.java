@@ -168,15 +168,25 @@ public class BudgetFragment extends Fragment {
                 String amount = res_cat_amounts.getString(1);
 
                 //find the index of budget of category
-                int ind = 0;
+                int ind = -1;
                 for (int i = 0; i < categories_aslist.length; i++) {
                     if (category.equals(categories_aslist[i])) {
                         ind = i;
                     }
                 }
-                String budget = categories_budget_aslist[ind];
 
-                double difference = Double.parseDouble(budget) - Double.parseDouble(amount);
+                //to account for when category is deleted
+                String budget;
+                double difference;
+                if (ind ==-1){
+                    budget = "----------";
+                    difference = 1000000;
+                }
+                else{
+                    budget = categories_budget_aslist[ind];
+                    difference = Double.parseDouble(budget) - Double.parseDouble(amount);
+                }
+
 
                 categories_arraylist.add(category);
                 amounts_arraylist.add(Double.parseDouble(amount));
@@ -359,7 +369,7 @@ public class BudgetFragment extends Fragment {
 
                     title1.setText("You have exceeded your budget"); //the title
                 }
-                else if (Double.parseDouble(difference) > 0){ //if under budget
+                else if (Double.parseDouble(difference) > 0 && Double.parseDouble(difference) < 1000000){ //if under budget
                     String msg = "+$" + difference;
 
                     msg1.setText(msg); //the message
@@ -367,13 +377,21 @@ public class BudgetFragment extends Fragment {
 
                     title1.setText("How much you have left:"); //the title
                 }
-                else{ //if difference is 0
+                else if (Double.parseDouble(difference) == 0){ //if difference is 0
                     String msg = "$" + difference;
 
                     msg1.setText(msg); //the message
                     msg1.setTextColor(Color.parseColor("#E3BA27"));
 
                     title1.setText("How much you have left:"); //the title
+                }
+                else { //if difference is 100000 (cat deleted)
+                    String msg = "This category was deleted";
+
+                    msg1.setText(msg); //the message
+                    msg1.setTextColor(Color.parseColor("#807979"));
+
+                    title1.setText("Notice"); //the title
                 }
 
                 msg1.setGravity(Gravity.CENTER);    //center
