@@ -41,7 +41,10 @@ import android.graphics.Color;
 public class ChartFragment extends Fragment {
 
 
-    Button btn_to_piechcart;
+    Button btn_to_piechart;
+    Button btn_to_linechart;
+    Button btn_to_barchart;
+    Button btn_to_infochart;
     /////
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -49,21 +52,63 @@ public class ChartFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
 
-        btn_to_piechcart = view.findViewById(R.id.to_piechart_btn);
+        btn_to_linechart = view.findViewById(R.id.to_linechart_btn);
+        onClick_toLineChartBtn();
+
+        btn_to_piechart = view.findViewById(R.id.to_piechart_btn);
         onClick_toPieChartBtn();
 
+        btn_to_barchart = view.findViewById(R.id.to_barchart_btn);
+        onClick_toBarChartBtn();
+
+        btn_to_infochart = view.findViewById(R.id.to_infochart_btn);
+        onClick_toInfoChartBtn();
 
         return view;
     }
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
     public void onClick_toPieChartBtn () {
         //Button to go back to settings
-        btn_to_piechcart.setOnClickListener(new View.OnClickListener() {
+        btn_to_piechart.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                PieChartFragment frag= new PieChartFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, frag, "chartFrag")
+                        .commit();
+            }
+        });
+    }
+
+    public void onClick_toLineChartBtn () {
+        //Button to go back to settings
+        btn_to_linechart.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                PieChartFragment frag= new PieChartFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, frag, "chartFrag")
+                        .commit();
+            }
+        });
+    }
+
+    public void onClick_toBarChartBtn () {
+        //Button to go back to settings
+        btn_to_barchart.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                PieChartFragment frag= new PieChartFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, frag, "chartFrag")
+                        .commit();
+            }
+        });
+    }
+
+    public void onClick_toInfoChartBtn () {
+        //Button to go back to settings
+        btn_to_infochart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 PieChartFragment frag= new PieChartFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()

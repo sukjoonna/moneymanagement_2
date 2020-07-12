@@ -8,13 +8,47 @@
 
     <Button
         android:id="@+id/to_piechart_btn"
-        android:layout_width="150dp"
-        android:layout_height="207dp"
-        android:layout_marginBottom="384dp"
+        android:layout_width="175dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="100dp"
         android:text="@string/to_pie_chart"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/to_linechart_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/to_barchart_btn"
+        android:layout_width="175dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/to_bar_chart"
+        app:layout_constraintBottom_toTopOf="@+id/to_infochart_btn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.195"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/to_piechart_btn"
+        app:layout_constraintTop_toTopOf="@+id/to_piechart_btn"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/to_linechart_btn"
+        android:layout_width="175dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="60dp"
+        android:text="@string/to_line_chart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/to_piechart_btn" />
+
+    <Button
+        android:id="@+id/to_infochart_btn"
+        android:layout_width="175dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/to_info_chart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/to_barchart_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

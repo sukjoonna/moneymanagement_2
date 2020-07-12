@@ -47,4 +47,7 @@
     <string name="by_category">By Category:</string>
     <string name="date">Date</string>
     <string name="to_pie_chart">To Pie Chart</string>
+    <string name="to_line_chart">To Line Chart</string>
+    <string name="to_bar_chart">To Bar Chart</string>
+    <string name="to_info_chart">To Info Chart</string>
 </resources>

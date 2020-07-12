@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PieChartFragment extends Fragment {
+public class BarChartFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
     Button btn1;

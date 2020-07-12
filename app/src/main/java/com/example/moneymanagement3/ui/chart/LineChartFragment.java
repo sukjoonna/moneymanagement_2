@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PieChartFragment extends Fragment {
+public class LineChartFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
     Button btn1;
@@ -104,11 +104,11 @@ public class PieChartFragment extends Fragment {
         spinner_cycles.setAdapter(spn_cyc_adapter);
         //------------------------------------------------END-----------------------------------------------//
 
-        //Pie Chart
+        //Line Chart
         pieChart = view.findViewById(R.id.pieChart);
         startdate = LocalDate.parse(res3.getString(0));
         enddate = LocalDate.parse(res3.getString(1));
-        pieChartMaker(startdate,enddate);
+        lineChartMaker(startdate,enddate);
 
         ////////////////////////
         //What the spinner does when item is selected / not selected
@@ -121,7 +121,7 @@ public class PieChartFragment extends Fragment {
                 res4.moveToPosition(inverted_pos);
                 startdate = LocalDate.parse(res4.getString(0));
                 enddate = LocalDate.parse(res4.getString(1));
-                pieChartMaker(startdate,enddate);
+                lineChartMaker(startdate,enddate);
                 Log.d("onselect", "onItemSelected: ");
             }
             @Override
@@ -130,7 +130,7 @@ public class PieChartFragment extends Fragment {
                 res3.moveToFirst();
                 startdate = LocalDate.parse(res3.getString(0));
                 enddate = LocalDate.parse(res3.getString(1));
-                pieChartMaker(startdate,enddate);
+                lineChartMaker(startdate,enddate);
                 Log.d("noneselect", "onNothingSelected: ");
 
             }
@@ -226,7 +226,7 @@ public class PieChartFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
 
-    public void pieChartMaker(LocalDate startDate,LocalDate endDate){
+    public void lineChartMaker(LocalDate startDate,LocalDate endDate){
         pieChart.invalidate();////
         getEntries(startDate,endDate);
         pieDataSet = new PieDataSet(pieEntries, "");
