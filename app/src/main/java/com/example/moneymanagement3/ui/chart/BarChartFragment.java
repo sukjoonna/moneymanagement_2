@@ -56,12 +56,19 @@ public class BarChartFragment extends Fragment {
     ArrayList<String> cycles;
     Spinner spinner_cycles;
     /////
+    TextView tv_debit; TextView tv_credit; TextView tv_cash; TextView tv_check;
+    ArrayList<String> paymentTypes_arraylist; ArrayList<String> sums_arraylist;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_barchart, container, false);
         view.setBackgroundColor(Color.WHITE);
         btn1 = view.findViewById(R.id.gobackBtn);
+
+        tv_debit = view.findViewById(R.id.debitTv);
+        tv_credit = view.findViewById(R.id.creditTv);
+        tv_cash = view.findViewById(R.id.cashTv);
+        tv_check = view.findViewById(R.id.checkTv);
 
         //get database
         myDb = new DataBaseHelper(getActivity());
@@ -97,6 +104,73 @@ public class BarChartFragment extends Fragment {
         spinner_cycles.setAdapter(spn_cyc_adapter);
         //------------------------------------------------END-----------------------------------------------//
 
+        ////////////////////////
+        //What the spinner does when item is selected / not selected
+        spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+                int inverted_pos = (cycles.size() - 1) - position;
+                res4.moveToPosition(inverted_pos);
+                startdate = LocalDate.parse(res4.getString(0));
+                enddate = LocalDate.parse(res4.getString(1));
+
+                Cursor res_paymentTypeSums = myDb.getPaymentTypesDateRange(startdate,enddate); //first col = payment types, second col = sums
+
+                String payment_type = "";
+                double payment_type_sum = 0;
+
+                tv_check.setText("-$0.00");
+                tv_credit.setText("-$0.00");
+                tv_debit.setText("-$0.00");
+                tv_cash.setText("-$0.00");
+
+                while (res_paymentTypeSums.moveToNext()){
+                    payment_type = res_paymentTypeSums.getString(0);
+                    payment_type_sum = Double.parseDouble(res_paymentTypeSums.getString(1));
+
+                    switch (payment_type){
+                        case "Credit":
+                            tv_credit.setText("-$" + String.format("%.2f",payment_type_sum));
+                            break;
+                        case "Debit":
+                            tv_debit.setText("-$" + String.format("%.2f",payment_type_sum));
+                            break;
+                        case "Check":
+                            tv_check.setText("-$" + String.format("%.2f",payment_type_sum));
+                            break;
+                        case "Cash":
+                            tv_cash.setText("-$" + String.format("%.2f",payment_type_sum));
+                            break;
+                    }
+
+                }
+
+
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                //Object item = adapterView.getItemAtPosition(0);
+                res3.moveToFirst();
+                startdate = LocalDate.parse(res3.getString(0));
+                enddate = LocalDate.parse(res3.getString(1));
+
+                Cursor res_paymentTypeSums = myDb.getPaymentTypesDateRange(startdate,enddate); //first col = payment types, second col = sums
+                paymentTypes_arraylist = new ArrayList<>();
+                sums_arraylist = new ArrayList<>();
+                while (res_paymentTypeSums.moveToNext()){
+                    paymentTypes_arraylist.add(res_paymentTypeSums.getString(0));
+                    sums_arraylist.add(res_paymentTypeSums.getString(1));
+                }
+                tv_debit.setText(paymentTypes_arraylist.get(0));
+                tv_credit.setText(paymentTypes_arraylist.get(1));
+                tv_cash.setText(paymentTypes_arraylist.get(2));
+                tv_check.setText(paymentTypes_arraylist.get(3));
+
+            }
+        });
+        /////////////////////////////////
 
 
 

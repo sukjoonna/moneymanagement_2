@@ -113,9 +113,10 @@
 
     <TextView
         android:id="@+id/debitTv"
-        android:layout_width="68dp"
+        android:layout_width="120dp"
         android:layout_height="33dp"
         android:text="@string/_0_00_dollar"
+        android:textAlignment="textEnd"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/debit_decal_Tv"
         app:layout_constraintEnd_toEndOf="@+id/debit_decal_Tv"
@@ -126,41 +127,44 @@
 
     <TextView
         android:id="@+id/creditTv"
-        android:layout_width="68dp"
+        android:layout_width="120dp"
         android:layout_height="33dp"
         android:text="@string/_0_00_dollar"
+        android:textAlignment="textEnd"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/credit_decal_Tv"
         app:layout_constraintEnd_toEndOf="@+id/credit_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.872"
         app:layout_constraintStart_toStartOf="@+id/credit_decal_Tv"
         app:layout_constraintTop_toTopOf="@+id/credit_decal_Tv"
-        app:layout_constraintHorizontal_bias="0.872"
         app:layout_constraintVertical_bias="0.529" />
 
     <TextView
         android:id="@+id/cashTv"
-        android:layout_width="68dp"
+        android:layout_width="120dp"
         android:layout_height="33dp"
         android:text="@string/_0_00_dollar"
+        android:textAlignment="textEnd"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/cash_decal_Tv"
         app:layout_constraintEnd_toEndOf="@+id/cash_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.872"
         app:layout_constraintStart_toStartOf="@+id/cash_decal_Tv"
         app:layout_constraintTop_toTopOf="@+id/cash_decal_Tv"
-        app:layout_constraintHorizontal_bias="0.872"
         app:layout_constraintVertical_bias="0.529" />
 
     <TextView
         android:id="@+id/checkTv"
-        android:layout_width="68dp"
+        android:layout_width="120dp"
         android:layout_height="33dp"
         android:text="@string/_0_00_dollar"
+        android:textAlignment="textEnd"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/check_decal_Tv"
         app:layout_constraintEnd_toEndOf="@+id/check_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.872"
         app:layout_constraintStart_toStartOf="@+id/check_decal_Tv"
         app:layout_constraintTop_toTopOf="@+id/check_decal_Tv"
-        app:layout_constraintHorizontal_bias="0.872"
         app:layout_constraintVertical_bias="0.529" />
 
 
