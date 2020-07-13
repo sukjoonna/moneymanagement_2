@@ -1,8 +1,10 @@
 package com.example.moneymanagement3.ui.home;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +32,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -40,8 +43,8 @@ public class HomeFragment extends Fragment {
     Button btn_add;
     ArrayList<String> categories;
     ArrayAdapter<String> spn_adapter;
-    Spinner spn_category;
-    String category;
+    Spinner spn_category; TextView tv_payment;
+    String category; String selected_payment_type;
     LocalDate currentDate;
     Cursor res2;
     Cursor res3;
@@ -51,6 +54,7 @@ public class HomeFragment extends Fragment {
     LocalDate enddate;
     String cycle_input; String new_category;
     boolean category_added = false;
+    String[] payment_types;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -61,6 +65,7 @@ public class HomeFragment extends Fragment {
         et_amount = view.findViewById(R.id.amountEt);
         btn_add = view.findViewById(R.id.add1Btn);   //add button
         spn_category = view.findViewById(R.id.categorySpn);
+        tv_payment = view.findViewById(R.id.paymentTv);
 
         //creates database
         myDb = new DataBaseHelper(getActivity());
@@ -85,7 +90,7 @@ public class HomeFragment extends Fragment {
 
         //creates the categories ArrayList and adds the categories from the database table2
         categories = new ArrayList<String>();
-        categories.add(0, "CATEGORY");  //this is created as default to prevent bugs when there are no categories
+        categories.add(0, "CATEGORY*");  //this is created as default to prevent bugs when there are no categories
         res2 = myDb.getAllData_categories();
         while (res2.moveToNext()) {
             String category = res2.getString(1);
@@ -98,6 +103,47 @@ public class HomeFragment extends Fragment {
         spn_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text, categories);
         spn_category.setAdapter(spn_adapter);
         spn_adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+
+
+        //Payment type
+        payment_types = new String[] {"Cash", "Credit", "Debit", "Check"};
+
+        tv_payment.setText("Payment Type");
+        selected_payment_type = "";
+
+        tv_payment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+
+                AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
+                //alt_bld.setIcon(R.drawable.icon);
+                alt_bld.setTitle("Select Payment Type");
+                alt_bld.setSingleChoiceItems(payment_types, -1, new DialogInterface
+                        .OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        selected_payment_type = payment_types[item];
+                    }
+                });
+                alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (selected_payment_type.equals("")){
+                            tv_payment.setText("Payment Type");
+                        }
+                        else{
+                            tv_payment.setText(selected_payment_type);
+                        }
+                        dialog.dismiss();// dismiss the alertbox after chose option
+                    }
+                });
+                AlertDialog alert = alt_bld.create();
+                alert.show();
+            }
+        });
+
+
+
+
 
         onSelect_Spinner(); //function call for selecting item in spinner_category
 
@@ -120,6 +166,7 @@ public class HomeFragment extends Fragment {
                 String text3 = category;
                 String text4 = String.valueOf(currentDate);
                 LocalDate text5 = LocalDate.now();
+                String text6 = selected_payment_type;
 
                 int decimal_places = 0;
                 //divide the amount string at "." to get the number of decimal places if there is a "."
@@ -130,7 +177,7 @@ public class HomeFragment extends Fragment {
 
 
                 //if "+Add New" or "SELECT CATEGORY" is selected for category, display a warning message
-                if (category.equals("+Add New") || category.equals("CATEGORY")) {
+                if (category.equals("+Add New") || category.equals("CATEGORY*")) {
                     //create an alert dialog
                     AlertDialog.Builder adb1 = new AlertDialog.Builder(view.getContext());
                     TextView msg1 = new TextView(view.getContext());    //create a message Tv for adb1
@@ -153,12 +200,33 @@ public class HomeFragment extends Fragment {
                 }
                 //if text2 is empty
                 else if (text2.equals("")) {
+
                     //create an alert dialog
-                    AlertDialog.Builder adb2 = new AlertDialog.Builder(view.getContext());
-                    adb2.setTitle("Notice");
-                    adb2.setMessage("Enter Amount");
-                    adb2.setNeutralButton("Okay", null);
-                    adb2.show();
+                    AlertDialog.Builder adb1 = new AlertDialog.Builder(view.getContext());
+                    TextView msg1 = new TextView(view.getContext());    //create a message Tv for adb1
+                    msg1.setText("Enter Amount"); //the message
+                    msg1.setGravity(Gravity.CENTER);    //center
+                    msg1.setTextSize(20);
+                    msg1.setPadding(10, 5, 10, 20);
+                    msg1.setTextColor(Color.GRAY);
+                    TextView title1 = new TextView(view.getContext());    //create a message Tv for adb1
+                    title1.setText("Notice"); //the title
+                    title1.setGravity(Gravity.CENTER);    //center
+                    title1.setTextSize(30);
+                    title1.setPadding(10, 40, 10, 50);
+                    title1.setTextColor(Color.BLACK);
+//                    adb1.setTitle("Notice");
+                    adb1.setPositiveButton("Okay", null);
+                    adb1.setView(msg1);
+                    adb1.setCustomTitle(title1);
+                    adb1.show();
+
+//                    //create an alert dialog
+//                    AlertDialog.Builder adb2 = new AlertDialog.Builder(view.getContext());
+//                    adb2.setTitle("Notice");
+//                    adb2.setMessage("Enter Amount");
+//                    adb2.setNeutralButton("Okay", null);
+//                    adb2.show();
 
                 }
                 else if (decimal_places > 2) {
@@ -180,8 +248,11 @@ public class HomeFragment extends Fragment {
                     if (text1.equals("")){ //if description is empty, make it the category by default
                         text1 = text3;
                     }
+//                    if (text6.equals("")){
+//                        text6 = "N/A";
+//                    }
 
-                    boolean isInserted = myDb.insertData(text1, text2_formatted, text3, text4, text5); //insert data into database
+                    boolean isInserted = myDb.insertData(text1, text2_formatted, text3, text4, text5, text6); //insert data into database
 
                     //set spinner to 0
                     spn_category.setSelection(0);
@@ -194,6 +265,10 @@ public class HomeFragment extends Fragment {
                     //clears the edit texts
                     et_name.getText().clear();
                     et_amount.getText().clear();
+
+                    //reset payment type
+                    tv_payment.setText("Payment Type");
+
                 }
 
             }

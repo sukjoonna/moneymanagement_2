@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Tracker.db";
-    public static final String TABLE_NAME = "names_table";
+    public static final String TABLE_NAME = "entries_table";
     public static final String TABLE_NAME2 = "categories_table";
     public static final String TABLE_NAME3 = "setting_table";
     public static final String TABLE_NAME4 = "cycles_table";
@@ -30,6 +30,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COL_8 = "CYCLE_INPUT";
     public static final String COL_9 = "CYCLE_BUDGET";
     public static final String COL_10 = "CATEGORY_BUDGET";
+    public static final String COL_11 = "PAYMENT_TYPE";
+
+
 
 //    public static final String COL_2 = "NAME";
 
@@ -40,7 +43,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         //creating table "names_table" with 2 cols
-        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP )");
+        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP, PAYMENT_TYPE TEXT )");
         db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT)");
         db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT)");
         db.execSQL("create table " + TABLE_NAME4 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_BUDGET TEXT, CATEGORY TEXT,CATEGORY_BUDGET TEXT)");
@@ -59,7 +62,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public boolean insertData(String name, String amount, String category, String date, LocalDate DATE_TIMESTAMP1) {
+    public boolean insertData(String name, String amount, String category, String date, LocalDate DATE_TIMESTAMP1, String payment_type) {
         //Table1
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -68,6 +71,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_3,category);
         contentValues.put(COL_4,date);
         contentValues.put(COL_7, String.valueOf(DATE_TIMESTAMP1));
+        contentValues.put(COL_11,payment_type);
         long result = db.insert(TABLE_NAME,null ,contentValues);
         if (result == -1)
             return false;
@@ -75,7 +79,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
     }
 
-    public boolean updateData( String id, String name, String amount, String category, String date,LocalDate DATE_TIMESTAMP1) {
+    public boolean updateData( String id, String name, String amount, String category, String date,LocalDate DATE_TIMESTAMP1, String payment_type) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_1,name);
@@ -83,6 +87,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_3,category);
         contentValues.put(COL_4,date);
         contentValues.put(COL_7, String.valueOf(DATE_TIMESTAMP1));
+        contentValues.put(COL_11,payment_type);
         db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
         return true;
     }

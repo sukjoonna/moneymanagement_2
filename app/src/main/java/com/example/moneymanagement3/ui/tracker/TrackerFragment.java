@@ -34,6 +34,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 
@@ -51,11 +52,12 @@ public class TrackerFragment extends Fragment {
     EntryListAdapter entries_adapter;
     String text;
     double amount_total;
-    String category; String cycle_input; String new_date;
+    String category; String cycle_input; String new_date; String selected_payment_type;
     LocalDate startdate; LocalDate enddate; LocalDate currentDate;
     Spinner spinner_cycles;
     DateTimeFormatter formatter;
     DatePickerDialog.OnDateSetListener mDateSetListener;
+    String[] payment_types;
 
     @RequiresApi(api = Build.VERSION_CODES.O) // this might need to be change to use a different package
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -153,13 +155,22 @@ public class TrackerFragment extends Fragment {
                 String amt = "-$" + res.getString(2);
                 String cat = res.getString(3);
                 LocalDate date = LocalDate.parse(res.getString(4));
+                String payment = res.getString(6);
 
                 //Formatting the localdate ==> custom string format (Month name dd, yyyy)
                 formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
                 String date_formatted = date.format(formatter);
 
+                String cat_plus_payment = "";
+                if (payment.equals("")){
+                    cat_plus_payment = cat ;
+                }
+                else{
+                    cat_plus_payment = cat + " | " + payment;
+                }
+
                 //creating the entry object and putting it into the entries arraylist
-                Entry entry = new Entry(dscpt,cat,amt,date_formatted);
+                Entry entry = new Entry(dscpt,cat_plus_payment,amt,date_formatted);
                 entries_arraylist.add(entry);
 
                 //summing the total spent
@@ -276,12 +287,21 @@ public class TrackerFragment extends Fragment {
                         final EditText et1 = view.findViewById(R.id.edit_amountEt);
                         final EditText et2 = view.findViewById(R.id.edit_textEt);
                         final TextView tv3 = view.findViewById(R.id.edit_dateTv);
+                        final TextView tv4 = view.findViewById(R.id.edit_paymentTv);
 
 //                      //sets default values in these edit texts as the values previously inputted
                         res.moveToPosition(position_ind);
                         et1.setText(res.getString(2));
                         et2.setText(res.getString(1));
                         String entry_category = res.getString(3);
+
+                        if(res.getString(6).equals("")){
+                            tv4.setText("Payment Type");
+                        }
+                        else {
+                            tv4.setText(res.getString(6));
+                        }
+
 
                         final LocalDate date_ld = LocalDate.parse(res.getString(4));
                         tv3.setText(date_ld.format(formatter));
@@ -363,6 +383,47 @@ public class TrackerFragment extends Fragment {
                             }
                         });
 
+
+                        //Payment type
+                        payment_types = new String[] {"Cash", "Credit", "Debit", "Check"};
+                        final int ind = Arrays.asList(payment_types).indexOf(res.getString(6));
+                        tv4.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(final View view) {
+
+
+                                final AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
+
+                                //alt_bld.setIcon(R.drawable.icon);
+                                alt_bld.setTitle("Select Payment Type");
+                                alt_bld.setSingleChoiceItems(payment_types, -1, new DialogInterface
+                                        .OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int item) {
+                                        selected_payment_type = payment_types[item];
+                                    }
+
+                                });
+                                alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (selected_payment_type.equals("")){
+                                            alt_bld.setSingleChoiceItems(payment_types,0,null);
+                                            tv4.setText("Payment Type");
+                                        }
+                                        else{
+                                            tv4.setText(selected_payment_type);
+                                        }
+                                        dialog.dismiss();// dismiss the alertbox after chose option
+                                    }
+                                });
+                                AlertDialog alert = alt_bld.create();
+                                alert.show();
+                            }
+                        });
+
+
+
+
                         adb2.setTitle("Edit");
                         adb2.setMessage("Edit your entry");
                         adb2.setView(view); //shows the edit texts from the xml file in the alert dialog
@@ -388,6 +449,7 @@ public class TrackerFragment extends Fragment {
                                         String edited_category = category;
                                         String edited_date = new_date;
                                         LocalDate text5 = LocalDate.parse(edited_date); //in format yyyy-mm-dd
+                                        String edited_payment_type = selected_payment_type;
 
                                         int decimal_places = 0;
                                         //divide the amount string at "." to get the number of decimal places if there is a "."
@@ -417,7 +479,7 @@ public class TrackerFragment extends Fragment {
 
 
                                             //update data in database
-                                            boolean wasUpdated = myDb.updateData(entry_id,edited_text,edited_amount_formatted,edited_category,edited_date,text5);
+                                            boolean wasUpdated = myDb.updateData(entry_id,edited_text,edited_amount_formatted,edited_category,edited_date,text5,edited_payment_type);
 
 
                                             build_List();

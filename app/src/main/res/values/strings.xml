@@ -50,4 +50,8 @@
     <string name="to_line_chart">To Line Chart</string>
     <string name="to_bar_chart">To Bar Chart</string>
     <string name="to_info_chart">To Info Chart</string>
+    <string name="payment_type">Payment Type</string>
+    <string name="amount_req">Amount*</string>
+    <string name="description_opt">(Description)</string>
+    <string name="payment_type_opt">(Payment Type)</string>
 </resources>

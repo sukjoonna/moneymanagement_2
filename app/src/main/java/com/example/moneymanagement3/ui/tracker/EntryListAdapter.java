@@ -1,7 +1,10 @@
 package com.example.moneymanagement3.ui.tracker;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.Layout;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +35,7 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
     public View getView(int position, View convertView, ViewGroup parent) {
         //get the entry information
         String description = getItem(position).getDescription();
-        String category = getItem(position).getCategory();
+        String category = getItem(position).getCategory(); //in effect this textview will include category and payment type
         String amount = getItem(position).getAmount();
         String date = getItem(position).getDate();
 
@@ -48,9 +51,23 @@ public class EntryListAdapter extends ArrayAdapter<Entry> {
         TextView tv_date = convertView.findViewById(R.id.dateTv);
 
         tv_description.setText(description);
-        tv_category.setText(category);
         tv_entry_amount.setText(amount);
         tv_date.setText(date);
+
+        //bold just the category and italicize the payment type
+        int ind = category.indexOf("|");
+        SpannableStringBuilder cat_payment_span = new SpannableStringBuilder(category);
+
+        if (ind ==-1){
+            ind = category.length();
+            cat_payment_span.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, ind, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        else{
+            cat_payment_span.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, ind, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            cat_payment_span.setSpan(new android.text.style.StyleSpan(Typeface.ITALIC), ind+1, category.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        tv_category.setText(cat_payment_span);
 
         return convertView;
 

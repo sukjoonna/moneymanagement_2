@@ -41,6 +41,15 @@
         android:textColor="#201E1E"
         android:textSize="18sp" />
 
+    <TextView
+        android:id="@+id/edit_paymentTv"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:gravity="center"
+        android:text="@string/payment_type"
+        android:textColor="#201E1E"
+        android:textSize="18sp" />
+
     <Spinner
         android:id="@+id/edit_spinner"
         android:layout_width="wrap_content"
