@@ -71,6 +71,7 @@ public class TrackerFragment extends Fragment {
         spinner_cycles = view.findViewById(R.id.cycleSpn);
         text = "";
         amount_total = (double) 0;
+        selected_payment_type = "";
 
         //get database
         myDb = new DataBaseHelper(getActivity());
@@ -156,6 +157,10 @@ public class TrackerFragment extends Fragment {
                 String cat = res.getString(3);
                 LocalDate date = LocalDate.parse(res.getString(4));
                 String payment = res.getString(6);
+
+                if (payment.equals("None")){
+                    payment = "";
+                }
 
                 //Formatting the localdate ==> custom string format (Month name dd, yyyy)
                 formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
@@ -295,7 +300,9 @@ public class TrackerFragment extends Fragment {
                         et2.setText(res.getString(1));
                         String entry_category = res.getString(3);
 
-                        if(res.getString(6).equals("")){
+                        String abc = res.getString(6);
+
+                        if (res.getString(6).equals("None")){
                             tv4.setText("Payment Type");
                         }
                         else {
@@ -385,8 +392,8 @@ public class TrackerFragment extends Fragment {
 
 
                         //Payment type
+                        selected_payment_type = res.getString(6);
                         payment_types = new String[] {"Cash", "Credit", "Debit", "Check"};
-                        final int ind = Arrays.asList(payment_types).indexOf(res.getString(6));
                         tv4.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(final View view) {
@@ -406,8 +413,8 @@ public class TrackerFragment extends Fragment {
                                 alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {
                                     @RequiresApi(api = Build.VERSION_CODES.O)
                                     public void onClick(DialogInterface dialog, int which) {
-                                        if (selected_payment_type.equals("")){
-                                            alt_bld.setSingleChoiceItems(payment_types,0,null);
+                                        if (selected_payment_type.equals("None")){
+                                            alt_bld.setSingleChoiceItems(payment_types,-1,null);
                                             tv4.setText("Payment Type");
                                         }
                                         else{
@@ -450,6 +457,10 @@ public class TrackerFragment extends Fragment {
                                         String edited_date = new_date;
                                         LocalDate text5 = LocalDate.parse(edited_date); //in format yyyy-mm-dd
                                         String edited_payment_type = selected_payment_type;
+
+//                                        if (edited_payment_type.equals("")){
+//                                            edited_payment_type = "None";
+//                                        }
 
                                         int decimal_places = 0;
                                         //divide the amount string at "." to get the number of decimal places if there is a "."

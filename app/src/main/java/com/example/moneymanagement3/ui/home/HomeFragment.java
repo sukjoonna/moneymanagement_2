@@ -248,9 +248,9 @@ public class HomeFragment extends Fragment {
                     if (text1.equals("")){ //if description is empty, make it the category by default
                         text1 = text3;
                     }
-//                    if (text6.equals("")){
-//                        text6 = "N/A";
-//                    }
+                    if (text6.equals("")){
+                        text6 = "None";
+                    }
 
                     boolean isInserted = myDb.insertData(text1, text2_formatted, text3, text4, text5, text6); //insert data into database
 
