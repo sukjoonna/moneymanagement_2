@@ -10,12 +10,11 @@
         android:id="@+id/decal1"
         android:layout_width="333dp"
         android:layout_height="436dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/light_rectangle"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.277" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/decal3_paymenttype"
@@ -33,12 +32,12 @@
         android:layout_width="244dp"
         android:layout_height="198dp"
         android:background="@drawable/decal3"
-        app:layout_constraintBottom_toBottomOf="@id/textEt"
-        app:layout_constraintEnd_toEndOf="@id/paymentTv"
-        app:layout_constraintHorizontal_bias="0.515"
-        app:layout_constraintStart_toStartOf="@id/paymentTv"
-        app:layout_constraintTop_toTopOf="@id/amountEt"
-        app:layout_constraintVertical_bias="0.258" />
+        app:layout_constraintBottom_toBottomOf="@+id/decal1"
+        app:layout_constraintEnd_toEndOf="@+id/decal1"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="@+id/decal1"
+        app:layout_constraintTop_toTopOf="@+id/decal1"
+        app:layout_constraintVertical_bias="0.197" />
 
     <EditText
         android:id="@+id/textEt"
@@ -51,12 +50,11 @@
         android:inputType="textPersonName"
         android:textColor="#383E34"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/decal3_amount_des"
+        app:layout_constraintEnd_toEndOf="@+id/decal3_amount_des"
+        app:layout_constraintStart_toStartOf="@+id/decal3_amount_des"
         app:layout_constraintTop_toBottomOf="@+id/amountEt"
-        app:layout_constraintVertical_bias="0.04" />
+        app:layout_constraintVertical_bias="0.285" />
 
     <Button
         android:id="@+id/add1Btn"
@@ -82,34 +80,31 @@
         android:id="@+id/amountEt"
         android:layout_width="224dp"
         android:layout_height="83dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:gravity="center"
         android:hint="@string/amount_req"
         android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:textColor="#383E34"
+        android:textColorHint="#FF61685C"
         android:textSize="36sp"
         android:textStyle="bold"
-        android:textColorHint="#FF61685C"
-        app:layout_constraintBottom_toBottomOf="@+id/decal1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/decal1"
-        app:layout_constraintVertical_bias="0.178" />
+        app:layout_constraintEnd_toEndOf="@+id/decal3_amount_des"
+        app:layout_constraintStart_toStartOf="@+id/decal3_amount_des"
+        app:layout_constraintTop_toTopOf="@+id/decal3_amount_des" />
 
     <Spinner
         android:id="@+id/categorySpn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:textSize="100sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.597"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textEt"
-        app:layout_constraintVertical_bias="0.144" />
+        app:layout_constraintEnd_toEndOf="@+id/decal1"
+        app:layout_constraintHorizontal_bias="0.603"
+        app:layout_constraintStart_toStartOf="@+id/decal1"
+        app:layout_constraintTop_toBottomOf="@+id/decal3_amount_des" />
 
     <TextView
         android:id="@+id/paymentTv"
@@ -121,8 +116,9 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/decal1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/categorySpn" />
+        app:layout_constraintEnd_toEndOf="@+id/decal1"
+        app:layout_constraintStart_toStartOf="@+id/decal1"
+        app:layout_constraintTop_toBottomOf="@+id/categorySpn"
+        app:layout_constraintVertical_bias="0.408" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

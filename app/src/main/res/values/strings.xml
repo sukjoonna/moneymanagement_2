@@ -54,4 +54,9 @@
     <string name="amount_req">Amount*</string>
     <string name="description_opt">(Description)</string>
     <string name="payment_type_opt">(Payment Type)</string>
+    <string name="debit">Debit:</string>
+    <string name="credit">Credit:</string>
+    <string name="cash">Cash:</string>
+    <string name="check">Check:</string>
+    <string name="_0_00_dollar">$0.00</string>
 </resources>

@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingStart="30dp"
+            android:paddingStart="20dp"
             android:paddingTop="6dp"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:text="@string/Description"
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingStart="30dp"
+            android:paddingStart="20dp"
             android:paddingEnd="@dimen/activity_horizontal_margin"
             android:paddingBottom="5dp"
             android:text="@string/category" />
@@ -52,7 +52,7 @@
             android:gravity="end"
             android:paddingStart="@dimen/activity_horizontal_margin"
             android:paddingTop="4dp"
-            android:paddingEnd="30dp"
+            android:paddingEnd="20dp"
             android:text="@string/Amount"
             android:textColor="#1A1A1B"
             android:textSize="25sp" />
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:gravity="end"
             android:paddingStart="@dimen/activity_horizontal_margin"
-            android:paddingEnd="30dp"
+            android:paddingEnd="20dp"
             android:paddingBottom="5dp"
             android:text="@string/date"
             android:textStyle="italic" />

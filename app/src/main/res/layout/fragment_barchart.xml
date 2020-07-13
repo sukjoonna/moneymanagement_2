@@ -5,46 +5,163 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<!--    app:layout_constraintVertical_bias="0.023"   (spinner)  -->
+<!--    app:layout_constraintHorizontal_bias="0.843"-->
+
+
+    <TextView
+        android:id="@+id/debit_decal_Tv"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="316dp"
+        android:background="@drawable/decal3"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/debit"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/check_decal_Tv"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/decal3"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/check"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/debit_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/debit_decal_Tv"
+        app:layout_constraintTop_toBottomOf="@+id/cash_decal_Tv" />
 
     <Spinner
         android:id="@+id/cycleSpn"
         android:layout_width="342dp"
         android:layout_height="46dp"
+        android:layout_marginTop="200dp"
         android:gravity="center"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/debit_decal_Tv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.843"
+        app:layout_constraintHorizontal_bias="0.789"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.756" />
 
-
-
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChart"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:layout_marginTop="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.568"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+    <TextView
+        android:id="@+id/cash_decal_Tv"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/decal3"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/cash"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/debit_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/debit_decal_Tv"
+        app:layout_constraintTop_toBottomOf="@+id/credit_decal_Tv" />
 
     <Button
         android:id="@+id/gobackBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginBottom="64dp"
         android:background="@drawable/back_arrow"
         android:stateListAnimator="@animator/button_state_list_anim"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pieChart" />
+        app:layout_constraintTop_toBottomOf="@+id/check_decal_Tv"
+        app:layout_constraintVertical_bias="0.872" />
 
+    <TextView
+        android:id="@+id/credit_decal_Tv"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/decal3"
+        android:paddingStart="20dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/credit"
+        android:textAlignment="textStart"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/debit_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/debit_decal_Tv"
+        app:layout_constraintTop_toBottomOf="@+id/debit_decal_Tv" />
 
+    <TextView
+        android:id="@+id/debitTv"
+        android:layout_width="68dp"
+        android:layout_height="33dp"
+        android:text="@string/_0_00_dollar"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/debit_decal_Tv"
+        app:layout_constraintEnd_toEndOf="@+id/debit_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.872"
+        app:layout_constraintStart_toStartOf="@+id/debit_decal_Tv"
+        app:layout_constraintTop_toTopOf="@+id/debit_decal_Tv"
+        app:layout_constraintVertical_bias="0.529" />
+
+    <TextView
+        android:id="@+id/creditTv"
+        android:layout_width="68dp"
+        android:layout_height="33dp"
+        android:text="@string/_0_00_dollar"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/credit_decal_Tv"
+        app:layout_constraintEnd_toEndOf="@+id/credit_decal_Tv"
+        app:layout_constraintStart_toStartOf="@+id/credit_decal_Tv"
+        app:layout_constraintTop_toTopOf="@+id/credit_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.872"
+        app:layout_constraintVertical_bias="0.529" />
+
+    <TextView
+        android:id="@+id/cashTv"
+        android:layout_width="68dp"
+        android:layout_height="33dp"
+        android:text="@string/_0_00_dollar"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/cash_decal_Tv"
+        app:layout_constraintEnd_toEndOf="@+id/cash_decal_Tv"
+        app:layout_constraintStart_toStartOf="@+id/cash_decal_Tv"
+        app:layout_constraintTop_toTopOf="@+id/cash_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.872"
+        app:layout_constraintVertical_bias="0.529" />
+
+    <TextView
+        android:id="@+id/checkTv"
+        android:layout_width="68dp"
+        android:layout_height="33dp"
+        android:text="@string/_0_00_dollar"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/check_decal_Tv"
+        app:layout_constraintEnd_toEndOf="@+id/check_decal_Tv"
+        app:layout_constraintStart_toStartOf="@+id/check_decal_Tv"
+        app:layout_constraintTop_toTopOf="@+id/check_decal_Tv"
+        app:layout_constraintHorizontal_bias="0.872"
+        app:layout_constraintVertical_bias="0.529" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

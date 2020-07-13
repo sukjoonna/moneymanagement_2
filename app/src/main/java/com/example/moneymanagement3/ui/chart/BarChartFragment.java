@@ -55,20 +55,13 @@ public class BarChartFragment extends Fragment {
     String cycle_input;
     ArrayList<String> cycles;
     Spinner spinner_cycles;
-    PieChart pieChart;
-    PieData pieData;
-    PieDataSet pieDataSet;
-    ArrayList pieEntries;
-    ArrayList PieEntryLabels;
     /////
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_piechart, container, false);
+        view = inflater.inflate(R.layout.fragment_barchart, container, false);
         view.setBackgroundColor(Color.WHITE);
         btn1 = view.findViewById(R.id.gobackBtn);
-
-        myDb = new DataBaseHelper(getActivity());
 
         //get database
         myDb = new DataBaseHelper(getActivity());
@@ -104,38 +97,15 @@ public class BarChartFragment extends Fragment {
         spinner_cycles.setAdapter(spn_cyc_adapter);
         //------------------------------------------------END-----------------------------------------------//
 
-        //Pie Chart
-        pieChart = view.findViewById(R.id.pieChart);
-        startdate = LocalDate.parse(res3.getString(0));
-        enddate = LocalDate.parse(res3.getString(1));
-        pieChartMaker(startdate,enddate);
 
-        ////////////////////////
-        //What the spinner does when item is selected / not selected
-        spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
-                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                int inverted_pos = (cycles.size() - 1) - position;
-                res4.moveToPosition(inverted_pos);
-                startdate = LocalDate.parse(res4.getString(0));
-                enddate = LocalDate.parse(res4.getString(1));
-                pieChartMaker(startdate,enddate);
-                Log.d("onselect", "onItemSelected: ");
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //Object item = adapterView.getItemAtPosition(0);
-                res3.moveToFirst();
-                startdate = LocalDate.parse(res3.getString(0));
-                enddate = LocalDate.parse(res3.getString(1));
-                pieChartMaker(startdate,enddate);
-                Log.d("noneselect", "onNothingSelected: ");
 
-            }
-        });
-        /////////////////////////////////
+
+
+
+
+
+
+
         onClick_GoBackBtn();
 
         return view;
@@ -223,54 +193,6 @@ public class BarChartFragment extends Fragment {
         //******************************************************************************new added
 
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-
-    public void pieChartMaker(LocalDate startDate,LocalDate endDate){
-        pieChart.invalidate();////
-        getEntries(startDate,endDate);
-        pieDataSet = new PieDataSet(pieEntries, "");
-        pieData = new PieData(pieDataSet);
-        pieChart.setData(pieData);
-        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        pieDataSet.setSliceSpace(2f);
-        pieDataSet.setValueTextColor(Color.WHITE);
-        pieDataSet.setValueTextSize(10f);
-        pieDataSet.setSliceSpace(5f);
-        pieChart.setUsePercentValues(true);
-        pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
-        pieChart.setUsePercentValues(true);
-        pieChart.getLegend().setEnabled(false);
-        pieData.notifyDataChanged();////
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getEntries(LocalDate startDate,LocalDate endDate) {
-        Cursor table3Res = myDb.get_setting();
-        Cursor dataInRangeRes;
-        Double monthlyTotal = 0.0;
-        pieEntries = new ArrayList<>();
-        float percentUsage;
-
-        dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate.minusDays(1),endDate);
-
-
-        // sums the total amount of money used
-        while(dataInRangeRes.moveToNext()){
-            //     Log.d("myTag", "This is my while loop!");
-            monthlyTotal = monthlyTotal + Double.valueOf(dataInRangeRes.getString(1));
-        }
-
-        // reverses the direction and then put in the amount as a percent of total used
-        while(dataInRangeRes.moveToPrevious()){
-            percentUsage = (float) (Float.parseFloat(dataInRangeRes.getString(1)) / monthlyTotal);
-            pieEntries.add(new PieEntry(percentUsage, dataInRangeRes.getString(0)));
-        }
-
-
-    }
-
 
 
     public void onClick_GoBackBtn () {
