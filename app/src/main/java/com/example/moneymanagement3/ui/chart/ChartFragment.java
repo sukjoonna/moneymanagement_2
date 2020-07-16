@@ -110,7 +110,7 @@ public class ChartFragment extends Fragment {
         //Button to go back to settings
         btn_to_infochart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                PieChartFragment frag= new PieChartFragment();
+                InfoFragment frag= new InfoFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, frag, "chartFrag")
                         .commit();

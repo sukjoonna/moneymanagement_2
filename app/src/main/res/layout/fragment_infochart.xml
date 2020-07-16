@@ -5,46 +5,97 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <Spinner
-        android:id="@+id/cycleSpn"
-        android:layout_width="342dp"
-        android:layout_height="46dp"
+    <TextView
+        android:id="@+id/totalTv"
+        android:layout_width="232dp"
+        android:layout_height="75dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/decal2"
+        android:elevation="5dp"
         android:gravity="center"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="5dp"
+        android:text="@string/_0_00"
+        android:textColor="#3C4E30"
+        android:textSize="50sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.843"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChart"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:layout_marginTop="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="367dp"
+        android:layout_height="303dp"
+        android:layout_marginTop="8dp"
+        android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.568"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/customDatesTv" />
+
+    <Button
+        android:id="@+id/setDatesBtn"
+        android:layout_width="199dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_drawable"
+        android:fontFamily="sans-serif-black"
+        android:stateListAnimator="@animator/button_state_list_anim"
+        android:text="@string/select_dates"
+        android:textColor="#F3F8F0"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listView" />
+
+    <Button
+        android:id="@+id/chooseToShowBtn"
+        android:layout_width="199dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/button_drawable"
+        android:fontFamily="sans-serif-black"
+        android:stateListAnimator="@animator/button_state_list_anim"
+        android:text="@string/choose_to_show"
+        android:textColor="#F3F8F0"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/setDatesBtn" />
 
     <Button
         android:id="@+id/gobackBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/back_arrow"
         android:stateListAnimator="@animator/button_state_list_anim"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chooseToShowBtn"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/customDatesTv"
+        android:layout_width="263dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/dates"
+        android:textAlignment="center"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pieChart" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/totalTv" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

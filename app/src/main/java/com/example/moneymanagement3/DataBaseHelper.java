@@ -126,6 +126,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getDataByCategory(LocalDate StartDate, LocalDate EndDate, String category) {
+        //Table 1
+        // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ")" + "AND " + "CATEGORY = ?" ,new String[]{category});
+        return res;
+    }
+
+    public Cursor getDataByPaymentType(LocalDate StartDate, LocalDate EndDate, String payment_type) {
+        //Table 1
+        // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ")" + "AND " + "PAYMENT_TYPE = ?" ,new String[]{payment_type});
+        return res;
+    }
+
     public Cursor getCategoricalBudgetDateRange(LocalDate StartDate, LocalDate EndDate) {
         //Table 1
         // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
