@@ -258,28 +258,18 @@ public class LineChartFragment extends Fragment {
     private void getEntries(LocalDate startDate,LocalDate endDate) {
         Cursor table3Res = myDb.get_setting();
         Cursor dataInRangeRes;
-        Double monthlyTotal = 0.0;
+        Float monthlyTotal = (float) 0;
+        Float currentMonthAmount;
         lineEntries = new ArrayList<>();
-        float percentUsage;
+        int x = 0;
 
-        dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate.minusDays(1),endDate);
+        dataInRangeRes = myDb.getLineChartMonthly(startDate.minusDays(1),endDate);
 
-
-        // sums the total amount of money used
         while(dataInRangeRes.moveToNext()){
-            //     Log.d("myTag", "This is my while loop!");
-            monthlyTotal = monthlyTotal + Double.valueOf(dataInRangeRes.getString(1));
-        }
-
-        // reverses the direction and then put in the amount as a percent of total used
-        while(dataInRangeRes.moveToPrevious()){
-            lineEntries = new ArrayList<>();
-            lineEntries.add(new Entry(2f, 0));
-            lineEntries.add(new Entry(4f, 1));
-            lineEntries.add(new Entry(6f, 1));
-            lineEntries.add(new Entry(8f, 3));
-            lineEntries.add(new Entry(7f, 4));
-            lineEntries.add(new Entry(3f, 3));
+            currentMonthAmount = Float.parseFloat(dataInRangeRes.getString(0));
+            monthlyTotal = monthlyTotal + currentMonthAmount;
+            lineEntries.add(new Entry(x, monthlyTotal));
+            x++;
         }
 
 

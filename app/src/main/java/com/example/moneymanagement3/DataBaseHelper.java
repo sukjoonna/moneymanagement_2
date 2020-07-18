@@ -150,6 +150,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getLineChartMonthly(LocalDate StartDate, LocalDate EndDate) {
+        //Table 1
+        // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably
+        SQLiteDatabase db = this.getWritableDatabase();
+        //Cursor res = db.rawQuery("select CATEGORY,SUM(AMOUNT) FROM " + TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ") " + " GROUP BY CATEGORY",null);
+        Cursor res = db.rawQuery("SELECT SUM(AMOUNT) AS MONTHLYTOTAL, strftime(" + "\"" + "%m-%Y"+ "\"" + ", date) as 'month-year' from " + TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ") " +" group by strftime(" +"\"" + "%m-%Y" + "\"" + ", DATE) ORDER BY date ASC",null);
+        return res;
+    }
+
+
     public Cursor getPaymentTypesDateRange(LocalDate StartDate, LocalDate EndDate) {
         //Table 1
         // this would mainly be for our charts, we insert two timestamp and do some comparisons ez pz probably

@@ -476,15 +476,12 @@ public class PieChartFragment extends Fragment {
 
         dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate.minusDays(1),endDate);
 
-
         // sums the total amount of money used
         while(dataInRangeRes.moveToNext()){
-            //     Log.d("myTag", "This is my while loop!");
             monthlyTotal = monthlyTotal + Double.valueOf(dataInRangeRes.getString(1));
         }
 
         dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate.minusDays(1),endDate);
-        // reverses the direction and then put in the amount as a percent of total used
         while(dataInRangeRes.moveToNext()){
             percentUsage = (float) (Float.parseFloat(dataInRangeRes.getString(1)) / monthlyTotal);
             pieEntries.add(new PieEntry(percentUsage, dataInRangeRes.getString(0)));
