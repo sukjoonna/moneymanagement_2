@@ -27,6 +27,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.time.LocalDate;
@@ -229,6 +231,26 @@ public class LineChartFragment extends Fragment {
         lineDataSet.setValueTextSize(18f);
         lineChart.getLegend().setEnabled(false);
         lineData.notifyDataChanged();////
+        lineChart.setTouchEnabled(true);
+        //////////////////////
+        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
+        {
+            @Override
+            public void onValueSelected(Entry e, Highlight h)
+            {
+                float x=e.getX();
+                Log.d("mytag", String.valueOf(x));
+                float y=e.getY();
+                Log.d("mytag", String.valueOf(y));
+            }
+
+            @Override
+            public void onNothingSelected()
+            {
+
+            }
+        });
+        ////////////////////////////////////////////////
 
     }
 
