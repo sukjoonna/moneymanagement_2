@@ -1,7 +1,9 @@
 package com.example.moneymanagement3.ui.chart;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -27,6 +30,7 @@ import com.example.moneymanagement3.R;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -35,6 +39,8 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.datepicker.MaterialDatePicker;
+
 import android.graphics.Color;
 
 
@@ -44,13 +50,13 @@ public class ChartFragment extends Fragment {
     Button btn_to_piechart;
     Button btn_to_linechart;
     Button btn_to_barchart;
-    Button btn_to_infochart;
+    Button btn_to_infochart; Button btn;
     /////
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chart, container, false);
+        final View view = inflater.inflate(R.layout.fragment_chart, container, false);
 
         btn_to_linechart = view.findViewById(R.id.to_linechart_btn);
         onClick_toLineChartBtn();
@@ -63,6 +69,24 @@ public class ChartFragment extends Fragment {
 
         btn_to_infochart = view.findViewById(R.id.to_infochart_btn);
         onClick_toInfoChartBtn();
+
+
+
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("Title");
+        final MaterialDatePicker<Long> picker = builder.build();
+
+
+        btn = view.findViewById(R.id.btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                picker.show(getFragmentManager(), picker.toString());
+
+
+            }
+        });
+
+
 
         return view;
     }
@@ -117,6 +141,8 @@ public class ChartFragment extends Fragment {
             }
         });
     }
+
+
 
 
 }

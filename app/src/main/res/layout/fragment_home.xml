@@ -80,7 +80,7 @@
         android:id="@+id/amountEt"
         android:layout_width="224dp"
         android:layout_height="83dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="36dp"
         android:ems="10"
         android:gravity="center"
         android:hint="@string/amount_req"
