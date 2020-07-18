@@ -44,16 +44,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/to_linechart_btn"
         app:layout_constraintEnd_toEndOf="@+id/to_barchart_btn" />
 
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="130dp"
-        android:layout_height="78dp"
-        android:layout_marginBottom="128dp"
-        android:text="button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -76,15 +76,6 @@ public class ChartFragment extends Fragment {
 
 
 
-        btn = view.findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-
-
-            }
-        });
-
-
 
         return view;
     }
