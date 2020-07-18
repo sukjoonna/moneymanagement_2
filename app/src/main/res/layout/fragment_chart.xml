@@ -16,7 +16,9 @@
         app:layout_constraintHorizontal_bias="0.124"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.196" />
+        app:layout_constraintVertical_bias="0.196"
+        android:background="@drawable/button_drawable2"
+        android:stateListAnimator="@animator/button_state_list_anim"/>
 
     <Button
         android:id="@+id/to_linechart_btn"
@@ -25,7 +27,9 @@
         android:layout_marginTop="24dp"
         android:text="@string/to_line_chart"
         app:layout_constraintStart_toStartOf="@+id/to_piechart_btn"
-        app:layout_constraintTop_toBottomOf="@+id/to_piechart_btn" />
+        app:layout_constraintTop_toBottomOf="@+id/to_piechart_btn"
+        android:background="@drawable/button_drawable2"
+        android:stateListAnimator="@animator/button_state_list_anim"/>
 
     <Button
         android:id="@+id/to_barchart_btn"
@@ -34,7 +38,9 @@
         android:layout_marginStart="8dp"
         android:text="@string/to_bar_chart"
         app:layout_constraintStart_toEndOf="@+id/to_piechart_btn"
-        app:layout_constraintTop_toTopOf="@+id/to_piechart_btn" />
+        app:layout_constraintTop_toTopOf="@+id/to_piechart_btn"
+        android:background="@drawable/button_drawable2"
+        android:stateListAnimator="@animator/button_state_list_anim"/>
 
     <Button
         android:id="@+id/to_infochart_btn"
@@ -42,7 +48,9 @@
         android:layout_height="187dp"
         android:text="@string/to_info_chart"
         app:layout_constraintBottom_toBottomOf="@+id/to_linechart_btn"
-        app:layout_constraintEnd_toEndOf="@+id/to_barchart_btn" />
+        app:layout_constraintEnd_toEndOf="@+id/to_barchart_btn"
+        android:background="@drawable/button_drawable2"
+        android:stateListAnimator="@animator/button_state_list_anim"/>
 
 
 
