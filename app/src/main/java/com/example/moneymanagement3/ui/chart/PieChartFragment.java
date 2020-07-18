@@ -129,7 +129,8 @@ public class PieChartFragment extends Fragment {
             @Override
             public void onNothingSelected()
             {
-
+                catTotal.setTextSize(25);
+                catTotal.setText("Select a Category");
             }
         });
 
@@ -325,11 +326,20 @@ public class PieChartFragment extends Fragment {
 
                                         btn_setEndDate.setOnClickListener(new View.OnClickListener() {
                                             public void onClick(View v) {
-                                                DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
-                                                        temp_startdate.getYear(),
-                                                        temp_startdate.getMonthValue()-1,
-                                                        temp_startdate.getDayOfMonth());
-                                                datePickerDialog.show();
+                                                if(temp_startdate!=null){
+                                                    DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
+                                                            temp_startdate.getYear(),
+                                                            temp_startdate.getMonthValue()-1,
+                                                            temp_startdate.getDayOfMonth());
+                                                    datePickerDialog.show();
+                                                }
+                                                else{
+                                                    DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
+                                                            Calendar.getInstance().get(Calendar.YEAR),
+                                                            Calendar.getInstance().get(Calendar.MONTH),
+                                                            Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                                                    datePickerDialog.show();
+                                                }
                                             }
                                         });
 
