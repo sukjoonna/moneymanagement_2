@@ -400,9 +400,9 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
                                         btn_setEndDate.setOnClickListener(new View.OnClickListener() {
                                             public void onClick(View v) {
                                                 DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
-                                                        Calendar.getInstance().get(Calendar.YEAR),
-                                                        Calendar.getInstance().get(Calendar.MONTH),
-                                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                                                        temp_startdate.getYear(),
+                                                        temp_startdate.getMonthValue()-1,
+                                                        temp_startdate.getDayOfMonth());
                                                 datePickerDialog.show();
                                             }
                                         });
