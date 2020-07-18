@@ -12,11 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -26,22 +22,19 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
-import com.example.moneymanagement3.ui.budget.BudgetFragment;
-import com.example.moneymanagement3.ui.budget.SetBudgetCatFragment;
-import com.example.moneymanagement3.ui.setting.ManageCatFragment;
-import com.example.moneymanagement3.ui.setting.SettingFragment;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 public class LineChartFragment extends Fragment {
     View view;
@@ -55,16 +48,16 @@ public class LineChartFragment extends Fragment {
     String cycle_input;
     ArrayList<String> cycles;
     Spinner spinner_cycles;
-    PieChart pieChart;
-    PieData pieData;
-    PieDataSet pieDataSet;
-    ArrayList pieEntries;
-    ArrayList PieEntryLabels;
+    LineChart lineChart;
+    LineData lineData;
+    LineDataSet lineDataSet;
+    ArrayList lineEntries;
+    ArrayList LineEntryLabels;
     /////
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_piechart, container, false);
+        view = inflater.inflate(R.layout.fragment_linechart, container, false);
         view.setBackgroundColor(Color.WHITE);
         btn1 = view.findViewById(R.id.gobackBtn);
 
@@ -105,7 +98,7 @@ public class LineChartFragment extends Fragment {
         //------------------------------------------------END-----------------------------------------------//
 
         //Line Chart
-        pieChart = view.findViewById(R.id.pieChart);
+        lineChart = view.findViewById(R.id.lineChart);
         startdate = LocalDate.parse(res3.getString(0));
         enddate = LocalDate.parse(res3.getString(1));
         lineChartMaker(startdate,enddate);
@@ -227,21 +220,37 @@ public class LineChartFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
 
     public void lineChartMaker(LocalDate startDate,LocalDate endDate){
-        pieChart.invalidate();////
+        lineChart.invalidate();////
         getEntries(startDate,endDate);
-        pieDataSet = new PieDataSet(pieEntries, "");
-        pieData = new PieData(pieDataSet);
-        pieChart.setData(pieData);
-        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
-        pieDataSet.setSliceSpace(2f);
-        pieDataSet.setValueTextColor(Color.WHITE);
-        pieDataSet.setValueTextSize(10f);
-        pieDataSet.setSliceSpace(5f);
-        pieChart.setUsePercentValues(true);
-        pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
-        pieChart.setUsePercentValues(true);
-        pieChart.getLegend().setEnabled(false);
-        pieData.notifyDataChanged();////
+        lineDataSet = new LineDataSet(lineEntries, "");
+        lineData = new LineData(lineDataSet);
+        lineChart.setData(lineData);
+       // lineDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        lineDataSet.setValueTextColor(Color.BLACK);
+        lineDataSet.setValueTextColor(Color.WHITE);
+        lineDataSet.setValueTextSize(18f);
+        lineChart.getLegend().setEnabled(false);
+        lineData.notifyDataChanged();////
+        lineChart.setTouchEnabled(true);
+        //////////////////////
+        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
+        {
+            @Override
+            public void onValueSelected(Entry e, Highlight h)
+            {
+                float x=e.getX();
+                Log.d("mytag", String.valueOf(x));
+                float y=e.getY();
+                Log.d("mytag", String.valueOf(y));
+            }
+
+            @Override
+            public void onNothingSelected()
+            {
+
+            }
+        });
+        ////////////////////////////////////////////////
 
     }
 
@@ -250,7 +259,7 @@ public class LineChartFragment extends Fragment {
         Cursor table3Res = myDb.get_setting();
         Cursor dataInRangeRes;
         Double monthlyTotal = 0.0;
-        pieEntries = new ArrayList<>();
+        lineEntries = new ArrayList<>();
         float percentUsage;
 
         dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate.minusDays(1),endDate);
@@ -264,14 +273,17 @@ public class LineChartFragment extends Fragment {
 
         // reverses the direction and then put in the amount as a percent of total used
         while(dataInRangeRes.moveToPrevious()){
-            percentUsage = (float) (Float.parseFloat(dataInRangeRes.getString(1)) / monthlyTotal);
-            pieEntries.add(new PieEntry(percentUsage, dataInRangeRes.getString(0)));
+            lineEntries = new ArrayList<>();
+            lineEntries.add(new Entry(2f, 0));
+            lineEntries.add(new Entry(4f, 1));
+            lineEntries.add(new Entry(6f, 1));
+            lineEntries.add(new Entry(8f, 3));
+            lineEntries.add(new Entry(7f, 4));
+            lineEntries.add(new Entry(3f, 3));
         }
 
 
     }
-
-
 
     public void onClick_GoBackBtn () {
         //Button to go back to settings
@@ -279,7 +291,7 @@ public class LineChartFragment extends Fragment {
             public void onClick(View v) {
                 ChartFragment frag= new ChartFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, frag, "piechartFrag")
+                        .replace(R.id.fragment_container, frag, "linechartFrag")
                         .commit();
             }
         });

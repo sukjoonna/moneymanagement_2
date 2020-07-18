@@ -31,10 +31,13 @@ import com.example.moneymanagement3.ui.budget.SetBudgetCatFragment;
 import com.example.moneymanagement3.ui.setting.ManageCatFragment;
 import com.example.moneymanagement3.ui.setting.SettingFragment;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.time.LocalDate;
@@ -60,6 +63,8 @@ public class PieChartFragment extends Fragment {
     PieDataSet pieDataSet;
     ArrayList pieEntries;
     ArrayList PieEntryLabels;
+    Cursor dataInRangeRes;
+    TextView catTotal;
     /////
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -103,12 +108,35 @@ public class PieChartFragment extends Fragment {
         ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text, cycles);
         spinner_cycles.setAdapter(spn_cyc_adapter);
         //------------------------------------------------END-----------------------------------------------//
-
+        catTotal = view.findViewById(R.id.pChartCatTotal);
+        catTotal.setText("Select a Category");
         //Pie Chart
         pieChart = view.findViewById(R.id.pieChart);
         startdate = LocalDate.parse(res3.getString(0));
         enddate = LocalDate.parse(res3.getString(1));
         pieChartMaker(startdate,enddate);
+
+        //////////////////////
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
+        {
+            @Override
+            public void onValueSelected(Entry e, Highlight h)
+            {
+                float x=h.getX();
+                dataInRangeRes.moveToPosition(Math.round(x));
+               // Log.d("mytag", h.toString());
+                Log.d("mytag", dataInRangeRes.getString(0));
+                catTotal.setText(dataInRangeRes.getString(1));
+
+            }
+
+            @Override
+            public void onNothingSelected()
+            {
+
+            }
+        });
+        ////////////////////////////////////////////////
 
         ////////////////////////
         //What the spinner does when item is selected / not selected
@@ -241,14 +269,11 @@ public class PieChartFragment extends Fragment {
         pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
         pieChart.setUsePercentValues(true);
         pieChart.getLegend().setEnabled(false);
-        pieData.notifyDataChanged();////
-
+        pieData.notifyDataChanged();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getEntries(LocalDate startDate,LocalDate endDate) {
-        Cursor table3Res = myDb.get_setting();
-        Cursor dataInRangeRes;
         Double monthlyTotal = 0.0;
         pieEntries = new ArrayList<>();
         float percentUsage;
@@ -262,8 +287,9 @@ public class PieChartFragment extends Fragment {
             monthlyTotal = monthlyTotal + Double.valueOf(dataInRangeRes.getString(1));
         }
 
+        dataInRangeRes = myDb.getCategoricalBudgetDateRange(startDate.minusDays(1),endDate);
         // reverses the direction and then put in the amount as a percent of total used
-        while(dataInRangeRes.moveToPrevious()){
+        while(dataInRangeRes.moveToNext()){
             percentUsage = (float) (Float.parseFloat(dataInRangeRes.getString(1)) / monthlyTotal);
             pieEntries.add(new PieEntry(percentUsage, dataInRangeRes.getString(0)));
         }
