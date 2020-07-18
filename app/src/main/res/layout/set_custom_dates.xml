@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="60dp" />
+
+    <Button
+        android:id="@+id/startBtn"
+        android:layout_width="140dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:background="@drawable/decal3"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:stateListAnimator="@animator/button_state_list_anim"
+        android:text="@string/start_date"
+        android:textColor="#6C7169"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="10dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/to_low"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="10dp" />
+
+
+
+    <Button
+        android:id="@+id/endBtn"
+        android:layout_width="140dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:background="@drawable/decal3"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:stateListAnimator="@animator/button_state_list_anim"
+        android:text="@string/end_date"
+        android:textColor="#FF6C7169"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="20dp" />
+
+</LinearLayout>

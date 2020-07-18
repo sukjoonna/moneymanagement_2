@@ -34,7 +34,7 @@
         android:fontFamily="sans-serif-condensed-light"
         android:gravity="center"
         android:text="@string/outof0_00"
-        android:textColor="#61685C"
+        android:textColor="#93AF7F"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

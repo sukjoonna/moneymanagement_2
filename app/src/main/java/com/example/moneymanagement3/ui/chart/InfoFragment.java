@@ -1,5 +1,6 @@
 package com.example.moneymanagement3.ui.chart;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,9 +37,10 @@ import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
-public class InfoFragment extends Fragment {
+public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     View view;
     DataBaseHelper myDb;
     Button btn1;
@@ -56,6 +59,11 @@ public class InfoFragment extends Fragment {
     Button btn_chooseToShow; Button btn_selectDates; Button btn_categories; Button btn_paymentTypes; Button btn_all;
     LocalDate cycle_startdate;
     LocalDate cycle_enddate;
+    Button btn_setStartDate;
+    Button btn_setEndDate;
+    DatePickerDialog.OnDateSetListener mDateSetListener_start;     DatePickerDialog.OnDateSetListener mDateSetListener_end;
+    LocalDate temp_startdate;
+    LocalDate temp_enddate;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -218,7 +226,7 @@ public class InfoFragment extends Fragment {
                 //creates a second alert dialog
                 AlertDialog.Builder adb2 = new AlertDialog.Builder(view.getContext());
                 //creates edit texts in the second alert dialog
-                LayoutInflater inflater = getLayoutInflater();
+                final LayoutInflater inflater = getLayoutInflater();
                 final View view_alertButtons = inflater.inflate(R.layout.alert_buttons_layout, null);
 
                 final Button btn_currentCycle = view_alertButtons.findViewById(R.id.btn1);
@@ -364,15 +372,118 @@ public class InfoFragment extends Fragment {
                             @RequiresApi(api = Build.VERSION_CODES.O)
                             public void onClick(View v) {
 
+                                AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+                                LayoutInflater inflater = getLayoutInflater();
+                                final View view_setCustomDateBtns = inflater.inflate(R.layout.set_custom_dates, null);
+                                adb.setView(view_setCustomDateBtns);
+                                adb.setNeutralButton("Back",null);
+                                adb.setPositiveButton("Set",null);
 
-//                                MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-//                                builder.setTitleText("Title");
-//                                final MaterialDatePicker<Long> picker = builder.build();
-//                                picker.show(getFragmentManager(), picker.toString());
+                                final AlertDialog alertDialog3 = adb.create();
 
+                                alertDialog3.setOnShowListener(new DialogInterface.OnShowListener() {
+                                    @Override
+                                    public void onShow(final DialogInterface dialog) {
+                                        btn_setStartDate = view_setCustomDateBtns.findViewById(R.id.startBtn);
+                                        btn_setEndDate = view_setCustomDateBtns.findViewById(R.id.endBtn);
 
+                                        btn_setStartDate.setOnClickListener(new View.OnClickListener() {
+                                            public void onClick(View v) {
+                                                DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_start,
+                                                        Calendar.getInstance().get(Calendar.YEAR),
+                                                        Calendar.getInstance().get(Calendar.MONTH),
+                                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                                                datePickerDialog.show();
+                                            }
+                                        });
 
-                                dialog.dismiss();
+                                        btn_setEndDate.setOnClickListener(new View.OnClickListener() {
+                                            public void onClick(View v) {
+                                                DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
+                                                        Calendar.getInstance().get(Calendar.YEAR),
+                                                        Calendar.getInstance().get(Calendar.MONTH),
+                                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                                                datePickerDialog.show();
+                                            }
+                                        });
+
+                                        mDateSetListener_start = new DatePickerDialog.OnDateSetListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.O)
+                                            @Override
+                                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                                month = month + 1;
+
+                                                String month_string = String.valueOf(month);
+                                                String day_string = String.valueOf(day);
+                                                if (month_string.length() < 2){
+                                                    month_string = "0" + month_string;
+                                                }
+                                                if (day_string.length() < 2){
+                                                    day_string = "0" + day_string;
+                                                }
+                                                String date = year + "-" + month_string + "-" + day_string;
+                                                temp_startdate = LocalDate.parse(date);
+                                                btn_setStartDate.setText(temp_startdate.format(formatter));
+
+                                            }
+                                        };
+
+                                        mDateSetListener_end = new DatePickerDialog.OnDateSetListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.O)
+                                            @Override
+                                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                                month = month + 1;
+
+                                                String month_string = String.valueOf(month);
+                                                String day_string = String.valueOf(day);
+                                                if (month_string.length() < 2){
+                                                    month_string = "0" + month_string;
+                                                }
+                                                if (day_string.length() < 2){
+                                                    day_string = "0" + day_string;
+                                                }
+                                                String date = year + "-" + month_string + "-" + day_string;
+                                                temp_enddate = LocalDate.parse(date);
+                                                btn_setEndDate.setText(temp_enddate.format(formatter));
+                                            }
+                                        };
+
+                                        //set button (first alertdialog)
+                                        Button positiveButton = alertDialog3.getButton(AlertDialog.BUTTON_POSITIVE);
+                                        positiveButton.setOnClickListener(new View.OnClickListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.O)
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                if (temp_startdate.isAfter(temp_enddate)){
+                                                    AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+                                                    adb.setTitle("The start date is after the end date");
+                                                    btn_setEndDate.setText("End Date");
+                                                    adb.setPositiveButton("Okay", null);
+                                                    adb.show();
+                                                }
+                                                else{
+                                                    startdate_this = temp_startdate;
+                                                    enddate_this = temp_enddate;
+
+                                                    ArrayList<Cursor> arr = new ArrayList<>();
+                                                    arr.add(myDb.getDataDateRange(startdate_this,enddate_this));
+                                                    build_List(arr);
+                                                    set_total();
+                                                    set_listview();
+
+                                                    dialog.dismiss();
+                                                    alertDialog.dismiss();
+
+                                                }
+
+                                            }
+                                        });
+
+                                    }
+                                });
+                                alertDialog3.show();
+
                             }
 
                         });
@@ -642,5 +753,11 @@ public class InfoFragment extends Fragment {
                         .commit();
             }
         });
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+
     }
 }

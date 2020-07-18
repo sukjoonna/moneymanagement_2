@@ -62,4 +62,9 @@
     <string name="select_dates">Select Dates</string>
     <string name="choose_to_show">Choose to Show</string>
     <string name="category">Category</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="to_low">to</string>
 </resources>

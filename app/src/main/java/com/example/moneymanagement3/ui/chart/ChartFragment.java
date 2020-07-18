@@ -21,8 +21,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
@@ -42,6 +44,8 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import android.graphics.Color;
+
+import ru.slybeaver.slycalendarview.SlyCalendarDialog;
 
 
 public class ChartFragment extends Fragment {
@@ -72,15 +76,9 @@ public class ChartFragment extends Fragment {
 
 
 
-        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-        builder.setTitleText("Title");
-        final MaterialDatePicker<Long> picker = builder.build();
-
-
         btn = view.findViewById(R.id.btn);
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                picker.show(getFragmentManager(), picker.toString());
 
 
             }
