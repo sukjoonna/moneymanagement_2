@@ -78,6 +78,8 @@ public class LineChartFragment extends Fragment {
         btn_selectDates = view.findViewById(R.id.setDatesBtn2);
         tv_customDates = view.findViewById(R.id.customDatesTv2);
 
+        formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
+
         //get database
         myDb = new DataBaseHelper(getActivity());
 
@@ -95,7 +97,7 @@ public class LineChartFragment extends Fragment {
         lineChart = view.findViewById(R.id.lineChart);
         startdate = LocalDate.parse(res3.getString(0));
         enddate = LocalDate.parse(res3.getString(1));
-        lineChartMaker(startdate,enddate);
+        lineChartMaker(startdate_this,enddate_this);
 
         ////////////////////////
         //What the spinner does when item is selected / not selected
