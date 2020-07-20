@@ -10,27 +10,59 @@
 
 
     <TextView
+        android:id="@+id/customDatesTv"
+        android:layout_width="349dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/dates"
+        android:textAlignment="center"
+        android:textColor="#4B5544"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/debit_decal_Tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/setDatesBtn"
+        android:layout_width="199dp"
+        android:layout_height="44dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_drawable"
+        android:fontFamily="sans-serif-black"
+        android:stateListAnimator="@animator/button_state_list_anim"
+        android:text="@string/select_dates"
+        android:textColor="#F3F8F0"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/gobackBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
         android:id="@+id/debit_decal_Tv"
-        android:layout_width="240dp"
-        android:layout_height="50dp"
-        android:layout_marginBottom="316dp"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
         android:background="@drawable/decal3"
+        android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingTop="10dp"
         android:paddingEnd="20dp"
         android:paddingBottom="10dp"
         android:text="@string/debit"
-        android:textAlignment="textStart"
-        android:textSize="24sp"
+        android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.224" />
 
     <TextView
         android:id="@+id/check_decal_Tv"
-        android:layout_width="240dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/decal3"
         android:paddingStart="20dp"
@@ -38,32 +70,19 @@
         android:paddingEnd="20dp"
         android:paddingBottom="10dp"
         android:text="@string/check"
-        android:textAlignment="textStart"
-        android:textSize="24sp"
+        android:gravity="center_vertical"
+        android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/debit_decal_Tv"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/debit_decal_Tv"
         app:layout_constraintTop_toBottomOf="@+id/cash_decal_Tv" />
 
-    <Spinner
-        android:id="@+id/cycleSpn"
-        android:layout_width="342dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="200dp"
-        android:gravity="center"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/debit_decal_Tv"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.789"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.756" />
 
     <TextView
         android:id="@+id/cash_decal_Tv"
-        android:layout_width="240dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/decal3"
         android:paddingStart="20dp"
@@ -71,31 +90,19 @@
         android:paddingEnd="20dp"
         android:paddingBottom="10dp"
         android:text="@string/cash"
-        android:textAlignment="textStart"
-        android:textSize="24sp"
+        android:gravity="center_vertical"
+        android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/debit_decal_Tv"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/debit_decal_Tv"
         app:layout_constraintTop_toBottomOf="@+id/credit_decal_Tv" />
 
-    <Button
-        android:id="@+id/gobackBtn"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="64dp"
-        android:background="@drawable/back_arrow"
-        android:stateListAnimator="@animator/button_state_list_anim"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/check_decal_Tv"
-        app:layout_constraintVertical_bias="0.872" />
 
     <TextView
         android:id="@+id/credit_decal_Tv"
-        android:layout_width="240dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/decal3"
         android:paddingStart="20dp"
@@ -103,13 +110,25 @@
         android:paddingEnd="20dp"
         android:paddingBottom="10dp"
         android:text="@string/credit"
-        android:textAlignment="textStart"
-        android:textSize="24sp"
+        android:gravity="center_vertical"
+        android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/debit_decal_Tv"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/debit_decal_Tv"
         app:layout_constraintTop_toBottomOf="@+id/debit_decal_Tv" />
+
+    <Button
+        android:id="@+id/gobackBtn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/back_arrow"
+        android:stateListAnimator="@animator/button_state_list_anim"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
     <TextView
         android:id="@+id/debitTv"

@@ -12,6 +12,7 @@
         android:id="@+id/totalTv"
         android:layout_width="232dp"
         android:layout_height="75dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/decal2"
         android:elevation="5dp"
         android:gravity="center"
@@ -23,51 +24,45 @@
         android:textColor="#3C4E30"
         android:textSize="50sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.108" />
-
+        app:layout_constraintTop_toBottomOf="@+id/cycleSpn" />
 
     <ListView
         android:id="@+id/listView"
-        android:layout_width="388dp"
-        android:layout_height="389dp"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="20dp"
         android:padding="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/todayTv"
-        app:layout_constraintVertical_bias="0.182" />
+        app:layout_constraintTop_toBottomOf="@+id/todayTv" />
 
     <TextView
         android:id="@+id/todayTv"
         android:layout_width="399dp"
         android:layout_height="44dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:gravity="center"
         android:text="@string/textview"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/totalTv"
-        app:layout_constraintVertical_bias="0.035" />
+        app:layout_constraintTop_toBottomOf="@+id/totalTv" />
 
     <Spinner
         android:id="@+id/cycleSpn"
         android:layout_width="342dp"
         android:layout_height="46dp"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.843"
+        app:layout_constraintHorizontal_bias="0.768"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--    android:background="@drawable/decal2"-->
 

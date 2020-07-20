@@ -1,5 +1,6 @@
 package com.example.moneymanagement3.ui.chart;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -40,6 +42,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,6 +61,16 @@ public class BarChartFragment extends Fragment {
     /////
     TextView tv_debit; TextView tv_credit; TextView tv_cash; TextView tv_check;
     ArrayList<String> paymentTypes_arraylist; ArrayList<String> sums_arraylist;
+    //
+    Button btn_selectDates; TextView tv_customDates;
+    DateTimeFormatter formatter;
+    LocalDate startdate_this; LocalDate enddate_this;
+    Cursor res;
+    Button btn_setStartDate;
+    Button btn_setEndDate;
+    DatePickerDialog.OnDateSetListener mDateSetListener_start;     DatePickerDialog.OnDateSetListener mDateSetListener_end;
+    LocalDate temp_startdate;
+    LocalDate temp_enddate;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -73,112 +86,21 @@ public class BarChartFragment extends Fragment {
         //get database
         myDb = new DataBaseHelper(getActivity());
 
-        //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
-        res3 = myDb.get_setting();
-        res3.moveToFirst();
+        btn_selectDates = view.findViewById(R.id.setDatesBtn);
+        tv_customDates = view.findViewById(R.id.customDatesTv);
 
-        //Cycle updater
-        cycle_updater();
+        formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
 
-        spinner_cycles = view.findViewById(R.id.cycleSpn);
+        Cursor res_startup = myDb.get_setting();
+        res_startup.moveToFirst();
+        startdate_this = LocalDate.parse(res_startup.getString(0));
+        enddate_this = LocalDate.parse(res_startup.getString(1));
 
-        //Create Cycle Spinner
-        cycles = new ArrayList<String>();
-        res4 = myDb.get_cycles();
-        while (res4.moveToNext()) {
-            String cyc_startdate = res4.getString(0);
-            String cyc_enddate = res4.getString(1);
-            LocalDate cyc_startdate_localdate = LocalDate.parse(cyc_startdate);
-            LocalDate cyc_enddate_localdate = LocalDate.parse(cyc_enddate);
-
-            //Formatting the localdate ==> custom string format (Month name dd, yyyy)
-            DateTimeFormatter cyc_formatter = DateTimeFormatter.ofPattern("LLL dd, yy");
-            String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
-            String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
-
-            String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
-            cycles.add(formatted_dates);
-        }
-        Collections.reverse(cycles);
-        ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text, cycles);
-        spinner_cycles.setAdapter(spn_cyc_adapter);
-        //------------------------------------------------END-----------------------------------------------//
-
-        ////////////////////////
-        //What the spinner does when item is selected / not selected
-        spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
-                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                int inverted_pos = (cycles.size() - 1) - position;
-                res4.moveToPosition(inverted_pos);
-                startdate = LocalDate.parse(res4.getString(0));
-                enddate = LocalDate.parse(res4.getString(1));
-
-                Cursor res_paymentTypeSums = myDb.getPaymentTypesDateRange(startdate,enddate); //first col = payment types, second col = sums
-
-                String payment_type = "";
-                double payment_type_sum = 0;
-
-                tv_check.setText("-$0.00");
-                tv_credit.setText("-$0.00");
-                tv_debit.setText("-$0.00");
-                tv_cash.setText("-$0.00");
-
-                while (res_paymentTypeSums.moveToNext()){
-                    payment_type = res_paymentTypeSums.getString(0);
-                    payment_type_sum = Double.parseDouble(res_paymentTypeSums.getString(1));
-
-                    switch (payment_type){
-                        case "Credit":
-                            tv_credit.setText("-$" + String.format("%.2f",payment_type_sum));
-                            break;
-                        case "Debit":
-                            tv_debit.setText("-$" + String.format("%.2f",payment_type_sum));
-                            break;
-                        case "Check":
-                            tv_check.setText("-$" + String.format("%.2f",payment_type_sum));
-                            break;
-                        case "Cash":
-                            tv_cash.setText("-$" + String.format("%.2f",payment_type_sum));
-                            break;
-                    }
-
-                }
+        setPaymentTypeText(startdate_this,enddate_this);
+        setDatesTv();
 
 
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                //Object item = adapterView.getItemAtPosition(0);
-                res3.moveToFirst();
-                startdate = LocalDate.parse(res3.getString(0));
-                enddate = LocalDate.parse(res3.getString(1));
-
-                Cursor res_paymentTypeSums = myDb.getPaymentTypesDateRange(startdate,enddate); //first col = payment types, second col = sums
-                paymentTypes_arraylist = new ArrayList<>();
-                sums_arraylist = new ArrayList<>();
-                while (res_paymentTypeSums.moveToNext()){
-                    paymentTypes_arraylist.add(res_paymentTypeSums.getString(0));
-                    sums_arraylist.add(res_paymentTypeSums.getString(1));
-                }
-                tv_debit.setText(paymentTypes_arraylist.get(0));
-                tv_credit.setText(paymentTypes_arraylist.get(1));
-                tv_cash.setText(paymentTypes_arraylist.get(2));
-                tv_check.setText(paymentTypes_arraylist.get(3));
-
-            }
-        });
-        /////////////////////////////////
-
-
-
-
-
-
-
-
+        onClick_selectDates();
 
         onClick_GoBackBtn();
 
@@ -187,86 +109,337 @@ public class BarChartFragment extends Fragment {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
     @RequiresApi(api = Build.VERSION_CODES.O)
-    //updates the start and end date of the cycle
-    public void cycle_updater() {
-
-        cycle_input = "01"; //sets the default cycle input as the first of the month
-        currentDate = LocalDate.now();
-
-        if (res3 != null && res3.moveToFirst()) {  //makes sure table3 is not null
-            cycle_input = res3.getString(2);
-        } else {
-            myDb.create_filler_setting_onStartup(cycle_input);
-        }
-
-        String currentDate_string = String.valueOf(currentDate);
-        String currentMonth_string = "" + currentDate_string.substring(5, 7); //"MM" -- [start ind,end ind)
-
-        String var_string = "" + currentDate_string.substring(0, 5) + currentMonth_string + "-" + cycle_input; //variable to compare current date with
-        LocalDate var = LocalDate.parse(var_string);    //convert var into a localdate
-
-        //determine and sets the start and end dates of the cycle
-        if (currentDate.isBefore(var)) {
-            LocalDate var_new = var.plusMonths(-1);
-            startdate = var_new;
-            enddate = var.minusDays(1);
-            //update database table3
-            myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
-        } else {
-            LocalDate var_new = var.plusMonths(1);
-            startdate = var;
-            enddate = var_new.minusDays(1);
-            //update database table3
-            myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
-        }
+    public void setDatesTv(){
+        //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+        String startdate_formatted = startdate_this.format(formatter);
+        String enddate_formatted = enddate_this.format(formatter);
+        tv_customDates.setText(startdate_formatted + " ~ " + enddate_formatted);
+    }
 
 
+    public void setPaymentTypeText (LocalDate startdate, LocalDate enddate){
+        Cursor res_paymentTypeSums = myDb.getPaymentTypesDateRange(startdate,enddate); //first col = payment types, second col = sums
 
-        //******************************************************************************new added
+        String payment_type = "";
+        double payment_type_sum = 0;
 
+        tv_check.setText("-$0.00");
+        tv_credit.setText("-$0.00");
+        tv_debit.setText("-$0.00");
+        tv_cash.setText("-$0.00");
 
-        //dealing with table4 (cycle table) ---- for cycle spinner
-        res4 = myDb.get_cycles();
-        if (res4!=null && res4.moveToLast()) { //if table4 is not null on startup (run basically every time this fragment is selected)
-            String past_startdate = res4.getString(0);
-            String past_enddate = res4.getString(1);
+        while (res_paymentTypeSums.moveToNext()){
+            payment_type = res_paymentTypeSums.getString(0);
+            payment_type_sum = Double.parseDouble(res_paymentTypeSums.getString(1));
 
-            if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
-                res4.moveToLast();
-                String cycle_budget = res4.getString(2);
-                String categories_list_as_string = res4.getString(3);
-                String categories_budget_list_as_string = res4.getString(4);
-                //inserts the start and end date of the cycle only if the dates changed
-                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), cycle_budget,
-                        categories_list_as_string, categories_budget_list_as_string);
+            switch (payment_type){
+                case "Credit":
+                    tv_credit.setText("-$" + String.format("%.2f",payment_type_sum));
+                    break;
+                case "Debit":
+                    tv_debit.setText("-$" + String.format("%.2f",payment_type_sum));
+                    break;
+                case "Check":
+                    tv_check.setText("-$" + String.format("%.2f",payment_type_sum));
+                    break;
+                case "Cash":
+                    tv_cash.setText("-$" + String.format("%.2f",payment_type_sum));
+                    break;
             }
-        }
-
-        else { //if table4 null (only when first run)
-
-            StringBuilder categories_budget_list_as_string = new StringBuilder();
-            StringBuilder categories_list_as_string = new StringBuilder();
-            res2 = myDb.getAllData_categories();
-            if (res2 != null) { // if categories table3 is not empty
-                while (res2.moveToNext()) {
-                    String category = res2.getString(1);
-                    categories_list_as_string.append(category).append(";");
-                    categories_budget_list_as_string.append("0.00").append(";");
-                }
-            }
-            //inserts the start and end date of the cycle only if the dates changed
-            myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), "0.00",
-                    categories_list_as_string.toString(), categories_budget_list_as_string.toString());
-
 
         }
-
-        //******************************************************************************new added
 
     }
+
+
+    public void onClick_selectDates() {
+        //Button to go back to settings
+        btn_selectDates.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //creates a second alert dialog
+                AlertDialog.Builder adb2 = new AlertDialog.Builder(view.getContext());
+                //creates edit texts in the second alert dialog
+                final LayoutInflater inflater = getLayoutInflater();
+                final View view_alertButtons = inflater.inflate(R.layout.alert_buttons_layout, null);
+
+                final Button btn_currentCycle = view_alertButtons.findViewById(R.id.btn1);
+                final Button btn_cycles = view_alertButtons.findViewById(R.id.btn2);
+                final Button btn_customDates = view_alertButtons.findViewById(R.id.btn3);
+
+                btn_cycles.setText("Cycles");
+                btn_customDates.setText("Custom Dates");
+                btn_currentCycle.setText("Current Cycle");
+
+                adb2.setTitle("Select Date Range:");
+
+                adb2.setView(view_alertButtons); //shows the edit texts from the xml file in the alert dialog
+                adb2.setNeutralButton("Back", null);
+
+                //creates the onShow function that keeps the alert dialog open unless specifically called to close
+                final AlertDialog alertDialog = adb2.create();
+
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(final DialogInterface dialog) {
+
+                        //current cycle button
+                        btn_currentCycle.setOnClickListener(new View.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            public void onClick(View v) {
+                                res3 = myDb.get_setting();
+                                res3.moveToFirst();
+                                startdate_this = LocalDate.parse(res3.getString(0));
+                                enddate_this = LocalDate.parse(res3.getString(1));
+                                setPaymentTypeText(startdate_this,enddate_this);
+                                setDatesTv();
+                                alertDialog.dismiss();
+                            }
+                        });
+
+//                        //cycles button
+                        btn_cycles.setOnClickListener(new View.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            public void onClick(View v) {
+                                final ArrayList<String> cycles_startToEnd = new ArrayList<>();
+
+                                LayoutInflater inflater = getLayoutInflater();
+                                final View view_alertSpinner = inflater.inflate(R.layout.alert_spinner, null);
+                                spinner_cycles = view_alertSpinner.findViewById(R.id.the_spinner);
+                                //Create Cycle Spinner --- from table4
+                                res4 = myDb.get_cycles();
+                                while(res4.moveToNext()){
+                                    String cyc_startdate = res4.getString(0);
+                                    String cyc_enddate = res4.getString(1);
+                                    LocalDate cyc_startdate_localdate = LocalDate.parse(cyc_startdate);
+                                    LocalDate cyc_enddate_localdate = LocalDate.parse(cyc_enddate);
+
+                                    //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+                                    DateTimeFormatter cyc_formatter = DateTimeFormatter.ofPattern("LLL dd, yy");
+                                    String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
+                                    String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
+
+                                    String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
+                                    cycles_startToEnd.add(formatted_dates);
+                                }
+                                Collections.reverse(cycles_startToEnd);
+                                ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text2,cycles_startToEnd);
+                                spinner_cycles.setAdapter(spn_cyc_adapter);
+
+
+                                //What the spinner does when item is selected / not selected
+                                spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @RequiresApi(api = Build.VERSION_CODES.O)
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+                                        //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+                                        int inverted_pos = (cycles_startToEnd.size() - 1) - position;
+                                        res4.moveToPosition(inverted_pos);
+                                        startdate_this = LocalDate.parse(res4.getString(0));
+                                        enddate_this = LocalDate.parse(res4.getString(1));
+                                    }
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> adapterView) {
+                                        Object item = adapterView.getItemAtPosition(0);
+                                    }
+                                });
+
+
+                                //create the alertdialog
+                                AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+                                adb.setView(view_alertSpinner);
+                                adb.setTitle("Select cycle:");
+                                adb.setPositiveButton("Select",null);
+                                adb.setNeutralButton("Back",null);
+
+                                final AlertDialog alertDialog2 = adb.create();
+                                alertDialog2.setOnShowListener(new DialogInterface.OnShowListener() {
+                                    @Override
+                                    public void onShow(final DialogInterface dialog) {
+                                        //Back button (first alertdialog)
+                                        Button positiveButton = alertDialog2.getButton(AlertDialog.BUTTON_POSITIVE);
+                                        positiveButton.setOnClickListener(new View.OnClickListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.O)
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                setPaymentTypeText(startdate_this,enddate_this);
+                                                setDatesTv();
+
+                                                dialog.dismiss();
+                                                alertDialog.dismiss();
+
+                                            }
+                                        });
+
+                                        //Back button (first alertdialog)
+                                        Button neutralButton = alertDialog2.getButton(AlertDialog.BUTTON_NEUTRAL);
+                                        neutralButton.setOnClickListener(new View.OnClickListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.O)
+                                            @Override
+                                            public void onClick(View v) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                    }
+                                });
+
+                                alertDialog2.show();
+
+                            }
+                        });
+
+//
+
+                        //customdates button
+                        btn_customDates.setOnClickListener(new View.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            public void onClick(View v) {
+
+                                AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+                                LayoutInflater inflater = getLayoutInflater();
+                                final View view_setCustomDateBtns = inflater.inflate(R.layout.set_custom_dates, null);
+                                adb.setView(view_setCustomDateBtns);
+                                adb.setNeutralButton("Back",null);
+                                adb.setPositiveButton("Set",null);
+
+                                final AlertDialog alertDialog3 = adb.create();
+
+                                alertDialog3.setOnShowListener(new DialogInterface.OnShowListener() {
+                                    @Override
+                                    public void onShow(final DialogInterface dialog) {
+                                        btn_setStartDate = view_setCustomDateBtns.findViewById(R.id.startBtn);
+                                        btn_setEndDate = view_setCustomDateBtns.findViewById(R.id.endBtn);
+
+                                        btn_setStartDate.setOnClickListener(new View.OnClickListener() {
+                                            public void onClick(View v) {
+                                                DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_start,
+                                                        Calendar.getInstance().get(Calendar.YEAR),
+                                                        Calendar.getInstance().get(Calendar.MONTH),
+                                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                                                datePickerDialog.show();
+                                            }
+                                        });
+
+                                        btn_setEndDate.setOnClickListener(new View.OnClickListener() {
+                                            public void onClick(View v) {
+                                                if(temp_startdate!=null){
+                                                    DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
+                                                            temp_startdate.getYear(),
+                                                            temp_startdate.getMonthValue()-1,
+                                                            temp_startdate.getDayOfMonth());
+                                                    datePickerDialog.show();
+                                                }
+                                                else{
+                                                    DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
+                                                            Calendar.getInstance().get(Calendar.YEAR),
+                                                            Calendar.getInstance().get(Calendar.MONTH),
+                                                            Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                                                    datePickerDialog.show();
+                                                }
+                                            }
+                                        });
+
+                                        mDateSetListener_start = new DatePickerDialog.OnDateSetListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.O)
+                                            @Override
+                                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                                month = month + 1;
+
+                                                String month_string = String.valueOf(month);
+                                                String day_string = String.valueOf(day);
+                                                if (month_string.length() < 2){
+                                                    month_string = "0" + month_string;
+                                                }
+                                                if (day_string.length() < 2){
+                                                    day_string = "0" + day_string;
+                                                }
+                                                String date = year + "-" + month_string + "-" + day_string;
+                                                temp_startdate = LocalDate.parse(date);
+                                                btn_setStartDate.setText(temp_startdate.format(formatter));
+
+                                            }
+                                        };
+
+                                        mDateSetListener_end = new DatePickerDialog.OnDateSetListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.O)
+                                            @Override
+                                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                                month = month + 1;
+
+                                                String month_string = String.valueOf(month);
+                                                String day_string = String.valueOf(day);
+                                                if (month_string.length() < 2){
+                                                    month_string = "0" + month_string;
+                                                }
+                                                if (day_string.length() < 2){
+                                                    day_string = "0" + day_string;
+                                                }
+                                                String date = year + "-" + month_string + "-" + day_string;
+                                                temp_enddate = LocalDate.parse(date);
+                                                btn_setEndDate.setText(temp_enddate.format(formatter));
+                                            }
+                                        };
+
+                                        //set button (first alertdialog)
+                                        Button positiveButton = alertDialog3.getButton(AlertDialog.BUTTON_POSITIVE);
+                                        positiveButton.setOnClickListener(new View.OnClickListener() {
+                                            @RequiresApi(api = Build.VERSION_CODES.O)
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                if (temp_startdate.isAfter(temp_enddate)){
+                                                    AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+                                                    adb.setTitle("The start date is after the end date");
+                                                    btn_setEndDate.setText("End Date");
+                                                    adb.setPositiveButton("Okay", null);
+                                                    adb.show();
+                                                }
+                                                else{
+                                                    startdate_this = temp_startdate;
+                                                    enddate_this = temp_enddate;
+
+                                                    setPaymentTypeText(startdate_this,enddate_this);
+                                                    setDatesTv();
+
+                                                    dialog.dismiss();
+                                                    alertDialog.dismiss();
+
+                                                }
+
+                                            }
+                                        });
+
+                                    }
+                                });
+                                alertDialog3.show();
+
+                            }
+
+                        });
+
+
+                        //Back button (first alertdialog)
+                        Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                        neutralButton.setOnClickListener(new View.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void onClick(View v) {
+
+                                dialog.dismiss();
+
+                            }
+                        });
+                    }
+                });
+
+                alertDialog.show();
+
+            }
+        });
+
+    }
+
 
 
     public void onClick_GoBackBtn () {

@@ -6,29 +6,6 @@
     android:layout_height="match_parent">
 
 
-    <TextView
-        android:id="@+id/customDatesTv"
-        android:layout_width="263dp"
-        android:layout_height="22dp"
-        android:fontFamily="sans-serif-medium"
-        android:text="@string/dates"
-        android:textAlignment="center"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/pieChart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pChartCatTotal" />
-
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pieChart"
-        android:layout_width="317dp"
-        android:layout_height="299dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.375" />
-
     <!--    <TextView-->
 <!--        android:id="@+id/pChartCatTotal"-->
 <!--        android:layout_width="wrap_content"-->
@@ -40,23 +17,47 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toBottomOf="@+id/pieChart" />-->
 
+    <TextView
+        android:id="@+id/customDatesTv"
+        android:layout_width="268dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/dates"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pChartCatTotal" />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pieChart"
+        android:layout_width="359dp"
+        android:layout_height="323dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.463" />
+
     <Button
         android:id="@+id/gobackBtn"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginBottom="60dp"
         android:background="@drawable/back_arrow"
         android:stateListAnimator="@animator/button_state_list_anim"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pieChart"
-        app:layout_constraintVertical_bias="0.404" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/setDatesBtn"
         android:layout_width="199dp"
         android:layout_height="44dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/button_drawable"
         android:fontFamily="sans-serif-black"
         android:stateListAnimator="@animator/button_state_list_anim"
@@ -66,15 +67,12 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/gobackBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pChartCatTotal"
-        app:layout_constraintVertical_bias="0.961" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/pChartCatTotal"
         android:layout_width="232dp"
         android:layout_height="75dp"
-        android:layout_marginTop="32dp"
         android:background="@drawable/decal2"
         android:elevation="5dp"
         android:gravity="center"
@@ -86,10 +84,12 @@
         android:textColor="#3C4E30"
         android:textSize="50sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.045" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
