@@ -388,7 +388,16 @@ public class BarChartFragment extends Fragment {
                                             @Override
                                             public void onClick(View v) {
 
-                                                if (temp_startdate.isAfter(temp_enddate)){
+                                                if (temp_startdate==null && temp_enddate==null){
+                                                    Toast.makeText(view.getContext(), "Select dates", Toast.LENGTH_SHORT).show();
+                                                }
+                                                else if(temp_startdate==null){
+                                                    Toast.makeText(view.getContext(), "Select start date", Toast.LENGTH_SHORT).show();
+                                                }
+                                                else if(temp_enddate==null){
+                                                    Toast.makeText(view.getContext(), "Select end date", Toast.LENGTH_SHORT).show();
+                                                }
+                                                else if (temp_startdate.isAfter(temp_enddate)){
                                                     AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
                                                     adb.setTitle("The start date is after the end date");
                                                     btn_setEndDate.setText("End Date");
