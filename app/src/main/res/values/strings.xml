@@ -67,4 +67,9 @@
     <string name="start_date">Start Date</string>
     <string name="end_date">End Date</string>
     <string name="to_low">to</string>
+    <string name="charts_and_data">Charts and Data</string>
+    <string name="categories">Categories</string>
+    <string name="custom_data">Custom Data</string>
+    <string name="payment_types">Payment Types</string>
+    <string name="data_over_time">Data Over Time</string>
 </resources>

@@ -1,57 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:weightSum="100">
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="20dp" />
+
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center"
+        android:text="@string/charts_and_data"
+        android:textColor="#5A704B"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:gravity="center">
 
     <Button
         android:id="@+id/to_piechart_btn"
         android:layout_width="154dp"
         android:layout_height="187dp"
-        android:text="@string/to_pie_chart"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.124"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.196"
-        android:background="@drawable/button_drawable2"
-        android:stateListAnimator="@animator/button_state_list_anim"/>
+        android:background="@drawable/decal2"
+        android:stateListAnimator="@animator/button_state_list_anim"
+        android:text="@string/categories"
+        android:drawableTop="@drawable/icons8_pie_chart_90"
+        android:paddingTop="10dp"
+        android:gravity="center"
+        android:elevation="2dp"/>
 
-    <Button
-        android:id="@+id/to_linechart_btn"
-        android:layout_width="154dp"
-        android:layout_height="187dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/to_line_chart"
-        app:layout_constraintStart_toStartOf="@+id/to_piechart_btn"
-        app:layout_constraintTop_toBottomOf="@+id/to_piechart_btn"
-        android:background="@drawable/button_drawable2"
-        android:stateListAnimator="@animator/button_state_list_anim"/>
+        <Space
+            android:layout_width="15dp"
+            android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/to_barchart_btn"
-        android:layout_width="154dp"
-        android:layout_height="187dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/to_bar_chart"
-        app:layout_constraintStart_toEndOf="@+id/to_piechart_btn"
-        app:layout_constraintTop_toTopOf="@+id/to_piechart_btn"
-        android:background="@drawable/button_drawable2"
-        android:stateListAnimator="@animator/button_state_list_anim"/>
-
-    <Button
-        android:id="@+id/to_infochart_btn"
-        android:layout_width="154dp"
-        android:layout_height="187dp"
-        android:text="@string/to_info_chart"
-        app:layout_constraintBottom_toBottomOf="@+id/to_linechart_btn"
-        app:layout_constraintEnd_toEndOf="@+id/to_barchart_btn"
-        android:background="@drawable/button_drawable2"
-        android:stateListAnimator="@animator/button_state_list_anim"/>
+        <Button
+            android:id="@+id/to_infochart_btn"
+            android:layout_width="154dp"
+            android:layout_height="187dp"
+            android:background="@drawable/decal2"
+            android:drawableTop="@drawable/icons8_tune_100"
+            android:stateListAnimator="@animator/button_state_list_anim"
+            android:paddingTop="10dp"
+            android:text="@string/custom_data"
+            android:elevation="2dp"/>
+    </LinearLayout>
 
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="250dp">
+
+        <Button
+            android:id="@+id/to_barchart_btn"
+            android:layout_width="154dp"
+            android:layout_height="187dp"
+            android:background="@drawable/decal2"
+            android:stateListAnimator="@animator/button_state_list_anim"
+            android:text="@string/payment_types"
+            android:elevation="2dp"
+            android:drawableTop="@drawable/icons8_credit_card_90"
+            android:paddingTop="10dp"
+            />
+
+        <Space
+            android:layout_width="15dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/to_linechart_btn"
+            android:layout_width="154dp"
+            android:layout_height="187dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/decal2"
+            android:drawableTop="@drawable/icons8_graph_96"
+            android:elevation="2dp"
+            android:paddingTop="10dp"
+            android:stateListAnimator="@animator/button_state_list_anim"
+            android:text="@string/data_over_time" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="100dp" />
+
+
+
+</LinearLayout>
+
+
+
+
+
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent">-->
+
+
+<!--    <Button-->
+<!--        android:id="@+id/to_piechart_btn"-->
+<!--        android:layout_width="154dp"-->
+<!--        android:layout_height="187dp"-->
+<!--        android:background="@drawable/button_drawable2"-->
+<!--        android:stateListAnimator="@animator/button_state_list_anim"-->
+<!--        android:text="@string/to_pie_chart"-->
+<!--        tools:layout_editor_absoluteX="28dp"-->
+<!--        tools:layout_editor_absoluteY="109dp" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/to_infochart_btn"-->
+<!--        android:layout_width="154dp"-->
+<!--        android:layout_height="187dp"-->
+<!--        android:background="@drawable/button_drawable2"-->
+<!--        android:stateListAnimator="@animator/button_state_list_anim"-->
+<!--        android:text="@string/to_info_chart"-->
+<!--        tools:layout_editor_absoluteX="222dp"-->
+<!--        tools:layout_editor_absoluteY="308dp" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/to_barchart_btn"-->
+<!--        android:layout_width="154dp"-->
+<!--        android:layout_height="187dp"-->
+<!--        android:background="@drawable/button_drawable2"-->
+<!--        android:stateListAnimator="@animator/button_state_list_anim"-->
+<!--        android:text="@string/to_bar_chart"-->
+<!--        tools:layout_editor_absoluteX="226dp"-->
+<!--        tools:layout_editor_absoluteY="109dp" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/to_linechart_btn"-->
+<!--        android:layout_width="154dp"-->
+<!--        android:layout_height="187dp"-->
+<!--        android:background="@drawable/button_drawable2"-->
+<!--        android:stateListAnimator="@animator/button_state_list_anim"-->
+<!--        android:text="@string/to_line_chart"-->
+<!--        tools:layout_editor_absoluteX="28dp"-->
+<!--        tools:layout_editor_absoluteY="316dp" />-->
+
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

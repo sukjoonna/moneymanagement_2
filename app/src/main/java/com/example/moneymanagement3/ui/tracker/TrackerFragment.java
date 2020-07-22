@@ -432,7 +432,7 @@ public class TrackerFragment extends Fragment {
 
 
                         adb2.setTitle("Edit");
-                        adb2.setMessage("Edit your entry");
+//                        adb2.setMessage("Edit your entry");
                         adb2.setView(view); //shows the edit texts from the xml file in the alert dialog
                         adb2.setPositiveButton("UPDATE", null);
                         adb2.setNeutralButton("CANCEL", null);

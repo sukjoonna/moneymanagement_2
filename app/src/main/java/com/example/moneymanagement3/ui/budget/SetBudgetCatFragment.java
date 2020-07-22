@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -108,6 +109,8 @@ public class SetBudgetCatFragment extends Fragment {
 
                 //customize views
                 et1.setGravity(Gravity.CENTER);
+                et1.setBackgroundResource(R.drawable.light_rectangle);
+                et1.setMaxWidth(50);
                 msg1.setTextColor(Color.parseColor("#B3BDAC"));
                 msg1.setTextSize(15);
                 msg1.setPadding(50, 5, 20, 10);
@@ -120,10 +123,18 @@ public class SetBudgetCatFragment extends Fragment {
                 adb1.setPositiveButton("Set", null);
                 adb1.setNeutralButton("Cancel", null);
 
+                Space space1 = new Space(view.getContext());
+                space1.setMinimumHeight(15);
+                Space space2 = new Space(view.getContext());
+                space2.setMinimumHeight(15);
+
                 //add the et and msg into a linear layout
                 LinearLayout linearLayout = new LinearLayout(view.getContext());
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
+//                linearLayout.setPadding(20,0,20,0);
+                linearLayout.addView(space1);
                 linearLayout.addView(msg1);
+                linearLayout.addView(space2);
                 linearLayout.addView(et1);
 
                 adb1.setView(linearLayout);

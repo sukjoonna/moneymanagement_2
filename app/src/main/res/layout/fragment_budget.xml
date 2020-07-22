@@ -49,7 +49,7 @@
         android:fontFamily="sans-serif-condensed-light"
         android:gravity="center"
         android:text="@string/plus0_00"
-        android:textColor="#19ADAEAC"
+        android:textColor="#BAD1AA"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"

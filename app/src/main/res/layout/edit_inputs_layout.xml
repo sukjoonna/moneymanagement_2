@@ -3,26 +3,39 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
     android:orientation="vertical"
     android:gravity="center">
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="15dp" />
+
     <EditText
         android:id="@+id/edit_amountEt"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/light_rectangle"
         android:gravity="center"
         android:hint="@string/edit_amount"
+        android:importantForAutofill="no"
         android:inputType="numberDecimal"
         android:lines="8"
         android:maxLines="3"
         android:minLines="6"
-        android:scrollbars="vertical"
-        android:importantForAutofill="no" />
+        android:scrollbars="vertical" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="10dp" />
+
 
     <EditText
         android:id="@+id/edit_textEt"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/light_rectangle"
         android:hint="@string/edit_description"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
@@ -31,29 +44,43 @@
         android:minLines="6"
         android:gravity="center"/>
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="10dp" />
+
 
     <TextView
         android:id="@+id/edit_dateTv"
         android:layout_width="match_parent"
-        android:layout_height="47dp"
+        android:layout_height="40dp"
+        android:background="@drawable/light_rectangle"
         android:gravity="center"
         android:text="@string/date"
         android:textColor="#201E1E"
         android:textSize="18sp" />
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="10dp" />
+
     <TextView
         android:id="@+id/edit_paymentTv"
         android:layout_width="match_parent"
-        android:layout_height="47dp"
+        android:layout_height="40dp"
+        android:background="@drawable/light_rectangle"
         android:gravity="center"
         android:text="@string/payment_type"
         android:textColor="#201E1E"
         android:textSize="18sp" />
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="10dp" />
+
     <Spinner
         android:id="@+id/edit_spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:gravity="center"
         android:textSize="100sp" />
 
