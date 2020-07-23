@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 
 import java.text.DecimalFormat;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -426,15 +428,41 @@ public class HomeFragment extends Fragment {
             String past_startdate = res4.getString(0);
             String past_enddate = res4.getString(1);
 
+//            if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
+//                long difference_month = 0;
+//                difference_month = ChronoUnit.MONTHS.between(LocalDate.parse(past_startdate),startdate);
+//
+//                res4.moveToLast();
+//                String cycle_budget = res4.getString(2);
+//                String categories_list_as_string = res4.getString(3);
+//                String categories_budget_list_as_string = res4.getString(4);
+//                //inserts the start and end date of the cycle only if the dates changed
+//                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), cycle_budget,
+//                        categories_list_as_string, categories_budget_list_as_string);
+//            }
             if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
+                long difference_month = 0;
+                difference_month = ChronoUnit.MONTHS.between(LocalDate.parse(past_startdate),startdate);
+
                 res4.moveToLast();
+                LocalDate startdate_temp = LocalDate.parse(res4.getString(0));
+                LocalDate enddate_temp = LocalDate.parse(res4.getString(1));
                 String cycle_budget = res4.getString(2);
                 String categories_list_as_string = res4.getString(3);
                 String categories_budget_list_as_string = res4.getString(4);
-                //inserts the start and end date of the cycle only if the dates changed
-                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), cycle_budget,
-                        categories_list_as_string, categories_budget_list_as_string);
+
+                for(int i = 0; i < difference_month; i++){
+                    startdate_temp = startdate_temp.plusMonths(1);
+                    enddate_temp = enddate_temp.plusMonths(1);
+                    //inserts the start and end date of the cycle only if the dates changed
+                    myDb.insert_new_cycle(String.valueOf(startdate_temp), String.valueOf(enddate_temp), cycle_budget,
+                            categories_list_as_string, categories_budget_list_as_string);
+                }
+
             }
+
+
+
         }
 
         else { //if table4 null (only when first run)

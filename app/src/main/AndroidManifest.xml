@@ -5,10 +5,10 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_white"
+        android:icon="@mipmap/ic_moneybag"
         android:label="Spending Tracker"
         tools:replace="android:label"
-        android:roundIcon="@mipmap/ic_white_round"
+        android:roundIcon="@mipmap/ic_moneybag_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         >
