@@ -3,14 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
     android:orientation="vertical"
     android:gravity="center">
 
     <EditText
         android:id="@+id/add_categoryEt"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:gravity="center"
+        android:background="@drawable/light_rectangle"
         android:hint="@string/e_g_groceries"
         android:importantForAutofill="no"
         android:inputType="textPersonName"

@@ -6,46 +6,47 @@
     android:layout_height="match_parent"
     android:layout_gravity="center">
 
-    <FrameLayout
-        android:id="@+id/managecat_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        >
 
-        <ListView
+    <ListView
             android:id="@+id/manageCatLv"
             android:layout_width="match_parent"
-            android:layout_height="496dp"
+            android:layout_height="322dp"
+            android:layout_marginTop="40dp"
             android:gravity="center"
             android:textSize="20sp"
-            android:translationY="75dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/manageCatTv"/>
 
-        <TextView
+    <TextView
             android:id="@+id/manageCatTv"
             android:layout_width="wrap_content"
-            android:layout_height="73dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
             android:fontFamily="sans-serif-black"
             android:text="@string/manage_categories"
-            android:textColor="#1C1B1B"
+            android:textColor="#576E46"
             android:textSize="30sp"
-            android:translationY="20dp" />
+            android:translationY="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/gobackBtn"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center_horizontal"
-            android:autoText="false"
-            android:background="@drawable/back_arrow"
-            android:stateListAnimator="@animator/button_state_list_anim"
-            android:translationY="530dp" />
+    <Button
+        android:id="@+id/gobackBtn"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="60dp"
+        android:autoText="false"
+        android:background="@drawable/back_arrow"
+        android:stateListAnimator="@animator/button_state_list_anim"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
-
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,7 @@ public class ManageCatFragment extends Fragment {
     ArrayAdapter<String> adapter_managecat;
     Button btn1;
     CharSequence[] categories_list;
+    String new_category;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_managecat, container, false);
@@ -56,7 +59,8 @@ public class ManageCatFragment extends Fragment {
         btn1 = view.findViewById(R.id.gobackBtn);
         lv = view.findViewById(R.id.manageCatLv);
 
-        managecat_items = new String[]{"Categories to delete", "Delete all categories"};
+
+        managecat_items = new String[]{"Add Category","Categories to delete", "Delete all categories"};
         adapter_managecat = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, managecat_items);
         lv.setAdapter(adapter_managecat);
 
@@ -75,8 +79,87 @@ public class ManageCatFragment extends Fragment {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, final int position, long id) {
 
+                if(position==0){ //if "add category" is selected
+                    //create an alert dialog
+                    AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+
+                    //create an edit text in this alert dialog by linking to add_new_category xml file
+                    LayoutInflater inflater = getLayoutInflater();
+                    final View view = inflater.inflate(R.layout.add_new_category, null); //xml file used
+                    final EditText et_addcategory = view.findViewById(R.id.add_categoryEt);
+
+                    adb.setTitle("Alert");
+                    adb.setMessage("Type in a new category");
+                    adb.setView(view);
+                    //cancel button
+                    adb.setNeutralButton("Cancel", null);
+                    //Add new category button
+                    adb.setPositiveButton("Add", new AlertDialog.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            new_category = et_addcategory.getText().toString();
+                            //Checks if it is empty or not
+                            if (new_category.equals("")) {
+                                Toast.makeText(view.getContext(), "Nothing was Added", Toast.LENGTH_SHORT).show();
+                            } else {
+                                //Adds the new category to spinner
+//                                categories.add(position_ind, new_category);
+//                                categories.add(categories.size()-1,new_category);
+                                //Add the new category to database table 3
+                                myDb.insertData_categories(new_category);
+//---------------------------------
+                                res4 = myDb.get_cycles();
+                                StringBuilder categories_budget_list_as_string = new StringBuilder();
+                                int categories_budget_list_length = 0;
+                                if (res4.moveToLast()){
+                                    categories_budget_list_as_string = new StringBuilder(res4.getString(4));
+                                }
+                                StringBuilder categories_list_as_string = new StringBuilder();
+                                String[] categories_budget_list = categories_budget_list_as_string.toString().split("\\;");
+                                int categories_list_length = 0;
+
+                                res2 = myDb.getAllData_categories();
+                                while (res2.moveToNext()) {
+                                    String category = res2.getString(1);
+                                    categories_list_as_string.append(category).append(";");
+                                    categories_list_length++;
+                                }
+
+                                if (!categories_budget_list[0].equals("")){
+                                    categories_budget_list_length = categories_budget_list.length;
+                                }
+
+                                int list_size_difference = categories_list_length - (categories_budget_list_length);
+                                for (int i = 0; i < list_size_difference; i++) {
+                                    categories_budget_list_as_string.append("0.00;");
+                                }
+
+                                //updates table4
+                                res3 = myDb.get_setting();
+                                res3.moveToFirst();
+                                String current_startdate = res3.getString(0);
+                                myDb.update_cycles_table_Category(current_startdate, categories_list_as_string.toString());
+
+                                myDb.update_cycles_table_CatBudget(current_startdate, categories_budget_list_as_string.toString());
+//----------------------------------
+                                //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                getFragmentManager()
+                                        .beginTransaction()
+                                        .detach(ManageCatFragment.this)
+                                        .attach(ManageCatFragment.this)
+                                        .commit();
+                                dialog.dismiss();
+
+
+                            }
+
+                        }
+                    });
+                    adb.show();
+
+                }
+
                 //if "categories to delete" is selected
-                if (position == 0) {
+                else if (position == 1) {
                     //creates the categories arraylist from database table2
                     categories = new ArrayList<String>();
                     while (res2.moveToNext()) {
