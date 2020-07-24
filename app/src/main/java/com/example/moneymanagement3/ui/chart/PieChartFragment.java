@@ -151,8 +151,7 @@ public class PieChartFragment extends Fragment {
         String enddate_formatted = enddate_this.format(formatter);
         tv_customDates.setText(startdate_formatted + " ~ " + enddate_formatted);
     }
-
-
+    
     public void onClick_selectDates() {
         //Button to go back to settings
         btn_selectDates.setOnClickListener(new View.OnClickListener() {
@@ -455,8 +454,6 @@ public class PieChartFragment extends Fragment {
 
     }
 
-
-
     @RequiresApi(api = Build.VERSION_CODES.O)
 
     public void pieChartMaker(LocalDate startDate,LocalDate endDate){
@@ -477,7 +474,6 @@ public class PieChartFragment extends Fragment {
         pieChart.setCenterText(String.format("Cycle total Spendings of $%.2f", monthlyTotal));
         pieChart.setCenterTextSize(20f);
         pieChart.setCenterTextColor(Color.GRAY);
-
         pieChart.setTransparentCircleRadius(50);
         pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
         pieChart.setUsePercentValues(true);
