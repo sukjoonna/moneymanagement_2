@@ -467,7 +467,7 @@ public class PieChartFragment extends Fragment {
         pieChart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
         pieDataSet.setSliceSpace(2f);
-        pieDataSet.setValueTextColor(Color.WHITE);
+        pieDataSet.setValueTextColor(Color.DKGRAY);
         pieDataSet.setValueTextSize(17f);
         pieChart.setEntryLabelTextSize(17f);
         pieDataSet.setSliceSpace(5f);
