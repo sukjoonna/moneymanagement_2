@@ -780,16 +780,16 @@ public void onClick_selectDates() {
                                         @Override
                                         public void onClick(View v) {
 
-                                            if (temp_startdate.isAfter(temp_enddate)){
+                                            if (startdate_this.isAfter(enddate_this)){
                                                 AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
                                                 adb.setTitle("The start date is after the end date");
-                                                btn_setEndDate.setText("End Date");
+                                                //btn_setEndDate.setText("End Date");
                                                 adb.setPositiveButton("Okay", null);
                                                 adb.show();
                                             }
                                             else{
-                                                startdate_this = temp_startdate;
-                                                enddate_this = temp_enddate;
+                                                //startdate_this = temp_startdate;
+                                               // enddate_this = temp_enddate;
 
                                                 lineChartMaker(startdate_this,enddate_this);
                                                 setDatesTv();
