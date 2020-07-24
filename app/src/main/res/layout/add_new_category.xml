@@ -14,7 +14,7 @@
         android:layout_height="40dp"
         android:gravity="center"
         android:background="@drawable/light_rectangle"
-        android:hint="@string/e_g_groceries"
+        android:hint="@string/example_emoji_groceries"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:lines="8"

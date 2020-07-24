@@ -72,4 +72,5 @@
     <string name="custom_data">Custom Data</string>
     <string name="payment_types">Payment Types</string>
     <string name="data_over_time">Data Over Time</string>
+    <string name="example_emoji_groceries">Example: (emoji) Groceries</string>
 </resources>

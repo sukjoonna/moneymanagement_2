@@ -59,8 +59,14 @@ public class SetBudgetCatFragment extends Fragment {
         categories_list = get_categories_from_Table4();
         categories_budget_list = get_categories_budget_from_Table4();
 
-        adapter_setcatbud = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, categories_list);
-        lv.setAdapter(adapter_setcatbud);
+        if (categories_list.length == 1 && categories_list[0].equals("")){
+            TextView tv_notice = view.findViewById(R.id.noticeTv);
+            tv_notice.setText("There are no categories");
+        }
+        else{
+            adapter_setcatbud = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, categories_list);
+            lv.setAdapter(adapter_setcatbud);
+        }
 
 
         onClick_itemselectedLv();
