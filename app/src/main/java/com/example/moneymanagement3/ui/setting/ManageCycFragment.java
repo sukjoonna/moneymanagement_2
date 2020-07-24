@@ -266,14 +266,22 @@ public class ManageCycFragment extends Fragment {
                     res3 = myDb.get_setting();
                     res3.moveToFirst();
                     final String startdate_now = res3.getString(0);
+                    final String old_number = res3.getString(3);
 
                     numbers_list =  new String[]{"3","6","9","12","All"};
+
+                    int ind = 0;
+                    for(int i = 0; i < 5; i++){
+                        if(old_number.equals(numbers_list[i])){
+                            ind = i;
+                        }
+                    }
 
                     AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
                     //alt_bld.setIcon(R.drawable.icon);
                     alt_bld.setTitle("Choose (up to) how many cycles to display in the dropdown bars");
 //                    alt_bld.setMessage("The number of cycles you want to see in the dropdown bars");
-                    alt_bld.setSingleChoiceItems(numbers_list, -1, new DialogInterface
+                    alt_bld.setSingleChoiceItems(numbers_list, ind, new DialogInterface
                             .OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
                             selected_number = numbers_list[item];
@@ -302,6 +310,7 @@ public class ManageCycFragment extends Fragment {
                         }
                     });
                     AlertDialog alert = alt_bld.create();
+                    alert.setCanceledOnTouchOutside(false);
                     alert.show();
 
 
