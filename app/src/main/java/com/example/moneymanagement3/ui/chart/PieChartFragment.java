@@ -467,15 +467,16 @@ public class PieChartFragment extends Fragment {
         pieChart.setData(pieData);
         pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
         pieDataSet.setSliceSpace(2f);
-        pieDataSet.setValueTextColor(Color.DKGRAY);
+        pieDataSet.setValueTextColor(Color.WHITE);
         pieDataSet.setValueTextSize(17f);
         pieChart.setEntryLabelTextSize(17f);
+        pieChart.setEntryLabelColor(Color.WHITE);
         pieDataSet.setSliceSpace(5f);
         pieChart.setUsePercentValues(true);
         pieChart.setHoleRadius(45);
         pieChart.setCenterText(String.format("Cycle total Spendings of $%.2f", monthlyTotal));
         pieChart.setCenterTextSize(20f);
-        pieChart.setCenterTextColor(Color.DKGRAY);
+        pieChart.setCenterTextColor(Color.GRAY);
 
         pieChart.setTransparentCircleRadius(50);
         pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
