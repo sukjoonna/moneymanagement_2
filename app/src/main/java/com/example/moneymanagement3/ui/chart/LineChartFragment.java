@@ -565,6 +565,24 @@ public class LineChartFragment extends Fragment {
 
     }
 
+    private void getEntries2(LocalDate startDate,LocalDate endDate) {
+        Cursor dataInRangeRes;
+        Float monthlyTotal = (float) 0;
+        Float currentMonthAmount;
+        lineEntries = new ArrayList<>();
+        int x = 0;
+
+        dataInRangeRes = myDb.getLineChartMonthly(startDate.minusDays(1),endDate);
+
+        while(dataInRangeRes.moveToNext()){
+            currentMonthAmount = Float.parseFloat(dataInRangeRes.getString(0));
+            monthlyTotal = monthlyTotal + currentMonthAmount;
+            lineEntries.add(new Entry(x, monthlyTotal));
+            x++;
+        }
+
+    }
+
     public void onClick_GoBackBtn () {
         //Button to go back to settings
         btn1.setOnClickListener(new View.OnClickListener() {
