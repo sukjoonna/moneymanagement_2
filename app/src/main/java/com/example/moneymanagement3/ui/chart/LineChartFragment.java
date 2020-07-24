@@ -697,34 +697,40 @@ public void onClick_selectDates() {
                                 public void onShow(final DialogInterface dialog) {
 
 
-//                                    btn_setStartDate.setOnClickListener(new View.OnClickListener() {
-//                                        public void onClick(View v) {
-//                                            DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_start,
-//                                                    Calendar.getInstance().get(Calendar.YEAR),
-//                                                    Calendar.getInstance().get(Calendar.MONTH),
-//                                                    Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-//                                            datePickerDialog.show();
-//                                        }
-//                                    });
+                                    //What the spinner does when item is selected / not selected
+                                    spinner_cycles1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                        @RequiresApi(api = Build.VERSION_CODES.O)
+                                        @Override
+                                        public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+                                            //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+                                            int inverted_pos = (cycles_startToEnd.size() - 1) - position;
+                                            res4.moveToPosition(inverted_pos);
+                                            startdate_this = LocalDate.parse(res4.getString(0));
+                                            //enddate_this = LocalDate.parse(res4.getString(1));
+                                        }
+                                        @Override
+                                        public void onNothingSelected(AdapterView<?> adapterView) {
+                                            Object item = adapterView.getItemAtPosition(0);
+                                        }
+                                    });
 
-//                                    btn_setEndDate.setOnClickListener(new View.OnClickListener() {
-//                                        public void onClick(View v) {
-//                                            if(temp_startdate!=null){
-//                                                DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
-//                                                        temp_startdate.getYear(),
-//                                                        temp_startdate.getMonthValue()-1,
-//                                                        temp_startdate.getDayOfMonth());
-//                                                datePickerDialog.show();
-//                                            }
-//                                            else{
-//                                                DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(), mDateSetListener_end,
-//                                                        Calendar.getInstance().get(Calendar.YEAR),
-//                                                        Calendar.getInstance().get(Calendar.MONTH),
-//                                                        Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-//                                                datePickerDialog.show();
-//                                            }
-//                                        }
-//                                    });
+                                    //What the spinner does when item is selected / not selected
+                                    spinner_cycles2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                        @RequiresApi(api = Build.VERSION_CODES.O)
+                                        @Override
+                                        public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+                                            //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+                                            int inverted_pos = (cycles_startToEnd.size() - 1) - position;
+                                            res4.moveToPosition(inverted_pos);
+                                            enddate_this = LocalDate.parse(res4.getString(1));
+                                           // enddate_this = LocalDate.parse(res4.getString(1));
+                                        }
+                                        @Override
+                                        public void onNothingSelected(AdapterView<?> adapterView) {
+                                            Object item = adapterView.getItemAtPosition(0);
+                                        }
+                                    });
+
 
 //                                    mDateSetListener_start = new DatePickerDialog.OnDateSetListener() {
 //                                        @RequiresApi(api = Build.VERSION_CODES.O)
