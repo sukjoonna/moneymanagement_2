@@ -69,6 +69,7 @@ public class PieChartFragment extends Fragment {
     ArrayList PieEntryLabels;
     Cursor dataInRangeRes;
     TextView catTotal;
+    Double monthlyTotal;
     /////
     Button btn_selectDates; TextView tv_customDates;
     DateTimeFormatter formatter;
@@ -96,7 +97,7 @@ public class PieChartFragment extends Fragment {
 
         catTotal = view.findViewById(R.id.pChartCatTotal);
         catTotal.setTextSize(25);
-        catTotal.setText("Select a Category");
+        catTotal.setText("Click on a Category");
 
         //Pie Chart
         pieChart = view.findViewById(R.id.pieChart);
@@ -130,7 +131,7 @@ public class PieChartFragment extends Fragment {
             public void onNothingSelected()
             {
                 catTotal.setTextSize(25);
-                catTotal.setText("Select a Category");
+                catTotal.setText("Click on a Category");
             }
         });
 
@@ -150,7 +151,6 @@ public class PieChartFragment extends Fragment {
         String enddate_formatted = enddate_this.format(formatter);
         tv_customDates.setText(startdate_formatted + " ~ " + enddate_formatted);
     }
-
 
     public void onClick_selectDates() {
         //Button to go back to settings
@@ -192,7 +192,7 @@ public class PieChartFragment extends Fragment {
                                 enddate_this = LocalDate.parse(res3.getString(1));
                                 pieChartMaker(startdate_this,enddate_this);
                                 setDatesTv();
-                                catTotal.setText("Select a Category");
+                                catTotal.setText("Click on a Category");
                                 catTotal.setTextSize(25);
                                 alertDialog.dismiss();
                             }
@@ -286,7 +286,7 @@ public class PieChartFragment extends Fragment {
 
                                                 pieChartMaker(startdate_this,enddate_this);
                                                 setDatesTv();
-                                                catTotal.setText("Select a Category");
+                                                catTotal.setText("Click on a Category");
                                                 catTotal.setTextSize(25);
 
                                                 dialog.dismiss();
@@ -433,7 +433,7 @@ public class PieChartFragment extends Fragment {
 
                                                     pieChartMaker(startdate_this,enddate_this);
                                                     setDatesTv();
-                                                    catTotal.setText("Select a Category");
+                                                    catTotal.setText("Click on a Category");
                                                     catTotal.setTextSize(25);
 
                                                     dialog.dismiss();
@@ -474,8 +474,6 @@ public class PieChartFragment extends Fragment {
 
     }
 
-
-
     @RequiresApi(api = Build.VERSION_CODES.O)
 
     public void pieChartMaker(LocalDate startDate,LocalDate endDate){
@@ -484,12 +482,19 @@ public class PieChartFragment extends Fragment {
         pieDataSet = new PieDataSet(pieEntries, "");
         pieData = new PieData(pieDataSet);
         pieChart.setData(pieData);
-        pieDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
+        pieDataSet.setColors(ColorTemplate.PASTEL_COLORS);
         pieDataSet.setSliceSpace(2f);
         pieDataSet.setValueTextColor(Color.WHITE);
-        pieDataSet.setValueTextSize(10f);
+        pieDataSet.setValueTextSize(17f);
+        pieChart.setEntryLabelTextSize(17f);
+        pieChart.setEntryLabelColor(Color.WHITE);
         pieDataSet.setSliceSpace(5f);
         pieChart.setUsePercentValues(true);
+        pieChart.setHoleRadius(45);
+        pieChart.setCenterText(String.format("Total: $%.2f", monthlyTotal));
+        pieChart.setCenterTextSize(20f);
+        pieChart.setCenterTextColor(Color.GRAY);
+        pieChart.setTransparentCircleRadius(50);
         pieDataSet.setValueFormatter(new PercentFormatter(pieChart));
         pieChart.setUsePercentValues(true);
         pieChart.getLegend().setEnabled(false);
@@ -499,7 +504,7 @@ public class PieChartFragment extends Fragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getEntries(LocalDate startDate,LocalDate endDate) {
-        Double monthlyTotal = 0.0;
+        monthlyTotal = 0.0; //calling this monthly total is a misnomer this is total for the selected date range
         pieEntries = new ArrayList<>();
         float percentUsage;
 
@@ -518,8 +523,6 @@ public class PieChartFragment extends Fragment {
 
 
     }
-
-
 
     public void onClick_GoBackBtn () {
         //Button to go back to settings
