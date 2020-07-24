@@ -33,6 +33,7 @@ import com.example.moneymanagement3.R;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -58,6 +59,7 @@ public class TrackerFragment extends Fragment {
     DateTimeFormatter formatter;
     DatePickerDialog.OnDateSetListener mDateSetListener;
     String[] payment_types;
+    int count;
 
     @RequiresApi(api = Build.VERSION_CODES.O) // this might need to be change to use a different package
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -81,11 +83,19 @@ public class TrackerFragment extends Fragment {
 
 
         //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
-        res3 = myDb.get_setting();
-        res3.moveToFirst();
 
         //Cycle updater
         cycle_updater();
+
+        res3 = myDb.get_setting();
+        res3.moveToFirst();
+
+        String num_of_cycles = res3.getString(3);
+        if(num_of_cycles.equals("All")){
+            num_of_cycles = "1000000";
+        }
+        int count = 0;
+
 
         spinner_cycles = view.findViewById(R.id.cycleSpn);
 
@@ -106,11 +116,50 @@ public class TrackerFragment extends Fragment {
             String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
             cycles.add(formatted_dates);
         }
+
+        if(cycles.size() > Integer.parseInt(num_of_cycles)){
+            while(cycles.size() > Integer.parseInt(num_of_cycles)){
+                cycles.remove(0);
+            }
+        }
         Collections.reverse(cycles);
         ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text,cycles);
         spinner_cycles.setAdapter(spn_cyc_adapter);
 
         //------------------------------------------------END-----------------------------------------------//
+
+
+//        //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
+//        res3 = myDb.get_setting();
+//        res3.moveToFirst();
+//
+//        //Cycle updater
+//        cycle_updater();
+//
+//        spinner_cycles = view.findViewById(R.id.cycleSpn);
+//
+//        //Create Cycle Spinner --- from table4
+//        cycles = new ArrayList<String>();
+//        res4 = myDb.get_cycles();
+//        while(res4.moveToNext()){
+//            String cyc_startdate = res4.getString(0);
+//            String cyc_enddate = res4.getString(1);
+//            LocalDate cyc_startdate_localdate = LocalDate.parse(cyc_startdate);
+//            LocalDate cyc_enddate_localdate = LocalDate.parse(cyc_enddate);
+//
+//            //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+//            DateTimeFormatter cyc_formatter = DateTimeFormatter.ofPattern("LLL dd, yy");
+//            String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
+//            String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
+//
+//            String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
+//            cycles.add(formatted_dates);
+//        }
+//        Collections.reverse(cycles);
+//        ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text,cycles);
+//        spinner_cycles.setAdapter(spn_cyc_adapter);
+//
+//        //------------------------------------------------END-----------------------------------------------//
 
 
         //Set current date Tv
@@ -135,6 +184,7 @@ public class TrackerFragment extends Fragment {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Public functions
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -592,6 +642,7 @@ public class TrackerFragment extends Fragment {
 
 
 
+
         //******************************************************************************new added
 
 
@@ -601,15 +652,41 @@ public class TrackerFragment extends Fragment {
             String past_startdate = res4.getString(0);
             String past_enddate = res4.getString(1);
 
+//            if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
+//                long difference_month = 0;
+//                difference_month = ChronoUnit.MONTHS.between(LocalDate.parse(past_startdate),startdate);
+//
+//                res4.moveToLast();
+//                String cycle_budget = res4.getString(2);
+//                String categories_list_as_string = res4.getString(3);
+//                String categories_budget_list_as_string = res4.getString(4);
+//                //inserts the start and end date of the cycle only if the dates changed
+//                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), cycle_budget,
+//                        categories_list_as_string, categories_budget_list_as_string);
+//            }
             if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
+                long difference_month = 0;
+                difference_month = ChronoUnit.MONTHS.between(LocalDate.parse(past_startdate),startdate);
+
                 res4.moveToLast();
+                LocalDate startdate_temp = LocalDate.parse(res4.getString(0));
+                LocalDate enddate_temp = LocalDate.parse(res4.getString(1));
                 String cycle_budget = res4.getString(2);
                 String categories_list_as_string = res4.getString(3);
                 String categories_budget_list_as_string = res4.getString(4);
-                //inserts the start and end date of the cycle only if the dates changed
-                myDb.insert_new_cycle(String.valueOf(startdate), String.valueOf(enddate), cycle_budget,
-                        categories_list_as_string, categories_budget_list_as_string);
+
+                for(int i = 0; i < difference_month; i++){
+                    startdate_temp = startdate_temp.plusMonths(1);
+                    enddate_temp = enddate_temp.plusMonths(1);
+                    //inserts the start and end date of the cycle only if the dates changed
+                    myDb.insert_new_cycle(String.valueOf(startdate_temp), String.valueOf(enddate_temp), cycle_budget,
+                            categories_list_as_string, categories_budget_list_as_string);
+                }
+
             }
+
+
+
         }
 
         else { //if table4 null (only when first run)

@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Space;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +28,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
+import com.example.moneymanagement3.ui.budget.SetBudgetCatFragment;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -46,6 +52,8 @@ public class ManageCycFragment extends Fragment {
     String cycle_start_day; String old_cycle_start_day; String cycle_input;
     CharSequence[] cycles_list;
     LocalDate startdate; LocalDate enddate; LocalDate currentDate;
+    String selected_number;
+    String[] numbers_list;
 
 
 
@@ -62,7 +70,7 @@ public class ManageCycFragment extends Fragment {
         lv = view.findViewById(R.id.manageCycLv);
 
         //create listview for "Manage cycles" setting
-        managecyc_items = new String[]{"Select Monthly Cycle Start Day", "Delete Previous Cycles", "Reset All Entries"}; //settings in manage cycles
+        managecyc_items = new String[]{"Select Monthly Cycle Start Day", "Number of Cycles to Show","Delete Previous Cycles", "Reset All Entries"}; //settings in manage cycles
         adapter_managecyc = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, managecyc_items);
         lv.setAdapter(adapter_managecyc); //set the listview with the managecyc_items
 
@@ -253,10 +261,56 @@ public class ManageCycFragment extends Fragment {
 
                 }
 
+                else if (position==1){ //"select number of cycles to show"
+
+                    res3 = myDb.get_setting();
+                    res3.moveToFirst();
+                    final String startdate_now = res3.getString(0);
+
+                    numbers_list =  new String[]{"3","6","9","12","All"};
+
+                    AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
+                    //alt_bld.setIcon(R.drawable.icon);
+                    alt_bld.setTitle("Choose (up to) how many cycles to display in the dropdown bars");
+//                    alt_bld.setMessage("The number of cycles you want to see in the dropdown bars");
+                    alt_bld.setSingleChoiceItems(numbers_list, -1, new DialogInterface
+                            .OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            selected_number = numbers_list[item];
+                        }
+                    });
+                    alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        public void onClick(DialogInterface dialog, int which) {
+//                            if (selected_number.equals("All")){
+//                                int counter=0;
+//                                res4 = myDb.get_cycles();
+//                                while(res4.moveToNext()){
+//                                    counter++;
+//                                }
+//                                if(counter>=6){
+//                                    selected_number = String.valueOf(counter);
+//                                }
+//                                else{
+//                                    selected_number = "6";
+//                                }
+//
+//                            }
+                            myDb.update_cycle_num(startdate_now,selected_number);
+
+                            dialog.dismiss();// dismiss the alertbox after chose option
+                        }
+                    });
+                    AlertDialog alert = alt_bld.create();
+                    alert.show();
+
+
+                }
+
 
 
                 //if "delete previous cycles" is selected
-                else if (position==1){
+                else if (position==2){
 
                     //creates the cycles arraylist from database table4
                     res4 = myDb.get_cycles();

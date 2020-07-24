@@ -31,6 +31,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COL_9 = "CYCLE_BUDGET";
     public static final String COL_10 = "CATEGORY_BUDGET";
     public static final String COL_11 = "PAYMENT_TYPE";
+    public static final String COL_12 = "CYCLE_NUM";
+
 
 
 
@@ -45,7 +47,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         //creating table "names_table" with 2 cols
         db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, NAME TEXT, AMOUNT TEXT, CATEGORY TEXT, DATE TEXT,DATE_TIMESTAMP1 TIMESTAMP, PAYMENT_TYPE TEXT )");
         db.execSQL("create table " + TABLE_NAME2 +" (ID INTEGER PRIMARY KEY AUTOINCREMENT, CATEGORY TEXT)");
-        db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT)");
+        db.execSQL("create table " + TABLE_NAME3 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_INPUT TEXT, CYCLE_NUM TEXT)");
         db.execSQL("create table " + TABLE_NAME4 +" (START_DATE TEXT, END_DATE TEXT, CYCLE_BUDGET TEXT, CATEGORY TEXT,CATEGORY_BUDGET TEXT)");
 
 //        db.execSQL("create table " + TABLE_NAME +" (ID INTEGER PRIMARY KEY AUTOINCREMENT,NAME TEXT)");
@@ -243,6 +245,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         contentValues.put(COL_5,"start date");
         contentValues.put(COL_6,"end date");
         contentValues.put(COL_8,cycle_input);
+        contentValues.put(COL_12,"6");
         long result = db.insert(TABLE_NAME3,null ,contentValues);
     }
 
@@ -266,6 +269,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_8,new_cycle_input);
         long result = db.update(TABLE_NAME3, contentValues, "CYCLE_INPUT = ?",new String[]{old_cycle_input});
+        if (result > 0)
+            return true;
+        else
+            return false;
+    };
+
+    public boolean update_cycle_num (String startdate, String new_cycle_num) {
+        //Table 3
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_12,new_cycle_num);
+        long result = db.update(TABLE_NAME3, contentValues, "START_DATE = ?",new String[]{startdate});
         if (result > 0)
             return true;
         else
