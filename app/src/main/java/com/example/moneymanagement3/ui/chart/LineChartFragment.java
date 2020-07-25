@@ -887,7 +887,7 @@ public void onClick_selectDates() {
 
     }
 
-    private void getEntries(LocalDate startDate,LocalDate endDate,LocalDate startDate,LocalDate endDate) {
+    private void getEntries(LocalDate startDate,LocalDate endDate,LocalDate startDate2,LocalDate endDate2) {
         Cursor dataInRangeRes;
         Float monthlyTotal = (float) 0;
         Float currentMonthAmount;
