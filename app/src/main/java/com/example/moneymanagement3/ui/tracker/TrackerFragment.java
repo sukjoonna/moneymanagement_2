@@ -313,9 +313,9 @@ public class TrackerFragment extends Fragment {
                         deletedRow = myDb.deleteData(db_id);
                         //makes a toast
                         if(deletedRow > 0)
-                            Toast.makeText(view.getContext(),"Data Deleted",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(),"Entry Deleted",Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(view.getContext(),"Data not Deleted",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(),"Entry not Deleted",Toast.LENGTH_SHORT).show();
 
                         build_List();
                         set_total(); //set total amount
@@ -606,6 +606,7 @@ public class TrackerFragment extends Fragment {
     //updates the start and end date of the cycle
     public void cycle_updater() {
 
+        res3 = myDb.get_setting();
         cycle_input = "01"; //sets the default cycle input as the first of the month
         currentDate = LocalDate.now(); //get current date
 

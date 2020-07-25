@@ -276,6 +276,7 @@ public class ManageCycFragment extends Fragment {
                             ind = i;
                         }
                     }
+                    selected_number = numbers_list[ind];
 
                     AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
                     //alt_bld.setIcon(R.drawable.icon);
@@ -284,7 +285,7 @@ public class ManageCycFragment extends Fragment {
                     alt_bld.setSingleChoiceItems(numbers_list, ind, new DialogInterface
                             .OnClickListener() {
                         public void onClick(DialogInterface dialog, int item) {
-                            selected_number = numbers_list[item];
+                                selected_number = numbers_list[item];
                         }
                     });
                     alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {

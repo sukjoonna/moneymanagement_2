@@ -473,6 +473,7 @@ public class BudgetFragment extends Fragment {
     //updates the start and end date of the cycle
     public void cycle_updater() {
 
+        res3 = myDb.get_setting();
         cycle_input = "01"; //sets the default cycle input as the first of the month
         currentDate = LocalDate.now();
 

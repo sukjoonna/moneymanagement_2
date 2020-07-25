@@ -260,9 +260,9 @@ public class HomeFragment extends Fragment {
                     spn_category.setSelection(0);
 
                     if (isInserted)
-                        Toast.makeText(view.getContext(), "Data Inserted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(), "Entry Inserted", Toast.LENGTH_SHORT).show();
                     else
-                        Toast.makeText(view.getContext(), "Data not Inserted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(), "Entry not Inserted", Toast.LENGTH_SHORT).show();
 
                     //clears the edit texts
                     et_name.getText().clear();
@@ -368,6 +368,7 @@ public class HomeFragment extends Fragment {
 
                         }
                     });
+                    adb.setCancelable(false);
                     adb.show();
                 }
             }
