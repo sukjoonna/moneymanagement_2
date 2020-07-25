@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
@@ -29,15 +27,12 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -50,6 +45,12 @@ public class LineChartFragment extends Fragment {
     //cycle updater variables
     LocalDate startdate;
     LocalDate enddate;
+
+    LocalDate startCycleStart;
+    LocalDate startCycleEnd;
+    LocalDate endCycleStart;
+    LocalDate endCycleEnd;
+
     LocalDate currentDate;
     String cycle_input;
     ArrayList<String> cycles;
@@ -705,8 +706,8 @@ public void onClick_selectDates() {
                                             //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
                                             int inverted_pos = (cycles_startToEnd.size() - 1) - position;
                                             res4.moveToPosition(inverted_pos);
-                                            startdate_this = LocalDate.parse(res4.getString(0));
-                                            //enddate_this = LocalDate.parse(res4.getString(1));
+                                            startCycleStart = LocalDate.parse(res4.getString(0));
+                                            startCycleEnd = LocalDate.parse(res4.getString(1));
                                         }
                                         @Override
                                         public void onNothingSelected(AdapterView<?> adapterView) {
@@ -722,8 +723,8 @@ public void onClick_selectDates() {
                                             //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
                                             int inverted_pos = (cycles_startToEnd.size() - 1) - position;
                                             res4.moveToPosition(inverted_pos);
-                                            enddate_this = LocalDate.parse(res4.getString(1));
-                                           // enddate_this = LocalDate.parse(res4.getString(1));
+                                            endCycleStart = LocalDate.parse(res4.getString(0));
+                                            endCycleEnd = LocalDate.parse(res4.getString(1));
                                         }
                                         @Override
                                         public void onNothingSelected(AdapterView<?> adapterView) {
@@ -780,7 +781,7 @@ public void onClick_selectDates() {
                                         @Override
                                         public void onClick(View v) {
 
-                                            if (startdate_this.isAfter(enddate_this)){
+                                            if (startCycleStart.isAfter(startCycleEnd)){
                                                 AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
                                                 adb.setTitle("The start date is after the end date");
                                                 //btn_setEndDate.setText("End Date");
@@ -791,7 +792,7 @@ public void onClick_selectDates() {
                                                 //startdate_this = temp_startdate;
                                                // enddate_this = temp_enddate;
 
-                                                lineChartMaker(startdate_this,enddate_this);
+                                                lineChartMaker(startCycleStart,startCycleEnd,endCycleStart,endCycleEnd);
                                                 setDatesTv();
                                                 // catTotal.setText("Select a Category");
                                                 // catTotal.setTextSize(25);
@@ -886,7 +887,7 @@ public void onClick_selectDates() {
 
     }
 
-    private void getEntries2(LocalDate startDate,LocalDate endDate) {
+    private void getEntries(LocalDate startDate,LocalDate endDate,LocalDate startDate,LocalDate endDate) {
         Cursor dataInRangeRes;
         Float monthlyTotal = (float) 0;
         Float currentMonthAmount;
