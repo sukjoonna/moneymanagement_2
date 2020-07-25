@@ -316,6 +316,9 @@ public class BarChartFragment extends Fragment {
                             @RequiresApi(api = Build.VERSION_CODES.O)
                             public void onClick(View v) {
 
+                                temp_startdate = null;
+                                temp_enddate = null;
+
                                 AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
                                 LayoutInflater inflater = getLayoutInflater();
                                 final View view_setCustomDateBtns = inflater.inflate(R.layout.set_custom_dates, null);

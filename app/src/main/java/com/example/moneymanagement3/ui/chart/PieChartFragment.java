@@ -319,6 +319,9 @@ public class PieChartFragment extends Fragment {
                             @RequiresApi(api = Build.VERSION_CODES.O)
                             public void onClick(View v) {
 
+                                temp_startdate = null;
+                                temp_enddate = null;
+
                                 AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
                                 LayoutInflater inflater = getLayoutInflater();
                                 final View view_setCustomDateBtns = inflater.inflate(R.layout.set_custom_dates, null);
@@ -491,7 +494,13 @@ public class PieChartFragment extends Fragment {
         pieDataSet.setSliceSpace(5f);
         pieChart.setUsePercentValues(true);
         pieChart.setHoleRadius(45);
-        pieChart.setCenterText(String.format("Total: $%.2f", monthlyTotal));
+        if(monthlyTotal==0){
+            pieChart.setCenterText("No entries\n"+"in this range");
+        }
+        else{
+            pieChart.setCenterText(String.format("Total: $%.2f", monthlyTotal));
+        }
+
         pieChart.setCenterTextSize(20f);
         pieChart.setCenterTextColor(Color.GRAY);
         pieChart.setTransparentCircleRadius(50);

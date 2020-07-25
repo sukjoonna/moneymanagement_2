@@ -391,6 +391,7 @@ public class ManageCycFragment extends Fragment {
                                     @Override
                                     public void onClick(View v) {
 
+                                        int counter = 0;
                                         //deletes the cycles from database table4 and table1 if the boxes are checked
                                         for (int i = 0; i < cycles_list.length; i++) {
                                             boolean checked = bool_list[i];
@@ -407,15 +408,23 @@ public class ManageCycFragment extends Fragment {
                                                 LocalDate cycle_enddate_ld = LocalDate.parse(cycle_enddate);
                                                 myDb.deletedDataDateRange(cycle_startdate_ld,cycle_enddate_ld);
 
+                                                counter++;
                                             }
                                         }
-                                        //recreates SettingFragment so the checkbox list appears again after alertdialog closes
-                                        getFragmentManager()
-                                                .beginTransaction()
-                                                .detach(ManageCycFragment.this)
-                                                .attach(ManageCycFragment.this)
-                                                .commit();
-                                        dialog.dismiss();
+
+                                        if(counter>0){
+                                            //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                            getFragmentManager()
+                                                    .beginTransaction()
+                                                    .detach(ManageCycFragment.this)
+                                                    .attach(ManageCycFragment.this)
+                                                    .commit();
+                                            dialog.dismiss();
+                                        }
+                                        else{
+                                            Toast.makeText(view.getContext(),"Select Cycles",Toast.LENGTH_SHORT).show();
+                                        }
+
                                     }
                                 });
 
@@ -449,9 +458,9 @@ public class ManageCycFragment extends Fragment {
                     //An alert dialog box pops up to make sure you want to delete/reset everything
                     AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
                     alertDialog.setTitle("Alert");
-                    alertDialog.setMessage("Do you want to reset everything?");
+                    alertDialog.setMessage("Do you want to reset all cycles and entries?");
                     //Make an "ok" button
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes, reset",
                             new DialogInterface.OnClickListener() {
                                 //OnClick:
                                 public void onClick(DialogInterface dialog, int which) {

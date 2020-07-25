@@ -55,7 +55,7 @@ public class BudgetFragment extends Fragment {
     /////
     Button btn_setBudget;
     double amount_total;
-    TextView tv_cycleAmountTotal; TextView tv_cycleBudgetAmount; TextView tv_amountLeft; TextView tv_by_cat;
+    TextView tv_cycleAmountTotal; TextView tv_cycleBudgetAmount; TextView tv_amountLeft; TextView tv_by_cat; TextView tv_notice;
     ListView budget_lv;
     ArrayList<CategoryBudget> category_budget_arraylist;
     CategoryBudgetListAdapter categoryBudgetListAdapter;
@@ -79,6 +79,7 @@ public class BudgetFragment extends Fragment {
         tv_cycleBudgetAmount = view.findViewById(R.id.cycleBudgetAmountTv);
         tv_amountLeft = view.findViewById(R.id.cycleAmountLeftTv);
         tv_by_cat = view.findViewById(R.id.by_cat_tv);
+        tv_notice = view.findViewById(R.id.noticeTv);
 
         budget_lv = view.findViewById(R.id.budgetLv);
 
@@ -313,6 +314,13 @@ public class BudgetFragment extends Fragment {
                 double amount = Double.parseDouble(res.getString(2));
                 amount_total += amount;
             }
+            if(amount_total==0){
+                tv_notice.setText("There are no entries");
+            }
+            else{
+                tv_notice.setText("");
+            }
+            
             String text = "-$" + String.format("%.2f",amount_total);
             tv_cycleAmountTotal.setText(text);
         }

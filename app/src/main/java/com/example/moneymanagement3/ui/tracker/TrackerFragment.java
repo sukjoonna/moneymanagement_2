@@ -45,7 +45,7 @@ public class TrackerFragment extends Fragment {
     View view;
     DataBaseHelper myDb;
     Cursor res; Cursor res2; Cursor res3; Cursor res4;
-    TextView tv_total; TextView tv_today;
+    TextView tv_total; TextView tv_today; TextView tv_notice;
     ListView lv;
     ArrayList<String> arrayList; ArrayList<String> cycles;
     ArrayAdapter<String> adapter; ArrayAdapter<String> spn_cyc_adapter;
@@ -70,6 +70,7 @@ public class TrackerFragment extends Fragment {
         lv = view.findViewById(R.id.listView);
         tv_total = view.findViewById(R.id.totalTv);
         tv_today = view.findViewById(R.id.todayTv);
+        tv_notice = view.findViewById(R.id.noticeTv);
         spinner_cycles = view.findViewById(R.id.cycleSpn);
         text = "";
         amount_total = (double) 0;
@@ -129,38 +130,6 @@ public class TrackerFragment extends Fragment {
         //------------------------------------------------END-----------------------------------------------//
 
 
-//        //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
-//        res3 = myDb.get_setting();
-//        res3.moveToFirst();
-//
-//        //Cycle updater
-//        cycle_updater();
-//
-//        spinner_cycles = view.findViewById(R.id.cycleSpn);
-//
-//        //Create Cycle Spinner --- from table4
-//        cycles = new ArrayList<String>();
-//        res4 = myDb.get_cycles();
-//        while(res4.moveToNext()){
-//            String cyc_startdate = res4.getString(0);
-//            String cyc_enddate = res4.getString(1);
-//            LocalDate cyc_startdate_localdate = LocalDate.parse(cyc_startdate);
-//            LocalDate cyc_enddate_localdate = LocalDate.parse(cyc_enddate);
-//
-//            //Formatting the localdate ==> custom string format (Month name dd, yyyy)
-//            DateTimeFormatter cyc_formatter = DateTimeFormatter.ofPattern("LLL dd, yy");
-//            String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
-//            String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
-//
-//            String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
-//            cycles.add(formatted_dates);
-//        }
-//        Collections.reverse(cycles);
-//        ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text,cycles);
-//        spinner_cycles.setAdapter(spn_cyc_adapter);
-//
-//        //------------------------------------------------END-----------------------------------------------//
-
 
         //Set current date Tv
         formatter = DateTimeFormatter.ofPattern("LLLL dd, yyyy");
@@ -192,7 +161,8 @@ public class TrackerFragment extends Fragment {
 
         //Get data from database table1
         LocalDate startdate_selected = startdate;
-        res = myDb.getDataDateRange(startdate_selected.minusDays(1),enddate); // (startdate,enddate]
+        res = myDb.getDataDateRange(startdate_selected.minusDays(1),enddate); //
+
 
         if(res!=null){
 
@@ -238,16 +208,22 @@ public class TrackerFragment extends Fragment {
             //puts the arraylist into the listview
             lv.setAdapter(entries_adapter);
             entries_adapter.notifyDataSetChanged();
-
-
         }
+
 
     }
 
     public void set_total() {
+        if(amount_total==0){
+            tv_notice.setText("There are no entries");
+        }
+        else{
+            tv_notice.setText("");
+        }
         //Updates the total at the top
         text = "-$" + String.format("%.2f",amount_total);
         tv_total.setText(text);
+
     }
 
 
@@ -520,8 +496,8 @@ public class TrackerFragment extends Fragment {
                                         }
 
 
-                                        if ((edited_amount.equals("") || edited_text.equals("")) || edited_date.equals("") ) {
-                                            Toast.makeText(view.getContext(),"There are Blank Fields",Toast.LENGTH_SHORT).show();
+                                        if (edited_amount.equals("")) {
+                                            Toast.makeText(view.getContext(),"Enter Amount",Toast.LENGTH_SHORT).show();
                                         }
                                         else if (decimal_places > 2){
                                             //create an alert dialog
@@ -532,6 +508,9 @@ public class TrackerFragment extends Fragment {
                                             adb3.show();
                                         }
                                         else {
+                                            if (edited_text.equals("") ) {
+                                                edited_text=edited_category;
+                                            }
 
                                             //formats the "edited_amount" to two decimal places
                                             float amount_float = Float.parseFloat(edited_amount);
@@ -548,9 +527,9 @@ public class TrackerFragment extends Fragment {
 
                                             //makes a toast to check if data was updated
                                             if(wasUpdated == Boolean.TRUE)
-                                                Toast.makeText(view.getContext(),"Data Updated",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(view.getContext(),"Entry Updated",Toast.LENGTH_SHORT).show();
                                             else
-                                                Toast.makeText(view.getContext(),"Data not Updated",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(view.getContext(),"Entry not Updated",Toast.LENGTH_SHORT).show();
 
                                              //recreates TrackerFragement to update all changes
                                             getFragmentManager()
@@ -589,6 +568,7 @@ public class TrackerFragment extends Fragment {
                         });
 
                         alertDialog.show();
+                        alertDialog.setCanceledOnTouchOutside(false);
 
                     }
                 });
@@ -712,63 +692,6 @@ public class TrackerFragment extends Fragment {
         //******************************************************************************new added
 
     }
-
-
-
-
-//
-//    public void onClick_resetBtn () {
-//        //deletes all data in the list and resets the listview
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @SuppressLint("SetTextI18n")
-//            public void onClick(View v) {
-//
-//                //An alert dialog box pops up to make sure you want to delete/reset everything
-//                AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
-//                alertDialog.setTitle("Alert");
-//                alertDialog.setMessage("Do you want to reset everything?");
-//                //Make an "ok" button
-//                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-//                        new DialogInterface.OnClickListener() {
-//                            //OnClick:
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                int deletedRows = 0;
-//
-//                                //deleteAll() returns the number of rows in the database table deleted
-//                                deletedRows = myDb.deleteAll();
-//
-//                                //clears the listview
-//                                adapter.clear();
-//
-//                                //makes a toast
-//                                if(deletedRows > 0)
-//                                    Toast.makeText(view.getContext(),"Deleted all entries",Toast.LENGTH_SHORT).show();
-////                                else
-////                                    Toast.makeText(SecondActivity.this,"Data not Deleted",Toast.LENGTH_SHORT).show();
-//
-//                                //set total to 0
-//                                tv_total.setText("-$0.00");
-//
-//                                //dismiss dialog
-//                                dialog.dismiss();
-//                            }
-//                        });
-//
-//                //make a "cancel" button
-//                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
-//                        new DialogInterface.OnClickListener() {
-//                            //OnClick:
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                //dismiss dialog
-//                                dialog.dismiss();
-//                            }
-//                        });
-//
-//                alertDialog.show();
-//
-//            }
-//        });
-//    }
 
 
 
