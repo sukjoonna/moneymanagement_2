@@ -159,6 +159,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getTotalDateRange(LocalDate StartDate, LocalDate EndDate) {
+        //Table 1
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT SUM(AMOUNT) AS Total from " + TABLE_NAME +" WHERE DATE_TIMESTAMP1 BETWEEN "+ "datetime(" + "\"" +StartDate + "\"" + ")" + "AND " + "datetime("+ "\"" +EndDate+"\""+ ") ",null);
+        return res;
+    }
+
 
     public Cursor getPaymentTypesDateRange(LocalDate StartDate, LocalDate EndDate) {
         //Table 1
@@ -398,6 +405,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public Cursor cyclesList (LocalDate startDate, LocalDate endDate){
+        //Table 4
+        // this will grab the cycle list
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select START_DATE, END_DATE from "+TABLE_NAME4+" WHERE START_DATE BETWEEN "+ "datetime(" + "\"" + startDate + "\"" + ")" + "AND " + "datetime("+ "\"" +endDate+"\""+ ")" + " ORDER BY START_DATE ASC",null);
+        return res;
+
+    }
 
 
 }
