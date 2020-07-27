@@ -24,9 +24,11 @@ import androidx.fragment.app.Fragment;
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
@@ -220,7 +222,7 @@ public class LineChartFragment extends Fragment {
         tv_customDates.setText(startdate_formatted + " ~ " + enddate_formatted);
     }
 
-public void onClick_selectDates() {
+    public void onClick_selectDates() {
     //Button to go back to settings
     btn_selectDates.setOnClickListener(new View.OnClickListener() {
         public void onClick(View v) {
@@ -541,6 +543,7 @@ public void onClick_selectDates() {
     });
 
 }
+
     public void lineChartMaker(LocalDate startDate,LocalDate endDate,boolean cyclical){
         lineChart.invalidate();////
         ////
@@ -561,6 +564,7 @@ public void onClick_selectDates() {
         lineChart.getLegend().setEnabled(false);
         lineData.notifyDataChanged();////
         lineChart.setTouchEnabled(true);
+
         //////////////////////
         lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
         {
@@ -578,6 +582,8 @@ public void onClick_selectDates() {
             {
 
             }
+
+
         });
         ////////////////////////////////////////////////
 
@@ -652,5 +658,8 @@ public void onClick_selectDates() {
             }
         });
     }
+
+
+
 
 }
