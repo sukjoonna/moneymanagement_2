@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -49,11 +50,12 @@ import static java.time.temporal.ChronoUnit.MONTHS;
 public class ExportData extends Fragment {
     View view;
     DataBaseHelper myDb;
-    Cursor res3; Cursor res4; Cursor res;
+    Cursor res3; Cursor res4; Cursor res; Cursor res_data;
     Button btn1; Button btn_export;
     TextView tv_dates;
     LocalDate startdate; LocalDate enddate;
     DateTimeFormatter formatter;
+    StringBuilder data;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,6 +80,10 @@ public class ExportData extends Fragment {
         enddate = LocalDate.parse(res3.getString(1));
         tv_dates.setText(startdate.format(formatter) + " ~ " + enddate.format(formatter));
 
+        //build data to transfer as csv file
+        data_builder();
+
+
         onClick_ExportBtn();
 
         //calling functions
@@ -88,14 +94,25 @@ public class ExportData extends Fragment {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void data_builder(){
+        res_data = myDb.getDataDateRange(startdate.minusDays(1),enddate);
+        //generate data
+        data = new StringBuilder();
+        data.append("Amount,Category,Description,Payment Type,Date");
+        while(res_data.moveToNext()){
+            data.append("\n" + res_data.getString(2) + ","
+                    + res_data.getString(3) + ","
+                    + res_data.getString(1) + ","
+                    + res_data.getString(6) + ","
+                    + res_data.getString(4) + ",");
+        }
+
+
+    }
+
 
     public void export() {
-        //generate data
-        StringBuilder data = new StringBuilder();
-        data.append("Time,Distance");
-        for (int i = 0; i < 5; i++) {
-            data.append("\n" + String.valueOf(i) + "," + String.valueOf(i * i));
-        }
 
         try {
             //saving the file into device
@@ -106,13 +123,15 @@ public class ExportData extends Fragment {
             //exporting
             Context context = getActivity().getApplicationContext();
             File filelocation = new File(getActivity().getFilesDir(), "data.csv");
-            Uri path = FileProvider.getUriForFile(context, "com.example.exportcsv.fileprovider", filelocation);
+            Uri path = FileProvider.getUriForFile(context, "com.example.moneymanagement3.fileprovider", filelocation);
             Intent fileIntent = new Intent(Intent.ACTION_SEND);
             fileIntent.setType("text/csv");
-            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data");
+            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Entries");
             fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            fileIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             fileIntent.putExtra(Intent.EXTRA_STREAM, path);
             startActivity(Intent.createChooser(fileIntent, "Send mail"));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
