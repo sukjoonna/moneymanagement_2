@@ -117,29 +117,46 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(final View view) {
 
-                AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
+                final AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
                 //alt_bld.setIcon(R.drawable.icon);
                 alt_bld.setTitle("Select Payment Type");
                 alt_bld.setSingleChoiceItems(payment_types, -1, new DialogInterface
                         .OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         selected_payment_type = payment_types[item];
-                    }
-                });
-                alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (selected_payment_type.equals("")){
-                            tv_payment.setText("Payment Type");
-                        }
-                        else{
-                            tv_payment.setText(selected_payment_type);
-                        }
-                        dialog.dismiss();// dismiss the alertbox after chose option
+                        tv_payment.setText(selected_payment_type);
+                        dialog.dismiss();
                     }
                 });
                 AlertDialog alert = alt_bld.create();
                 alert.show();
+                alert.setCanceledOnTouchOutside(false);
+
+
+//                AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
+//                //alt_bld.setIcon(R.drawable.icon);
+//                alt_bld.setTitle("Select Payment Type");
+//                alt_bld.setSingleChoiceItems(payment_types, -1, new DialogInterface
+//                        .OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int item) {
+//                        selected_payment_type = payment_types[item];
+//                    }
+//                });
+//                alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {
+//                    @RequiresApi(api = Build.VERSION_CODES.O)
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        if (selected_payment_type.equals("")){
+//                            tv_payment.setText("Payment Type");
+//                        }
+//                        else{
+//                            tv_payment.setText(selected_payment_type);
+//                        }
+//                        dialog.dismiss();// dismiss the alertbox after chose option
+//                    }
+//                });
+//                AlertDialog alert = alt_bld.create();
+//                alert.show();
+//                alert.setCanceledOnTouchOutside(false);
             }
         });
 
