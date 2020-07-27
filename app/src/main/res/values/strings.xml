@@ -73,4 +73,8 @@
     <string name="payment_types">Payment Types</string>
     <string name="data_over_time">Data Over Time</string>
     <string name="example_emoji_groceries">Example: (emoji) Groceries</string>
+    <string name="current_cycle">Current Cycle</string>
+    <string name="cycles">Cycles</string>
+    <string name="custom_dates">Custom Dates</string>
+    <string name="export">Export</string>
 </resources>
