@@ -658,7 +658,7 @@ public class TrackerFragment extends Fragment {
 
                 for(int i = 0; i < difference_month; i++){
                     startdate_temp = startdate_temp.plusMonths(1);
-                    enddate_temp = enddate_temp.plusMonths(1);
+                    enddate_temp = startdate_temp.plusMonths(1).minusDays(1);
                     //inserts the start and end date of the cycle only if the dates changed
                     myDb.insert_new_cycle(String.valueOf(startdate_temp), String.valueOf(enddate_temp), cycle_budget,
                             categories_list_as_string, categories_budget_list_as_string);
