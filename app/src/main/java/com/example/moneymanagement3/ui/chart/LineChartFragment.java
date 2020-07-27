@@ -561,11 +561,12 @@ public class LineChartFragment extends Fragment {
         lineDataSet.setValueTextColor(Color.BLACK);
         lineDataSet.setValueTextColor(Color.WHITE);
         lineDataSet.setValueTextSize(18f);
-        lineDataSet.setLineWidth(3f);
-        lineDataSet.setCircleRadius(5f);
-        lineDataSet.setDrawFilled(TRUE);
-        lineDataSet.setColor(Color.parseColor("#33FF99"));
-
+        lineDataSet.setLineWidth(2.5f);
+        lineDataSet.setCircleRadius(4f);
+        lineDataSet.setCircleColor(Color.LTGRAY);
+        //lineDataSet.setDrawFilled(TRUE);
+        lineDataSet.setColor(Color.parseColor("#BAF0A6"));
+        lineDataSet.setDrawCircleHole(FALSE);
         lineChart.getLegend().setEnabled(false);
         lineData.notifyDataChanged();////
         lineChart.setTouchEnabled(true);
