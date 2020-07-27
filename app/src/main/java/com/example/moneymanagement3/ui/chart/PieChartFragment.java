@@ -208,6 +208,18 @@ public class PieChartFragment extends Fragment {
                                 final View view_alertSpinner = inflater.inflate(R.layout.alert_spinner, null);
                                 spinner_cycles = view_alertSpinner.findViewById(R.id.the_spinner);
                                 //Create Cycle Spinner --- from table4
+
+                                //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
+                                res3 = myDb.get_setting();
+                                res3.moveToFirst();
+
+                                String num_of_cycles = res3.getString(3);
+                                if(num_of_cycles.equals("All")){
+                                    num_of_cycles = "1000000";
+                                }
+                                int count = 0;
+
+                                //Create Cycle Spinner --- from table4
                                 res4 = myDb.get_cycles();
                                 while(res4.moveToNext()){
                                     String cyc_startdate = res4.getString(0);
@@ -223,9 +235,17 @@ public class PieChartFragment extends Fragment {
                                     String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
                                     cycles_startToEnd.add(formatted_dates);
                                 }
+
+                                if(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
+                                    while(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
+                                        cycles_startToEnd.remove(0);
+                                    }
+                                }
                                 Collections.reverse(cycles_startToEnd);
-                                ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text2,cycles_startToEnd);
+                                ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text,cycles_startToEnd);
                                 spinner_cycles.setAdapter(spn_cyc_adapter);
+
+                                //------------------------------------------------END-----------------------------------------------//
 
 
                                 //What the spinner does when item is selected / not selected
@@ -298,6 +318,9 @@ public class PieChartFragment extends Fragment {
                         btn_customDates.setOnClickListener(new View.OnClickListener() {
                             @RequiresApi(api = Build.VERSION_CODES.O)
                             public void onClick(View v) {
+
+                                temp_startdate = null;
+                                temp_enddate = null;
 
                                 AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
                                 LayoutInflater inflater = getLayoutInflater();
@@ -471,7 +494,13 @@ public class PieChartFragment extends Fragment {
         pieDataSet.setSliceSpace(5f);
         pieChart.setUsePercentValues(true);
         pieChart.setHoleRadius(45);
-        pieChart.setCenterText(String.format("Total: $%.2f", monthlyTotal));
+        if(monthlyTotal==0){
+            pieChart.setCenterText("No entries\n"+"in this range");
+        }
+        else{
+            pieChart.setCenterText(String.format("Total: $%.2f", monthlyTotal));
+        }
+
         pieChart.setCenterTextSize(20f);
         pieChart.setCenterTextColor(Color.GRAY);
         pieChart.setTransparentCircleRadius(50);

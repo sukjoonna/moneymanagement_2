@@ -262,14 +262,20 @@ public class ManageCatFragment extends Fragment {
                                         //********************************************************** new added
 
 
+                                        if(cat_arr.size()==cat_list.length){
+                                            Toast.makeText(view.getContext(),"Select Categories",Toast.LENGTH_SHORT).show();
+                                        }
+                                        else{
+                                            //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                            getFragmentManager()
+                                                    .beginTransaction()
+                                                    .detach(ManageCatFragment.this)
+                                                    .attach(ManageCatFragment.this)
+                                                    .commit();
+                                            dialog.dismiss();
 
-                                        //recreates SettingFragment so the checkbox list appears again after alertdialog closes
-                                        getFragmentManager()
-                                                .beginTransaction()
-                                                .detach(ManageCatFragment.this)
-                                                .attach(ManageCatFragment.this)
-                                                .commit();
-                                        dialog.dismiss();
+                                        }
+
                                     }
                                 });
 
@@ -290,6 +296,7 @@ public class ManageCatFragment extends Fragment {
                             }
                         });
                         alertDialog.show();
+                        alertDialog.setCanceledOnTouchOutside(false);
                     }
                 }
 

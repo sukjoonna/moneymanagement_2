@@ -49,7 +49,7 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
     LocalDate startdate; LocalDate startdate_this;
     LocalDate enddate; LocalDate enddate_this;
     ListView lv;
-    TextView tv_total; TextView tv_customDates; TextView tv_spinner;
+    TextView tv_total; TextView tv_customDates; TextView tv_notice;
     String text;
     Spinner spinner_cycles;
     ArrayList<Entry> entries_arraylist; ArrayList<String> categories_inRange; ArrayList<String> paymentTypes_inRange;
@@ -79,6 +79,7 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
         btn_selectDates = view.findViewById(R.id.setDatesBtn);
         btn_chooseToShow = view.findViewById(R.id.chooseToShowBtn);
         tv_customDates = view.findViewById(R.id.customDatesTv);
+        tv_notice = view.findViewById(R.id.noticeTv);
 
         formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
 
@@ -186,6 +187,12 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
 
     public void set_total() {
         //Updates the total at the top
+        if(amount_total==0){
+            tv_notice.setText("There are no entries in this date range");
+        }
+        else{
+            tv_notice.setText("");
+        }
         text = "-$" + String.format("%.2f",amount_total);
         tv_total.setText(text);
     }
@@ -277,6 +284,17 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
                                 final View view_alertSpinner = inflater.inflate(R.layout.alert_spinner, null);
                                 spinner_cycles = view_alertSpinner.findViewById(R.id.the_spinner);
                                 //Create Cycle Spinner --- from table4
+                                //------------------------CYCLE CREATE AND UPDATER in DB (ALONG WITH SPINNER) -------------------------//                   *Make sure this is at top
+                                res3 = myDb.get_setting();
+                                res3.moveToFirst();
+
+                                String num_of_cycles = res3.getString(3);
+                                if(num_of_cycles.equals("All")){
+                                    num_of_cycles = "1000000";
+                                }
+                                int count = 0;
+
+                                //Create Cycle Spinner --- from table4
                                 res4 = myDb.get_cycles();
                                 while(res4.moveToNext()){
                                     String cyc_startdate = res4.getString(0);
@@ -292,9 +310,18 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
                                     String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
                                     cycles_startToEnd.add(formatted_dates);
                                 }
+
+                                if(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
+                                    while(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
+                                        cycles_startToEnd.remove(0);
+                                    }
+                                }
                                 Collections.reverse(cycles_startToEnd);
-                                ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text2,cycles_startToEnd);
+                                ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text,cycles_startToEnd);
                                 spinner_cycles.setAdapter(spn_cyc_adapter);
+
+                                //------------------------------------------------END-----------------------------------------------//
+
 
 
                                 //What the spinner does when item is selected / not selected
@@ -371,6 +398,9 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
                         btn_customDates.setOnClickListener(new View.OnClickListener() {
                             @RequiresApi(api = Build.VERSION_CODES.O)
                             public void onClick(View v) {
+
+                                temp_startdate = null;
+                                temp_enddate = null;
 
                                 AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
                                 LayoutInflater inflater = getLayoutInflater();
@@ -680,6 +710,19 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
                                                 @Override
                                                 public void onClick(View v) {
 
+//                                                    ArrayList<Cursor> res_arraylist = new ArrayList<>();
+//                                                    for(int i = 0; i < bool_list.length; i++){
+//                                                        boolean checked = bool_list[i];
+//                                                        if(checked){
+//                                                            res_arraylist.add(myDb.getDataByPaymentType(startdate_this.minusDays(1),enddate_this,paymentTypes_inRange.get(i))); // (startdate,enddate]
+//                                                        }
+//                                                    }
+//                                                    build_List(res_arraylist);
+//                                                    set_listview();
+//                                                    set_total();
+//
+//                                                    dialog.dismiss();
+//                                                    alertDialog.dismiss();
                                                     ArrayList<Cursor> res_arraylist = new ArrayList<>();
                                                     for(int i = 0; i < bool_list.length; i++){
                                                         boolean checked = bool_list[i];
@@ -687,12 +730,19 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
                                                             res_arraylist.add(myDb.getDataByPaymentType(startdate_this.minusDays(1),enddate_this,paymentTypes_inRange.get(i))); // (startdate,enddate]
                                                         }
                                                     }
-                                                    build_List(res_arraylist);
-                                                    set_listview();
-                                                    set_total();
+                                                    if(res_arraylist.isEmpty()){
+                                                        Toast.makeText(view.getContext(), "Select Payment Type(s)", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    else{
+                                                        build_List(res_arraylist);
+                                                        set_listview();
+                                                        set_total();
 
-                                                    dialog.dismiss();
-                                                    alertDialog.dismiss();
+                                                        dialog.dismiss();
+                                                        alertDialog.dismiss();
+                                                    }
+
+
                                                 }
                                             });
                                             //Back button

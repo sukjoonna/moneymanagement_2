@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Space;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,6 +28,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
+import com.example.moneymanagement3.ui.budget.SetBudgetCatFragment;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -46,6 +52,8 @@ public class ManageCycFragment extends Fragment {
     String cycle_start_day; String old_cycle_start_day; String cycle_input;
     CharSequence[] cycles_list;
     LocalDate startdate; LocalDate enddate; LocalDate currentDate;
+    String selected_number;
+    String[] numbers_list;
 
 
 
@@ -62,7 +70,7 @@ public class ManageCycFragment extends Fragment {
         lv = view.findViewById(R.id.manageCycLv);
 
         //create listview for "Manage cycles" setting
-        managecyc_items = new String[]{"Select Monthly Cycle Start Day", "Delete Previous Cycles", "Reset All Entries"}; //settings in manage cycles
+        managecyc_items = new String[]{"Select Monthly Cycle Start Day", "Number of Cycles to Show","Delete Previous Cycles", "Reset All Entries"}; //settings in manage cycles
         adapter_managecyc = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, managecyc_items);
         lv.setAdapter(adapter_managecyc); //set the listview with the managecyc_items
 
@@ -253,10 +261,66 @@ public class ManageCycFragment extends Fragment {
 
                 }
 
+                else if (position==1){ //"select number of cycles to show"
+
+                    res3 = myDb.get_setting();
+                    res3.moveToFirst();
+                    final String startdate_now = res3.getString(0);
+                    final String old_number = res3.getString(3);
+
+                    numbers_list =  new String[]{"3","6","9","12","All"};
+
+                    int ind = 0;
+                    for(int i = 0; i < 5; i++){
+                        if(old_number.equals(numbers_list[i])){
+                            ind = i;
+                        }
+                    }
+                    selected_number = numbers_list[ind];
+
+                    AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
+                    //alt_bld.setIcon(R.drawable.icon);
+                    alt_bld.setTitle("Choose (up to) how many cycles to display in the dropdown bars");
+//                    alt_bld.setMessage("The number of cycles you want to see in the dropdown bars");
+                    alt_bld.setSingleChoiceItems(numbers_list, ind, new DialogInterface
+                            .OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                                selected_number = numbers_list[item];
+                        }
+                    });
+                    alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        public void onClick(DialogInterface dialog, int which) {
+//                            if (selected_number.equals("All")){
+//                                int counter=0;
+//                                res4 = myDb.get_cycles();
+//                                while(res4.moveToNext()){
+//                                    counter++;
+//                                }
+//                                if(counter>=6){
+//                                    selected_number = String.valueOf(counter);
+//                                }
+//                                else{
+//                                    selected_number = "6";
+//                                }
+//
+//                            }
+                            myDb.update_cycle_num(startdate_now,selected_number);
+
+                            dialog.dismiss();// dismiss the alertbox after chose option
+                        }
+                    });
+                    AlertDialog alert = alt_bld.create();
+                    alert.setCanceledOnTouchOutside(false);
+                    alert.show();
+
+
+                }
+
 
 
                 //if "delete previous cycles" is selected
-                else if (position==1){
+                else if (position==2){
 
                     //creates the cycles arraylist from database table4
                     res4 = myDb.get_cycles();
@@ -327,6 +391,7 @@ public class ManageCycFragment extends Fragment {
                                     @Override
                                     public void onClick(View v) {
 
+                                        int counter = 0;
                                         //deletes the cycles from database table4 and table1 if the boxes are checked
                                         for (int i = 0; i < cycles_list.length; i++) {
                                             boolean checked = bool_list[i];
@@ -343,15 +408,23 @@ public class ManageCycFragment extends Fragment {
                                                 LocalDate cycle_enddate_ld = LocalDate.parse(cycle_enddate);
                                                 myDb.deletedDataDateRange(cycle_startdate_ld,cycle_enddate_ld);
 
+                                                counter++;
                                             }
                                         }
-                                        //recreates SettingFragment so the checkbox list appears again after alertdialog closes
-                                        getFragmentManager()
-                                                .beginTransaction()
-                                                .detach(ManageCycFragment.this)
-                                                .attach(ManageCycFragment.this)
-                                                .commit();
-                                        dialog.dismiss();
+
+                                        if(counter>0){
+                                            //recreates SettingFragment so the checkbox list appears again after alertdialog closes
+                                            getFragmentManager()
+                                                    .beginTransaction()
+                                                    .detach(ManageCycFragment.this)
+                                                    .attach(ManageCycFragment.this)
+                                                    .commit();
+                                            dialog.dismiss();
+                                        }
+                                        else{
+                                            Toast.makeText(view.getContext(),"Select Cycles",Toast.LENGTH_SHORT).show();
+                                        }
+
                                     }
                                 });
 
@@ -385,9 +458,9 @@ public class ManageCycFragment extends Fragment {
                     //An alert dialog box pops up to make sure you want to delete/reset everything
                     AlertDialog alertDialog = new AlertDialog.Builder(view.getContext()).create();
                     alertDialog.setTitle("Alert");
-                    alertDialog.setMessage("Do you want to reset everything?");
+                    alertDialog.setMessage("Do you want to reset all cycles and entries?");
                     //Make an "ok" button
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes, reset",
                             new DialogInterface.OnClickListener() {
                                 //OnClick:
                                 public void onClick(DialogInterface dialog, int which) {

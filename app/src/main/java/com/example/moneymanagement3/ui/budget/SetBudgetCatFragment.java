@@ -159,36 +159,41 @@ public class SetBudgetCatFragment extends Fragment {
                             @Override
                             public void onClick(View v) {
 
-                                double budget_amount = Double.parseDouble(et1.getText().toString());
-
-                                double new_difference = Double.parseDouble(old_cycle_budget) - (finalSum + budget_amount);
-
-                                if (new_difference >= 0){
-
-                                    String new_category_budget = String.format("%.2f",budget_amount);
-
-                                    categories_budget_list[position] = new_category_budget;
-                                    StringBuilder categories_budget_list_stringbuilder = new StringBuilder();
-
-                                    for (String s : categories_budget_list) {
-                                        categories_budget_list_stringbuilder.append(s).append(";");
-                                    }
-
-                                    myDb.update_cycles_table_CatBudget(old_startdate,categories_budget_list_stringbuilder.toString());
-
-                                    Toast.makeText(view.getContext(),"Budget set",Toast.LENGTH_LONG).show();
-
-                                    //recreates TrackerFragement to update all changes
-                                    getFragmentManager()
-                                            .beginTransaction()
-                                            .detach(SetBudgetCatFragment.this)
-                                            .attach(SetBudgetCatFragment.this)
-                                            .commit();
-
-                                    dialog.dismiss();
+                                if(et1.getText().toString().equals("")){
+                                    Toast.makeText(view.getContext(),"Enter Budget",Toast.LENGTH_SHORT).show();
                                 }
                                 else{
-                                    Toast.makeText(view.getContext(),"Amount exceeds monthly budget",Toast.LENGTH_LONG).show();
+                                    double budget_amount = Double.parseDouble(et1.getText().toString());
+
+                                    double new_difference = Double.parseDouble(old_cycle_budget) - (finalSum + budget_amount);
+
+                                    if (new_difference >= 0){
+
+                                        String new_category_budget = String.format("%.2f",budget_amount);
+
+                                        categories_budget_list[position] = new_category_budget;
+                                        StringBuilder categories_budget_list_stringbuilder = new StringBuilder();
+
+                                        for (String s : categories_budget_list) {
+                                            categories_budget_list_stringbuilder.append(s).append(";");
+                                        }
+
+                                        myDb.update_cycles_table_CatBudget(old_startdate,categories_budget_list_stringbuilder.toString());
+
+                                        Toast.makeText(view.getContext(),"Budget set",Toast.LENGTH_LONG).show();
+
+                                        //recreates TrackerFragement to update all changes
+                                        getFragmentManager()
+                                                .beginTransaction()
+                                                .detach(SetBudgetCatFragment.this)
+                                                .attach(SetBudgetCatFragment.this)
+                                                .commit();
+
+                                        dialog.dismiss();
+                                    }
+                                    else{
+                                        Toast.makeText(view.getContext(),"Amount exceeds monthly budget",Toast.LENGTH_LONG).show();
+                                    }
                                 }
 
 

@@ -39,6 +39,7 @@ public class ManageBudFragment extends Fragment {
     ArrayAdapter<String> adapter_managebud;
     Button btn1;
     Cursor res3; Cursor res2; Cursor res4;
+    TextView tv_notice;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_managebud, container, false);
@@ -48,8 +49,13 @@ public class ManageBudFragment extends Fragment {
 
         btn1 = view.findViewById(R.id.gobackBtn);
         lv = view.findViewById(R.id.manageBudLv);
+        tv_notice = view.findViewById(R.id.noticeTv);
+
         TextView title = view.findViewById(R.id.manageBudTv);
         title.setText("Manage Budget");
+
+        tv_notice.setText("*These budget selections are for this cycle only.\n" + "Previous cycle budgets cannot be modified.");
+        tv_notice.setTextSize(16);
 
         managebud_items = new String[]{"Set Monthly Cycle Budget", "Set Budget per Category"};
         adapter_managebud = new ArrayAdapter<String>(view.getContext(), R.layout.manage_listview_text, R.id.manage_item, managebud_items);
@@ -89,32 +95,67 @@ public class ManageBudFragment extends Fragment {
                     et.setText(old_cycle_budget);
                     adb.setView(setCycleBudget_view);
 
-                    //Cancel button
-                    adb.setNeutralButton("Cancel", new AlertDialog.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.O)
-                        public void onClick(DialogInterface dialog, int which) {
+                    //buttons
+                    adb.setPositiveButton("Set", null);
+                    adb.setNeutralButton("Cancel", null);
+
+                    final AlertDialog alertDialog = adb.create();
+
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(final DialogInterface dialog) {
+                            //set button
+                            Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                            positiveButton.setOnClickListener(new View.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onClick(View v) {
+                                    if (et.getText().toString().equals("")){
+                                        Toast.makeText(view.getContext(),"Enter Budget",Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+                                        double budget_amount = Double.parseDouble(et.getText().toString());
+                                        String new_cycle_budget = String.format("%.2f",budget_amount);
+                                        myDb.update_cycles_table_Budget(old_startdate,new_cycle_budget);
+                                        dialog.dismiss();
+                                    }
+
+                                }
+
+
+                            });
 
                         }
                     });
 
-                    //Set button
-                    adb.setPositiveButton("Set", new AlertDialog.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.O)
-                        public void onClick(DialogInterface dialog, int which) {
-                            double budget_amount = Double.parseDouble(et.getText().toString());
-                            String new_cycle_budget = String.format("%.2f",budget_amount);
-                            myDb.update_cycles_table_Budget(old_startdate,new_cycle_budget);
+                    alertDialog.show();
 
-                        //recreates TrackerFragement to update all changes
-                        getFragmentManager()
-                                .beginTransaction()
-                                .detach(ManageBudFragment.this)
-                                .attach(ManageBudFragment.this)
-                                .commit();
-                        }
-                    });
 
-                    adb.show();
+//                    //Cancel button
+//                    adb.setNeutralButton("Cancel", new AlertDialog.OnClickListener() {
+//                        @RequiresApi(api = Build.VERSION_CODES.O)
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                        }
+//                    });
+//
+//                    //Set button
+//                    adb.setPositiveButton("Set", new AlertDialog.OnClickListener() {
+//                        @RequiresApi(api = Build.VERSION_CODES.O)
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            double budget_amount = Double.parseDouble(et.getText().toString());
+//                            String new_cycle_budget = String.format("%.2f",budget_amount);
+//                            myDb.update_cycles_table_Budget(old_startdate,new_cycle_budget);
+//
+//                        //recreates TrackerFragement to update all changes
+//                        getFragmentManager()
+//                                .beginTransaction()
+//                                .detach(ManageBudFragment.this)
+//                                .attach(ManageBudFragment.this)
+//                                .commit();
+//                        }
+//                    });
+
                 }
 
 
