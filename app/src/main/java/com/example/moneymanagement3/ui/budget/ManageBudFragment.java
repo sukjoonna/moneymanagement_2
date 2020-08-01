@@ -117,6 +117,7 @@ public class ManageBudFragment extends Fragment {
                                         double budget_amount = Double.parseDouble(et.getText().toString());
                                         String new_cycle_budget = String.format("%.2f",budget_amount);
                                         myDb.update_cycles_table_Budget(old_startdate,new_cycle_budget);
+                                        Toast.makeText(view.getContext(),"Budget set",Toast.LENGTH_LONG).show();
                                         dialog.dismiss();
                                     }
 
