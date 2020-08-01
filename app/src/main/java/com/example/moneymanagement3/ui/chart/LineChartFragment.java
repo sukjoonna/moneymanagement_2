@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -63,6 +64,8 @@ public class LineChartFragment extends Fragment {
     ArrayList lineEntries;
     ArrayList LineEntryLabels;
     TextView tv_customDates;
+    TextView xAxisText;
+    TextView yAxisText;
     LocalDate startdate_this; LocalDate enddate_this;
     DateTimeFormatter formatter;
     Button btn_setStartDate;
@@ -70,6 +73,7 @@ public class LineChartFragment extends Fragment {
     DatePickerDialog.OnDateSetListener mDateSetListener_start; DatePickerDialog.OnDateSetListener mDateSetListener_end;
     LocalDate temp_startdate;
     LocalDate temp_enddate;
+    int x;
     /////
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -80,7 +84,10 @@ public class LineChartFragment extends Fragment {
         btn1 = view.findViewById(R.id.gobackBtn);
         btn_selectDates = view.findViewById(R.id.setDatesBtn2);
         tv_customDates = view.findViewById(R.id.customDatesTv2);
-
+        xAxisText = view.findViewById(R.id.xAxis);
+        yAxisText = view.findViewById(R.id.yAxis);
+        yAxisText.setText("Amount Spent");
+        xAxisText.setText("Cycle Dates");
         formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
 
         //get database
@@ -548,7 +555,7 @@ public class LineChartFragment extends Fragment {
         lineChart.invalidate();////
         ////
         if (cyclical) {
-            getEntries2(startDate, endDate);
+           x = getEntries2(startDate, endDate);
         }
         else {
             getEntries(startDate, endDate);
@@ -570,6 +577,16 @@ public class LineChartFragment extends Fragment {
         lineChart.getLegend().setEnabled(false);
         lineData.notifyDataChanged();////
         lineChart.setTouchEnabled(true);
+        lineChart.getDescription().setEnabled(FALSE);
+        XAxis xAxis = lineChart.getXAxis();
+        //YAxis yAxis = lineChart.gety();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisMaximum(x);
+        xAxis.setAxisMinimum(0);
+
+        //xAxis.setAxisMinimum(0);
+
+
 
         //////////////////////
         lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener()
@@ -600,7 +617,7 @@ public class LineChartFragment extends Fragment {
         Float monthlyTotal = (float) 0;
         Float currentMonthAmount;
         lineEntries = new ArrayList<>();
-        int x = 0;
+        x = 0;
 
         dataInRangeRes = myDb.getLineChartMonthly(startDate.minusDays(1),endDate);
 
@@ -614,7 +631,7 @@ public class LineChartFragment extends Fragment {
 
     }
 
-    private void getEntries2(LocalDate startDate,LocalDate endDate) {
+    private int getEntries2(LocalDate startDate,LocalDate endDate) {
         Cursor dataInRangeRes;
         Float monthlyTotal = (float) 0;
         Float currentMonthAmount;
@@ -650,7 +667,7 @@ public class LineChartFragment extends Fragment {
 
         }
 
-
+        return x;
     }
 
     public void onClick_GoBackBtn () {
