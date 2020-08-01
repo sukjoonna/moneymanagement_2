@@ -216,10 +216,7 @@ public class SetBudgetCatFragment extends Fragment {
         //Button to go back to settings
         btn1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ManageBudFragment frag= new ManageBudFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, frag, "setbudcatfrag")
-                        .commit();
+                getActivity().onBackPressed();
             }
         });
     }

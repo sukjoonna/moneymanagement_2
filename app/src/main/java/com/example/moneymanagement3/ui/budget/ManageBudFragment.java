@@ -180,10 +180,7 @@ public class ManageBudFragment extends Fragment {
         //Button to go back to settings
         btn1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                BudgetFragment frag= new BudgetFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, frag, "budgetFrag")
-                        .commit();
+                getActivity().onBackPressed();
             }
         });
     }

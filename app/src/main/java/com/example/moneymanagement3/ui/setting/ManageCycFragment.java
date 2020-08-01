@@ -503,10 +503,7 @@ public class ManageCycFragment extends Fragment {
         //Button to go back to settings
         btn1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                SettingFragment frag= new SettingFragment();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, frag, "settingFrag")
-                        .commit();
+                getActivity().onBackPressed();
             }
         });
     }
