@@ -566,11 +566,11 @@ public class LineChartFragment extends Fragment {
         lineChart.setData(lineData);
         // lineDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
         lineDataSet.setValueTextColor(Color.BLACK);
-        lineDataSet.setValueTextColor(Color.WHITE);
         lineDataSet.setValueTextSize(18f);
         lineDataSet.setLineWidth(2.5f);
         lineDataSet.setCircleRadius(4f);
         lineDataSet.setCircleColor(Color.LTGRAY);
+        lineDataSet.setDrawValues(false);
         //lineDataSet.setDrawFilled(TRUE);
         lineDataSet.setColor(Color.parseColor("#BAF0A6"));
         lineDataSet.setDrawCircleHole(FALSE);
@@ -581,7 +581,7 @@ public class LineChartFragment extends Fragment {
         XAxis xAxis = lineChart.getXAxis();
         //YAxis yAxis = lineChart.gety();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setAxisMaximum(x);
+        xAxis.setAxisMaximum(x-1);
         xAxis.setAxisMinimum(0);
 
         //xAxis.setAxisMinimum(0);
