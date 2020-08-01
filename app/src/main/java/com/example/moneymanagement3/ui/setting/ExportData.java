@@ -1,5 +1,6 @@
 package com.example.moneymanagement3.ui.setting;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -111,7 +112,7 @@ public class ExportData extends Fragment {
 
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void export() {
 
         try {
@@ -120,9 +121,23 @@ public class ExportData extends Fragment {
             out.write((data.toString()).getBytes());
             out.close();
 
+//            //exporting
+//            Context context = getActivity().getApplicationContext();
+//            File filelocation = new File(context.getFilesDir(), "data.csv");
+////            Uri path = Uri.fromFile(filelocation);
+//            Uri path = FileProvider.getUriForFile(context, "com.example.moneymanagement3.fileprovider", filelocation);
+//            Intent fileIntent = new Intent(Intent.ACTION_SEND);
+//            fileIntent.setType("text/csv");
+//            fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Entries");
+//            fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//            fileIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            fileIntent.putExtra(Intent.EXTRA_STREAM, path);
+//            startActivity(Intent.createChooser(fileIntent, "Send mail"));
+
             //exporting
             Context context = getActivity().getApplicationContext();
-            File filelocation = new File(getActivity().getFilesDir(), "data.csv");
+            File filepath = new File(context.getFilesDir(),".");
+            File filelocation = new File(filepath, "data.csv");
             Uri path = FileProvider.getUriForFile(context, "com.example.moneymanagement3.fileprovider", filelocation);
             Intent fileIntent = new Intent(Intent.ACTION_SEND);
             fileIntent.setType("text/csv");
@@ -131,6 +146,8 @@ public class ExportData extends Fragment {
             fileIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             fileIntent.putExtra(Intent.EXTRA_STREAM, path);
             startActivity(Intent.createChooser(fileIntent, "Send mail"));
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,6 +158,7 @@ public class ExportData extends Fragment {
     public void onClick_ExportBtn () {
         //Button to go back to settings
         btn_export.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             public void onClick(View v) {
                 export();
             }
