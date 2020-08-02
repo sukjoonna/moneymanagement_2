@@ -36,9 +36,12 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -685,9 +688,11 @@ public class LineChartFragment extends Fragment {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public String getFormattedValue(float value) {
-            Log.d("dateman", startdate.toString());
-            String formattedString = "93";
-            return value + "s";
+            int startMonthVal = startdate.getMonthValue();
+            value = value + startMonthVal;
+            Log.d("dateman", String.valueOf(value));
+            Month currentMonth = Month.of(1); //this is wrong
+            return currentMonth.getDisplayName(TextStyle.SHORT,Locale.ENGLISH); //check around here for why it's not right oh
         }
     }
 
