@@ -24,12 +24,14 @@ import androidx.fragment.app.Fragment;
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
@@ -102,7 +104,6 @@ public class LineChartFragment extends Fragment {
         res3.moveToFirst();
         cycle_updater();
 
-
         //Line Chart
         lineChart = view.findViewById(R.id.lineChart);
         startdate = LocalDate.parse(res3.getString(0));
@@ -141,8 +142,6 @@ public class LineChartFragment extends Fragment {
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
     //updates the start and end date of the cycle
     public void cycle_updater() {
@@ -583,8 +582,10 @@ public class LineChartFragment extends Fragment {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisMaximum(x-1);
         xAxis.setAxisMinimum(0);
-
+        xAxis.setLabelCount(x-1);
         //xAxis.setAxisMinimum(0);
+        xAxis.setValueFormatter(new MyXAxisValueFormatter());
+        xAxis.setGranularity(1f); // restrict interval to 1 (minimum)
 
 
 
@@ -644,8 +645,6 @@ public class LineChartFragment extends Fragment {
         while(letSeeDates.moveToNext()){
             startCycle = LocalDate.parse(letSeeDates.getString(0));
             endCycle = LocalDate.parse(letSeeDates.getString(1));
-            Log.d("lookJohn1", String.valueOf(startCycle));
-            Log.d("lookJohn2", String.valueOf(endCycle));
             dataInRangeRes = myDb.getTotalDateRange(startCycle.minusDays(1),endCycle);
 
             Log.d("lookJohn3", String.valueOf(dataInRangeRes.getCount()));
@@ -682,7 +681,16 @@ public class LineChartFragment extends Fragment {
         });
     }
 
-
-
+    public class MyXAxisValueFormatter extends ValueFormatter {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public String getFormattedValue(float value) {
+            Log.d("dateman", startdate.toString());
+            String formattedString = "93";
+            return value + "s";
+        }
+    }
 
 }
+
+
