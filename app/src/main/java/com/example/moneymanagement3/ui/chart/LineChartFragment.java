@@ -117,38 +117,26 @@ public class LineChartFragment extends Fragment {
         enddate = LocalDate.parse(res3.getString(1));
         lineChartMaker(startdate_this,enddate_this,FALSE);
 
-        ////////////////////////
-        //What the spinner does when item is selected / not selected
-//        spinner_cycles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @RequiresApi(api = Build.VERSION_CODES.O)
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
-//                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-//                int inverted_pos = (cycles.size() - 1) - position;
-//                res4.moveToPosition(inverted_pos);
-//                startdate = LocalDate.parse(res4.getString(0));
-//                enddate = LocalDate.parse(res4.getString(1));
-//                lineChartMaker(startdate,enddate);
-//                Log.d("onselect", "onItemSelected: ");
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                //Object item = adapterView.getItemAtPosition(0);
-//                res3.moveToFirst();
-//                startdate = LocalDate.parse(res3.getString(0));
-//                enddate = LocalDate.parse(res3.getString(1));
-//                lineChartMaker(startdate,enddate);
-//                Log.d("noneselect", "onNothingSelected: ");
-//
-//            }
-//        });
-        /////////////////////////////////
         onClick_GoBackBtn();
         onClick_selectDates();
-        return view;
+
+        // alert dialog
+        AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+        final View view_alertButtons = inflater.inflate(R.layout.alert_buttons_layout, null);
+        adb.setTitle("Select Date Range:");
+        adb.setView(view_alertButtons); //shows the edit texts from the xml file in the alert dialog
+        adb.setNeutralButton("Back", null);
+        final AlertDialog alertDialog = adb.create();
+        alertDialog.show();
+
+    ////////////
+
+
+//////////////
+                return view;
+
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //updates the start and end date of the cycle
     public void cycle_updater() {
@@ -454,47 +442,6 @@ public class LineChartFragment extends Fragment {
                                     });
 
 
-//                                    mDateSetListener_start = new DatePickerDialog.OnDateSetListener() {
-//                                        @RequiresApi(api = Build.VERSION_CODES.O)
-//                                        @Override
-//                                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-//                                            month = month + 1;
-//
-//                                            String month_string = String.valueOf(month);
-//                                            String day_string = String.valueOf(day);
-//                                            if (month_string.length() < 2){
-//                                                month_string = "0" + month_string;
-//                                            }
-//                                            if (day_string.length() < 2){
-//                                                day_string = "0" + day_string;
-//                                            }
-//                                            String date = year + "-" + month_string + "-" + day_string;
-//                                            temp_startdate = LocalDate.parse(date);
-//                                            btn_setStartDate.setText(temp_startdate.format(formatter));
-//
-//                                        }
-//                                    };
-//
-//                                    mDateSetListener_end = new DatePickerDialog.OnDateSetListener() {
-//                                        @RequiresApi(api = Build.VERSION_CODES.O)
-//                                        @Override
-//                                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-//                                            month = month + 1;
-//
-//                                            String month_string = String.valueOf(month);
-//                                            String day_string = String.valueOf(day);
-//                                            if (month_string.length() < 2){
-//                                                month_string = "0" + month_string;
-//                                            }
-//                                            if (day_string.length() < 2){
-//                                                day_string = "0" + day_string;
-//                                            }
-//                                            String date = year + "-" + month_string + "-" + day_string;
-//                                            temp_enddate = LocalDate.parse(date);
-//                                            btn_setEndDate.setText(temp_enddate.format(formatter));
-//                                        }
-//                                    };
-
                                     //set button (first alertdialog)
                                     Button positiveButton = alertDialog3.getButton(AlertDialog.BUTTON_POSITIVE);
                                     positiveButton.setOnClickListener(new View.OnClickListener() {
@@ -594,9 +541,14 @@ public class LineChartFragment extends Fragment {
         xAxis.setLabelCount(x-1);
         xAxis.setTextSize(14);
         yAxis.setTextSize(14);
+        lineChart.setExtraOffsets(10, 10, 10, 10);
+
         //xAxis.setAxisMinimum(0);
         xAxis.setValueFormatter(new MyXAxisValueFormatter());
         xAxis.setGranularity(1f); // restrict interval to 1 (minimum)
+
+        yAxis.setValueFormatter(new MyYAxisValueFormatter());
+        yAxis.setGranularity(1f); // restrict interval to 1 (minimum)
 
 
 
@@ -698,9 +650,18 @@ public class LineChartFragment extends Fragment {
         public String getFormattedValue(float value) {
             int startMonthVal = startdate.getMonthValue();
             value = value + startMonthVal;
+            value = value % 12;
             Log.d("dateman", String.valueOf(value));
             Month currentMonth = Month.of( (int) value);
-            return currentMonth.getDisplayName(TextStyle.SHORT,Locale.ENGLISH);
+            return currentMonth.getDisplayName(TextStyle.SHORT,Locale.ENGLISH) +" " +startdate.getDayOfMonth();
+        }
+    }
+
+    public class MyYAxisValueFormatter extends ValueFormatter {
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public String getFormattedValue(float value) {
+            return "$" + String.format("%.2f",value);
         }
     }
 
