@@ -67,7 +67,6 @@ public class LineChartFragment extends Fragment {
     LineData lineData;
     LineDataSet lineDataSet;
     ArrayList lineEntries;
-    ArrayList LineEntryLabels;
     TextView tv_customDates;
     TextView xAxisText;
     TextView yAxisText;
@@ -101,31 +100,39 @@ public class LineChartFragment extends Fragment {
 
         //get database
         myDb = new DataBaseHelper(getActivity());
-
-        Cursor res_startup = myDb.get_setting();
+        Cursor res_startup = myDb.get_cycles();
+        int cycleNum = res_startup.getCount();
         res_startup.moveToFirst();
         startdate_this = LocalDate.parse(res_startup.getString(0));
+        startdate = LocalDate.parse(res_startup.getString(0));
+        if(cycleNum >=12 ){
+            res_startup.moveToPosition(11);
+        }
+        else {
+            res_startup.moveToLast();
+        }
         enddate_this = LocalDate.parse(res_startup.getString(1));
+        enddate = LocalDate.parse(res_startup.getString(0));
+
+        //Line Chart
+        lineChart = view.findViewById(R.id.lineChart);
+        lineChartMaker(startdate,enddate,TRUE);
 
         res3 = myDb.get_setting();
         res3.moveToFirst();
         cycle_updater();
 
-        //Line Chart
-        lineChart = view.findViewById(R.id.lineChart);
-        startdate = LocalDate.parse(res3.getString(0));
-        enddate = LocalDate.parse(res3.getString(1));
-        lineChartMaker(startdate_this,enddate_this,FALSE);
-
-        onClick_GoBackBtn();
-        alertCycleDialog();
         //onClick_selectDates();
         btn_selectDates.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             alertCycleDialog();}
         });
 
-                return view;
+        setDatesTv();
+
+        onClick_GoBackBtn();
+
+        return view;
 
     }
 
@@ -601,6 +608,7 @@ public class LineChartFragment extends Fragment {
 }
 
     public void lineChartMaker(LocalDate startDate,LocalDate endDate,boolean cyclical){
+
         lineChart.invalidate();////
         ////
         if (cyclical) {
@@ -692,8 +700,9 @@ public class LineChartFragment extends Fragment {
     }
 
     private int getEntries2(LocalDate startDate,LocalDate endDate) {
+
         Cursor dataInRangeRes;
-        Float monthlyTotal = (float) 0;
+        Float monthlyTotal = (float) 0; //misnomer reallyjust zero
         Float currentMonthAmount;
         LocalDate startCycle;
         LocalDate endCycle;
@@ -706,7 +715,6 @@ public class LineChartFragment extends Fragment {
             endCycle = LocalDate.parse(letSeeDates.getString(1));
             dataInRangeRes = myDb.getTotalDateRange(startCycle.minusDays(1),endCycle);
 
-            Log.d("lookJohn3", String.valueOf(dataInRangeRes.getCount()));
             //Log.d("lookJohn", dataInRangeRes.getString(0));
             while(dataInRangeRes.moveToNext()){
 
@@ -718,10 +726,11 @@ public class LineChartFragment extends Fragment {
                 else {
                     lineEntries.add(new Entry(x, 0));
                 }
+                Log.d("x value 000078", String.valueOf(x));
+
             }
             x++;
-            //currentMonthAmount = Float.parseFloat(dataInRangeRes.getString(0));
-            //lineEntries.add(new Entry(x, currentMonthAmount));
+
 
         }
 
@@ -744,10 +753,16 @@ public class LineChartFragment extends Fragment {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public String getFormattedValue(float value) {
-            int startMonthVal = startdate.getMonthValue();
+            int startMonthVal = startdate_this.getMonthValue();
+            Log.d("startMonthVal  000078", String.valueOf(startMonthVal));
             value = value + startMonthVal;
+            //Log.d("startdate in linechart 000078", String.valueOf(startDate));
+            //Log.d("enddate in linechart 000078", String.valueOf(endDate));
             value = value % 12;
-            Log.d("dateman", String.valueOf(value));
+            if (value == 0)
+            {
+                value = 12;
+            }
             Month currentMonth = Month.of( (int) value);
             return currentMonth.getDisplayName(TextStyle.SHORT,Locale.ENGLISH) +" " +startdate.getDayOfMonth();
         }
