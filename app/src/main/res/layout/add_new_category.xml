@@ -11,9 +11,9 @@
     <EditText
         android:id="@+id/add_categoryEt"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
+        android:layout_height="39dp"
         android:background="@drawable/light_rectangle"
+        android:gravity="center"
         android:hint="@string/example_emoji_groceries"
         android:importantForAutofill="no"
         android:inputType="textPersonName"

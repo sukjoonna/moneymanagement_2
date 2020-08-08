@@ -1,14 +1,10 @@
 package com.example.moneymanagement3.ui.home;
 
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.LightingColorFilter;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,14 +24,14 @@ import androidx.fragment.app.Fragment;
 
 import com.example.moneymanagement3.DataBaseHelper;
 import com.example.moneymanagement3.R;
+import com.example.moneymanagement3.ui.setting.ManageCatFragment;
+
+import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -57,6 +53,7 @@ public class HomeFragment extends Fragment {
     String cycle_input; String new_category;
     boolean category_added = false;
     String[] payment_types;
+    Button info_btn;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -68,6 +65,7 @@ public class HomeFragment extends Fragment {
         btn_add = view.findViewById(R.id.add1Btn);   //add button
         spn_category = view.findViewById(R.id.categorySpn);
         tv_payment = view.findViewById(R.id.paymentTv);
+        info_btn = view.findViewById(R.id.info_btn);
 
         //creates database
         myDb = new DataBaseHelper(getActivity());
@@ -91,7 +89,7 @@ public class HomeFragment extends Fragment {
 //        updater.cycle_updater();
 
         //creates the categories ArrayList and adds the categories from the database table2
-        categories = new ArrayList<String>();
+        categories = new ArrayList<>();
         categories.add(0, "CATEGORY*");  //this is created as default to prevent bugs when there are no categories
         res2 = myDb.getAllData_categories();
         while (res2.moveToNext()) {
@@ -102,7 +100,7 @@ public class HomeFragment extends Fragment {
 
 
         //Creating the categories spinner using spinner_of_categories xml file in layout
-        spn_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text, categories);
+        spn_adapter = new ArrayAdapter<>(view.getContext(), R.layout.spinner_text, categories);
         spn_category.setAdapter(spn_adapter);
         spn_adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 
@@ -110,7 +108,7 @@ public class HomeFragment extends Fragment {
         //Payment type
         payment_types = new String[] {"Cash", "Credit", "Debit", "Check"};
 
-        tv_payment.setText("Payment Type");
+        tv_payment.setText(R.string.paymenttype);
         selected_payment_type = "";
 
         tv_payment.setOnClickListener(new View.OnClickListener() {
@@ -133,35 +131,10 @@ public class HomeFragment extends Fragment {
                 alert.setCanceledOnTouchOutside(false);
 
 
-//                AlertDialog.Builder alt_bld = new AlertDialog.Builder(view.getContext());
-//                //alt_bld.setIcon(R.drawable.icon);
-//                alt_bld.setTitle("Select Payment Type");
-//                alt_bld.setSingleChoiceItems(payment_types, -1, new DialogInterface
-//                        .OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int item) {
-//                        selected_payment_type = payment_types[item];
-//                    }
-//                });
-//                alt_bld.setPositiveButton("Okay", new AlertDialog.OnClickListener() {
-//                    @RequiresApi(api = Build.VERSION_CODES.O)
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        if (selected_payment_type.equals("")){
-//                            tv_payment.setText("Payment Type");
-//                        }
-//                        else{
-//                            tv_payment.setText(selected_payment_type);
-//                        }
-//                        dialog.dismiss();// dismiss the alertbox after chose option
-//                    }
-//                });
-//                AlertDialog alert = alt_bld.create();
-//                alert.show();
-//                alert.setCanceledOnTouchOutside(false);
             }
         });
 
-
-
+        onClick_infoBtn();
 
 
         onSelect_Spinner(); //function call for selecting item in spinner_category
@@ -206,7 +179,7 @@ public class HomeFragment extends Fragment {
                     msg1.setPadding(10, 5, 10, 20);
                     msg1.setTextColor(Color.GRAY);
                     TextView title1 = new TextView(view.getContext());    //create a message Tv for adb1
-                    title1.setText("Notice"); //the title
+                    title1.setText(R.string.Notice); //the title
                     title1.setGravity(Gravity.CENTER);    //center
                     title1.setTextSize(30);
                     title1.setPadding(10, 40, 10, 50);
@@ -223,13 +196,13 @@ public class HomeFragment extends Fragment {
                     //create an alert dialog
                     AlertDialog.Builder adb1 = new AlertDialog.Builder(view.getContext());
                     TextView msg1 = new TextView(view.getContext());    //create a message Tv for adb1
-                    msg1.setText("Enter Amount"); //the message
+                    msg1.setText(R.string.enter_amount); //the message
                     msg1.setGravity(Gravity.CENTER);    //center
                     msg1.setTextSize(20);
                     msg1.setPadding(10, 5, 10, 20);
                     msg1.setTextColor(Color.GRAY);
                     TextView title1 = new TextView(view.getContext());    //create a message Tv for adb1
-                    title1.setText("Notice"); //the title
+                    title1.setText(R.string.Notice); //the title
                     title1.setGravity(Gravity.CENTER);    //center
                     title1.setTextSize(30);
                     title1.setPadding(10, 40, 10, 50);
@@ -286,7 +259,7 @@ public class HomeFragment extends Fragment {
                     et_amount.getText().clear();
 
                     //reset payment type
-                    tv_payment.setText("Payment Type");
+                    tv_payment.setText(R.string.paymenttype);
 
                 }
 
@@ -299,7 +272,6 @@ public class HomeFragment extends Fragment {
         spn_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
-                final int position_ind = position;
                 //stores the selected category into a String var
                 Object item = adapterView.getItemAtPosition(position);
                 category = item.toString();
@@ -355,7 +327,7 @@ public class HomeFragment extends Fragment {
                                     categories_budget_list_as_string = new StringBuilder(res4.getString(4));
                                 }
                                 StringBuilder categories_list_as_string = new StringBuilder();
-                                String[] categories_budget_list = categories_budget_list_as_string.toString().split("\\;");
+                                String[] categories_budget_list = categories_budget_list_as_string.toString().split(";");
                                 int categories_list_length = 0;
 
                                 res2 = myDb.getAllData_categories();
@@ -399,6 +371,58 @@ public class HomeFragment extends Fragment {
 
     }
 
+
+    public void onClick_infoBtn() {
+        //Button to add data in database
+        info_btn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            public void onClick(View v) {
+
+                final LayoutInflater inflater = getLayoutInflater();
+                final View view_infotextview = inflater.inflate(R.layout.info_textview, null);
+
+//                TextView info_tv = view_infotextview.findViewById(R.id.info_textView1);
+//                info_tv.setText("\u2022 Bullet");
+
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+                builder1.setTitle("Hints and Tips");
+                builder1.setPositiveButton("Got it", null);
+                builder1.setView(view_infotextview);
+
+
+
+                //creates the alert dialog from the builder
+                final AlertDialog alertDialog = builder1.create();
+
+                //display the alert dialog with the buttons
+                alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(final DialogInterface dialog) {
+
+                        //Got it button
+                        Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                        positiveButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                alertDialog.dismiss();
+                            }
+                        });
+
+
+                    }
+                });
+                alertDialog.show();
+                alertDialog.setCanceledOnTouchOutside(false);
+
+
+
+
+            }
+        });
+    }
+
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     //updates the start and end date of the cycle
     public void cycle_updater() {
@@ -421,20 +445,17 @@ public class HomeFragment extends Fragment {
 
         //determine and sets the start and end dates of the cycle in table3
         if (currentDate.isBefore(var)) {
-            LocalDate var_new = var.plusMonths(-1);
-            startdate = var_new;
+            startdate = var.plusMonths(-1);
             enddate = var.minusDays(1);
             //update database table3
-            myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
         }
         else {
             LocalDate var_new = var.plusMonths(1);
             startdate = var;
             enddate = var_new.minusDays(1);
             //update database table3
-            myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
         }
-
+        myDb.update_cycle_setting(String.valueOf(startdate), String.valueOf(enddate), cycle_input);
 
 
         //******************************************************************************new added
@@ -459,7 +480,7 @@ public class HomeFragment extends Fragment {
 //                        categories_list_as_string, categories_budget_list_as_string);
 //            }
             if (!past_startdate.equals(String.valueOf(startdate)) && !past_enddate.equals(String.valueOf(enddate))) { //if a new cycle started (new month)
-                long difference_month = 0;
+                long difference_month;
                 difference_month = ChronoUnit.MONTHS.between(LocalDate.parse(past_startdate),startdate);
 
                 res4.moveToLast();

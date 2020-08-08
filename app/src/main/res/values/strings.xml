@@ -77,4 +77,8 @@
     <string name="cycles">Cycles</string>
     <string name="custom_dates">Custom Dates</string>
     <string name="export">Export</string>
+    <string name="paymenttype">Payment Type</string>
+    <string name="Notice">Notice</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="info">info</string>
 </resources>
