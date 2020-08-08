@@ -93,6 +93,10 @@ public class LineChartFragment extends Fragment {
         yAxisText = view.findViewById(R.id.yAxis);
         yAxisText.setText("Amount Spent");
         xAxisText.setText("Cycle Dates");
+        yAxisText.setTextSize(14);
+        xAxisText.setTextSize(14);
+        xAxisText.setTextColor(Color.BLACK);
+        yAxisText.setTextColor(Color.BLACK);
         formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
 
         //get database
@@ -581,11 +585,15 @@ public class LineChartFragment extends Fragment {
         lineChart.setTouchEnabled(true);
         lineChart.getDescription().setEnabled(FALSE);
         XAxis xAxis = lineChart.getXAxis();
-        //YAxis yAxis = lineChart.gety();
+        YAxis yAxis = lineChart.getAxisLeft();
+        lineChart.getAxisRight().setDrawLabels(false);
+        yAxis.setAxisMinimum(0);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisMaximum(x-1);
         xAxis.setAxisMinimum(0);
         xAxis.setLabelCount(x-1);
+        xAxis.setTextSize(14);
+        yAxis.setTextSize(14);
         //xAxis.setAxisMinimum(0);
         xAxis.setValueFormatter(new MyXAxisValueFormatter());
         xAxis.setGranularity(1f); // restrict interval to 1 (minimum)
@@ -691,8 +699,8 @@ public class LineChartFragment extends Fragment {
             int startMonthVal = startdate.getMonthValue();
             value = value + startMonthVal;
             Log.d("dateman", String.valueOf(value));
-            Month currentMonth = Month.of(1); //this is wrong
-            return currentMonth.getDisplayName(TextStyle.SHORT,Locale.ENGLISH); //check around here for why it's not right oh
+            Month currentMonth = Month.of( (int) value);
+            return currentMonth.getDisplayName(TextStyle.SHORT,Locale.ENGLISH);
         }
     }
 
