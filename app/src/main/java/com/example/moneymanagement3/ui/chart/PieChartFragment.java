@@ -65,18 +65,18 @@ public class PieChartFragment extends Fragment {
     PieChart pieChart;
     PieData pieData;
     PieDataSet pieDataSet;
-    ArrayList pieEntries;
+    ArrayList pieEntries; ArrayList<String> categories_inRange; ArrayList<Boolean> wantToShow;
     ArrayList PieEntryLabels;
     Cursor dataInRangeRes;
     TextView catTotal;
     Double monthlyTotal;
     /////
-    Button btn_selectDates; TextView tv_customDates;
+    Button btn_selectDates; TextView tv_customDates; Button btn_categories; Button btn_paymentTypes; Button btn_all;
     DateTimeFormatter formatter;
     LocalDate startdate_this; LocalDate enddate_this;
     Cursor res;
 
-    Button btn_setStartDate;
+    Button btn_setStartDate; Button btn_chooseToShow;
     Button btn_setEndDate;
     DatePickerDialog.OnDateSetListener mDateSetListener_start;     DatePickerDialog.OnDateSetListener mDateSetListener_end;
     LocalDate temp_startdate;
@@ -91,6 +91,7 @@ public class PieChartFragment extends Fragment {
         myDb = new DataBaseHelper(getActivity());
 
         btn_selectDates = view.findViewById(R.id.setDatesBtn);
+        btn_chooseToShow = view.findViewById(R.id.chooseToShowBtn);
         tv_customDates = view.findViewById(R.id.customDatesTv);
 
         formatter = DateTimeFormatter.ofPattern("LLL dd, yyyy");
@@ -106,6 +107,8 @@ public class PieChartFragment extends Fragment {
         res_startup.moveToFirst();
         startdate_this = LocalDate.parse(res_startup.getString(0));
         enddate_this = LocalDate.parse(res_startup.getString(1));
+
+        setArrayLists_categories_InRange(startdate_this,enddate_this);
 
         pieChartMaker(startdate_this,enddate_this);
         setDatesTv();
@@ -476,6 +479,109 @@ public class PieChartFragment extends Fragment {
         });
 
     }
+
+    ArrayList<String> holder;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void setArrayLists_categories_InRange(LocalDate startdate, LocalDate enddate){
+        categories_inRange = new ArrayList<>();
+        holder = new ArrayList<>();
+        res = myDb.getDataDateRange(startdate.minusDays(1),enddate);
+        while(res.moveToNext()){
+            holder.add(res.getString(3));
+        }
+        for (int i = 0; i < holder.size(); i++){
+            if(!categories_inRange.contains(holder.get(i))){
+                categories_inRange.add(holder.get(i));
+            }
+        }
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void onClick_chooseToShow () {
+        //Button to show options
+        btn_chooseToShow.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //creates boolean array of falses
+                if(categories_inRange.size() > 0){
+                    final boolean[] bool_list = new boolean[categories_inRange.size()];
+                    //converts categories arraylist to char sequence array
+                    final CharSequence[] categories_inRange_list = new CharSequence[categories_inRange.size()];
+                    for (int i = 0; i < categories_inRange.size(); i++) {
+                        categories_inRange_list[i] = categories_inRange.get(i);
+                    }
+
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(view.getContext());
+                    builder1.setTitle("Select Category(s) to show");
+                    builder1.setPositiveButton("Select", null);
+                    builder1.setNeutralButton("Back", null);
+
+                    //set the checkbox listview
+                    builder1.setMultiChoiceItems(categories_inRange_list, bool_list,
+                            new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                // indexSelected contains the index of item (of which checkbox checked)
+                                //checks and unchecks the boxes when clicked
+                                public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                                    bool_list[indexSelected] = isChecked;
+                                    String current_item = categories_inRange_list[indexSelected].toString();
+                                }
+                            });
+                    //creates the alert dialog from the builder
+                    final AlertDialog alertDialog1  = builder1.create();
+
+                    alertDialog1.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(final DialogInterface dialog) {
+                            //select button
+                            Button positiveButton = alertDialog1.getButton(AlertDialog.BUTTON_POSITIVE);
+                            positiveButton.setOnClickListener(new View.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onClick(View v) {
+                                    ArrayList<Cursor> res_arraylist = new ArrayList<>();
+                                    for(int i = 0; i < bool_list.length; i++){
+                                        boolean checked = bool_list[i];
+                                        if(checked){
+                                            res_arraylist.add(myDb.getDataByCategory(startdate_this.minusDays(1),enddate_this,categories_inRange.get(i))); // (startdate,enddate]
+                                        }
+                                    }
+
+
+                                    dialog.dismiss();
+                                }
+                            });
+                            //Back button
+                            Button neutralButton = alertDialog1.getButton(AlertDialog.BUTTON_NEUTRAL);
+                            neutralButton.setOnClickListener(new View.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onClick(View v) {
+
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
+                    });
+                    alertDialog1.show();
+                }
+                else{//if no entries
+                    AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+                    adb.setTitle("There are no entries in this date range");
+                    adb.setPositiveButton("Okay", null);
+                    adb.show();
+
+                }
+
+
+            }
+        });
+
+
+    }
+
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
 
