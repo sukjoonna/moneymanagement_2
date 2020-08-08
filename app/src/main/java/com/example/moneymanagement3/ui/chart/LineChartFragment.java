@@ -118,106 +118,13 @@ public class LineChartFragment extends Fragment {
         lineChartMaker(startdate_this,enddate_this,FALSE);
 
         onClick_GoBackBtn();
-        onClick_selectDates();
-
-        // alert dialog
-        AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
-        final View view_alertButtons = inflater.inflate(R.layout.set_custom_dates_spinner, null);
-        adb.setTitle("Select Date Range:");
-        adb.setView(view_alertButtons); //shows the edit texts from the xml file in the alert dialog
-        adb.setNeutralButton("Back", null);
-        adb.setPositiveButton("Set",null);
-        final AlertDialog alertDialog = adb.create();
-        alertDialog.show();
-        final ArrayList<String> cycles_startToEnd = new ArrayList<>();
-    ////////////
-                spinner_cycles1 = view_alertButtons.findViewById(R.id.spinner);
-                spinner_cycles2 = view_alertButtons.findViewById(R.id.spinner2);
-
-                //Create Cycle Spinner --- from table4
-                res4 = myDb.get_cycles();
-                while(res4.moveToNext()){
-                    String cyc_startdate = res4.getString(0);
-                    String cyc_enddate = res4.getString(1);
-                    LocalDate cyc_startdate_localdate = LocalDate.parse(cyc_startdate);
-                    LocalDate cyc_enddate_localdate = LocalDate.parse(cyc_enddate);
-
-                    //Formatting the localdate ==> custom string format (Month name dd, yyyy)
-                    DateTimeFormatter cyc_formatter = DateTimeFormatter.ofPattern("LLL dd, yy");
-                    String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
-                    String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
-
-                    String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
-                    cycles_startToEnd.add(formatted_dates);
-                }
-                Collections.reverse(cycles_startToEnd);
-                ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text2,cycles_startToEnd);
-                spinner_cycles1.setAdapter(spn_cyc_adapter);
-                spinner_cycles2.setAdapter(spn_cyc_adapter);
-
-                spinner_cycles1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @RequiresApi(api = Build.VERSION_CODES.O)
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
-                                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                                int inverted_pos = (cycles_startToEnd.size() - 1) - position;
-                                res4.moveToPosition(inverted_pos);
-                                startdate = LocalDate.parse(res4.getString(0));
-                            }
-                            @Override
-                            public void onNothingSelected(AdapterView<?> adapterView) {
-                                Object item = adapterView.getItemAtPosition(0);
-                            }
-                        });
-
-                        //What the spinner does when item is selected / not selected
-                        spinner_cycles2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @RequiresApi(api = Build.VERSION_CODES.O)
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
-                                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                                int inverted_pos = (cycles_startToEnd.size() - 1) - position;
-                                res4.moveToPosition(inverted_pos);
-                                enddate = LocalDate.parse(res4.getString(0));
-                                enddate_this = LocalDate.parse(res4.getString(1));
-                            }
-                            @Override
-                            public void onNothingSelected(AdapterView<?> adapterView) {
-                                Object item = adapterView.getItemAtPosition(0);
-                            }
-                        });
-        //set button (first alertdialog)
-        Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-        positiveButton.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
+        alertCycleDialog();
+        //onClick_selectDates();
+        btn_selectDates.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                if (startdate.isAfter(enddate)){
-                    AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
-                    adb.setTitle("The start date is after the end date");
-                    //btn_setEndDate.setText("End Date");
-                    adb.setPositiveButton("Okay", null);
-                    adb.show();
-                }
-                else{
-                    //startdate_this = temp_startdate;
-                    // enddate_this = temp_enddate;
-
-                    lineChartMaker(startdate,enddate,TRUE);
-                    startdate_this = startdate;
-
-                    setDatesTv();
-                    // catTotal.setText("Select a Category");
-                    // catTotal.setTextSize(25);
-                    alertDialog.dismiss();
-
-                }
-
-            }
+            alertCycleDialog();}
         });
 
-//////////////
                 return view;
 
     }
@@ -306,6 +213,110 @@ public class LineChartFragment extends Fragment {
         String startdate_formatted = startdate_this.format(formatter);
         String enddate_formatted = enddate_this.format(formatter);
         tv_customDates.setText(startdate_formatted + " ~ " + enddate_formatted);
+    }
+
+    public void alertCycleDialog() {
+        final LayoutInflater inflater = getLayoutInflater();
+        // alert dialog
+        AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+        final View view_alertButtons = inflater.inflate(R.layout.set_custom_dates_spinner, null);
+        adb.setTitle("Select Date Range:");
+        adb.setView(view_alertButtons); //shows the edit texts from the xml file in the alert dialog
+        adb.setNeutralButton("Back", null);
+        adb.setPositiveButton("Set",null);
+        final AlertDialog alertDialog = adb.create();
+        alertDialog.show();
+        alertDialog.setCanceledOnTouchOutside(FALSE);
+        final ArrayList<String> cycles_startToEnd = new ArrayList<>();
+        ////////////
+        spinner_cycles1 = view_alertButtons.findViewById(R.id.spinner);
+        spinner_cycles2 = view_alertButtons.findViewById(R.id.spinner2);
+
+        //Create Cycle Spinner --- from table4
+        res4 = myDb.get_cycles();
+        while(res4.moveToNext()){
+            String cyc_startdate = res4.getString(0);
+            String cyc_enddate = res4.getString(1);
+            LocalDate cyc_startdate_localdate = LocalDate.parse(cyc_startdate);
+            LocalDate cyc_enddate_localdate = LocalDate.parse(cyc_enddate);
+
+            //Formatting the localdate ==> custom string format (Month name dd, yyyy)
+            DateTimeFormatter cyc_formatter = DateTimeFormatter.ofPattern("LLL dd, yy");
+            String cyc_startdate_formatted = cyc_startdate_localdate.format(cyc_formatter);
+            String cyc_enddate_formatted = cyc_enddate_localdate.format(cyc_formatter);
+
+            String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
+            cycles_startToEnd.add(formatted_dates);
+        }
+        Collections.reverse(cycles_startToEnd);
+        ArrayAdapter<String> spn_cyc_adapter = new ArrayAdapter<String>(view.getContext(), R.layout.spinner_text2,cycles_startToEnd);
+        spinner_cycles1.setAdapter(spn_cyc_adapter);
+        spinner_cycles2.setAdapter(spn_cyc_adapter);
+
+        spinner_cycles1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+                int inverted_pos = (cycles_startToEnd.size() - 1) - position;
+                res4.moveToPosition(inverted_pos);
+                startdate = LocalDate.parse(res4.getString(0));
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Object item = adapterView.getItemAtPosition(0);
+            }
+        });
+
+        //What the spinner does when item is selected / not selected
+        spinner_cycles2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
+                //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
+                int inverted_pos = (cycles_startToEnd.size() - 1) - position;
+                res4.moveToPosition(inverted_pos);
+                enddate = LocalDate.parse(res4.getString(0));
+                enddate_this = LocalDate.parse(res4.getString(1));
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Object item = adapterView.getItemAtPosition(0);
+            }
+        });
+        //set button (first alertdialog)
+        Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+        positiveButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v) {
+
+                if (startdate.isAfter(enddate) || startdate.equals(enddate)){
+                    AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
+                    adb.setTitle("The start date is equal to or after the end date");
+                    //btn_setEndDate.setText("End Date");
+                    adb.setPositiveButton("Okay", null);
+                    adb.show();
+                }
+                else{
+                    //startdate_this = temp_startdate;
+                    // enddate_this = temp_enddate;
+
+                    lineChartMaker(startdate,enddate,TRUE);
+                    startdate_this = startdate;
+
+                    setDatesTv();
+                    // catTotal.setText("Select a Category");
+                    // catTotal.setTextSize(25);
+                    alertDialog.dismiss();
+
+                }
+
+            }
+        });
+
+//////////////
+
     }
 
     public void onClick_selectDates() {
