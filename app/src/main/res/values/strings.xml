@@ -11,7 +11,7 @@
     <string name="budget_fragment">budget fragment</string>
     <string name="tracker_fragment">tracker fragment</string>
     <string name="setting_fragment">setting fragment</string>
-    <string name="tracker">tracker</string>
+    <string name="tracker">Tracker</string>
     <string name="description">description</string>
     <string name="add">add</string>
     <string name="next_page">next_page</string>
