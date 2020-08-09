@@ -102,17 +102,17 @@ public class LineChartFragment extends Fragment {
         myDb = new DataBaseHelper(getActivity());
         Cursor res_startup = myDb.get_cycles();
         int cycleNum = res_startup.getCount();
-        res_startup.moveToFirst();
-        startdate_this = LocalDate.parse(res_startup.getString(0));
-        startdate = LocalDate.parse(res_startup.getString(0));
-        if(cycleNum >=12 ){
-            res_startup.moveToPosition(11);
-        }
-        else {
-            res_startup.moveToLast();
-        }
+        res_startup.moveToLast();
         enddate_this = LocalDate.parse(res_startup.getString(1));
         enddate = LocalDate.parse(res_startup.getString(0));
+        if(cycleNum >=12 ){
+            res_startup.moveToPosition(cycleNum-12);
+        }
+        else {
+            res_startup.moveToFirst();
+        }
+        startdate_this = LocalDate.parse(res_startup.getString(0));
+        startdate = LocalDate.parse(res_startup.getString(0));
 
         //Line Chart
         lineChart = view.findViewById(R.id.lineChart);

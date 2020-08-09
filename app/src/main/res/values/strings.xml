@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">moneymanagement3</string>
     <string name="title_budget">Budget</string>
-    <string name="title_chart">Chart</string>
+    <string name="title_chart">Data</string>
     <string name="title_home">Add</string>
     <string name="title_setting">Setting</string>
     <string name="title_spending">Spending</string>
