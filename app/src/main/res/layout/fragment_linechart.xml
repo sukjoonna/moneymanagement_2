@@ -73,7 +73,6 @@
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:textSize="14sp"
-        android:background="#07000000"
         app:layout_constraintEnd_toEndOf="@+id/lineChart"
         app:layout_constraintStart_toStartOf="@+id/lineChart"
         app:layout_constraintTop_toBottomOf="@+id/lineChart" />
