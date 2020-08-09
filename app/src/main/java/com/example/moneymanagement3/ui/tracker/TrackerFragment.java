@@ -47,7 +47,7 @@ public class TrackerFragment extends Fragment {
     Cursor res; Cursor res2; Cursor res3; Cursor res4;
     TextView tv_total; TextView tv_today; TextView tv_notice;
     ListView lv;
-    ArrayList<String> arrayList; ArrayList<String> cycles;
+    ArrayList<String> arrayList; ArrayList<String> cycles; ArrayList<String> all_cycles;
     ArrayAdapter<String> adapter; ArrayAdapter<String> spn_cyc_adapter;
     ArrayList<Entry> entries_arraylist;
     EntryListAdapter entries_adapter;
@@ -163,13 +163,13 @@ public class TrackerFragment extends Fragment {
         LocalDate startdate_selected = startdate;
         res = myDb.getDataDateRange(startdate_selected.minusDays(1),enddate); //
 
-
+        amount_total = 0;
         if(res!=null){
 
             entries_arraylist = new ArrayList<Entry>();
             entries_adapter = new EntryListAdapter(view.getContext(),R.layout.adapter_view_layout,entries_arraylist);
 
-            amount_total = 0;
+
             //takes the values out from database and puts it into the arraylist &&&& calculates total amount
             while (res.moveToNext()) {
                 String dscpt = res.getString(1);
@@ -223,6 +223,7 @@ public class TrackerFragment extends Fragment {
         //Updates the total at the top
         text = "-$" + String.format("%.2f",amount_total);
         tv_total.setText(text);
+
 
     }
 

@@ -86,7 +86,7 @@ public class LineChartFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_linechart, container, false);
         view.setBackgroundColor(Color.WHITE);
         btn1 = view.findViewById(R.id.gobackBtn);
-        btn_selectDates = view.findViewById(R.id.setDatesBtn2);
+        btn_selectDates = view.findViewById(R.id.setDatesBtn);
         tv_customDates = view.findViewById(R.id.customDatesTv2);
         xAxisText = view.findViewById(R.id.xAxis);
         yAxisText = view.findViewById(R.id.yAxis);
@@ -623,7 +623,7 @@ public class LineChartFragment extends Fragment {
         lineChart.setData(lineData);
         // lineDataSet.setColors(ColorTemplate.JOYFUL_COLORS);
         lineDataSet.setValueTextColor(Color.BLACK);
-        lineDataSet.setValueTextSize(18f);
+        lineDataSet.setValueTextSize(10f);
         lineDataSet.setLineWidth(2.5f);
         lineDataSet.setCircleRadius(4f);
         lineDataSet.setCircleColor(Color.LTGRAY);
@@ -633,7 +633,7 @@ public class LineChartFragment extends Fragment {
         lineDataSet.setDrawCircleHole(FALSE);
         lineChart.getLegend().setEnabled(false);
         lineData.notifyDataChanged();////
-        lineChart.setTouchEnabled(true);
+        lineChart.setTouchEnabled(false);
         lineChart.getDescription().setEnabled(FALSE);
         XAxis xAxis = lineChart.getXAxis();
         YAxis yAxis = lineChart.getAxisLeft();
@@ -643,9 +643,12 @@ public class LineChartFragment extends Fragment {
         xAxis.setAxisMaximum(x-1);
         xAxis.setAxisMinimum(0);
         xAxis.setLabelCount(x-1);
-        xAxis.setTextSize(14);
-        yAxis.setTextSize(14);
-        lineChart.setExtraOffsets(10, 10, 10, 10);
+        xAxis.setTextSize(8);
+        yAxis.setTextSize(10);
+        yAxis.setDrawGridLines(false);
+        lineChart.setExtraOffsets(10, 10, 20, 20);
+        lineData.setDrawValues(false);
+
 
         //xAxis.setAxisMinimum(0);
         xAxis.setValueFormatter(new MyXAxisValueFormatter());
@@ -662,6 +665,8 @@ public class LineChartFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h)
             {
+
+
                 float x=e.getX();
                 Log.d("mytag", String.valueOf(x));
                 float y=e.getY();
@@ -764,7 +769,8 @@ public class LineChartFragment extends Fragment {
                 value = 12;
             }
             Month currentMonth = Month.of( (int) value);
-            return currentMonth.getDisplayName(TextStyle.SHORT,Locale.ENGLISH) +" " +startdate.getDayOfMonth();
+//            return currentMonth.getDisplayName(TextStyle.SHORT,Locale.ENGLISH) +" " +startdate.getDayOfMonth();
+            return (int) value +"/" +startdate.getDayOfMonth();
         }
     }
 
@@ -772,7 +778,7 @@ public class LineChartFragment extends Fragment {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public String getFormattedValue(float value) {
-            return "$" + String.format("%.2f",value);
+            return "$" + String.format("%.0f",value);
         }
     }
 
