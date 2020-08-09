@@ -51,7 +51,7 @@ public class BudgetFragment extends Fragment {
     LocalDate startdate; LocalDate enddate; LocalDate currentDate;
     String cycle_input;
     ArrayList<String> cycles;
-    Spinner spinner_cycles;
+    Spinner spinner_cycles; int cycles_size;
     /////
     Button btn_setBudget;
     double amount_total;
@@ -129,6 +129,8 @@ public class BudgetFragment extends Fragment {
             String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
             cycles.add(formatted_dates);
         }
+
+        cycles_size = cycles.size();
 
         if(cycles.size() > Integer.parseInt(num_of_cycles)){
             while(cycles.size() > Integer.parseInt(num_of_cycles)){
@@ -448,7 +450,7 @@ public class BudgetFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
 
                 //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                int inverted_pos = (cycles.size() - 1) - position;
+                int inverted_pos = (cycles_size - 1) - position;
 
                 res4.moveToPosition(inverted_pos);
                 startdate = LocalDate.parse(res4.getString(0));

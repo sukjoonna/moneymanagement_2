@@ -51,7 +51,7 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
     ListView lv;
     TextView tv_total; TextView tv_customDates; TextView tv_notice;
     String text;
-    Spinner spinner_cycles;
+    Spinner spinner_cycles; int cycles_size;
     ArrayList<Entry> entries_arraylist; ArrayList<String> categories_inRange; ArrayList<String> paymentTypes_inRange;
     EntryListAdapter entries_adapter;
     double amount_total = 0;
@@ -311,6 +311,8 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
                                     cycles_startToEnd.add(formatted_dates);
                                 }
 
+                                cycles_size = cycles_startToEnd.size();
+
                                 if(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
                                     while(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
                                         cycles_startToEnd.remove(0);
@@ -330,7 +332,7 @@ public class InfoFragment extends Fragment implements DatePickerDialog.OnDateSet
                                     @Override
                                     public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
                                         //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                                        int inverted_pos = (cycles_startToEnd.size() - 1) - position;
+                                        int inverted_pos = (cycles_size - 1) - position;
                                         res4.moveToPosition(inverted_pos);
                                         startdate_this = LocalDate.parse(res4.getString(0));
                                         enddate_this = LocalDate.parse(res4.getString(1));

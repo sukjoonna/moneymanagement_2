@@ -57,7 +57,7 @@ public class BarChartFragment extends Fragment {
     LocalDate currentDate;
     String cycle_input;
     ArrayList<String> cycles;
-    Spinner spinner_cycles;
+    Spinner spinner_cycles; int cycles_size;
     /////
     TextView tv_debit; TextView tv_credit; TextView tv_cash; TextView tv_check;
     ArrayList<String> paymentTypes_arraylist; ArrayList<String> sums_arraylist;
@@ -233,6 +233,7 @@ public class BarChartFragment extends Fragment {
                                     String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
                                     cycles_startToEnd.add(formatted_dates);
                                 }
+                                cycles_size = cycles_startToEnd.size();
 
                                 if(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
                                     while(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
@@ -253,7 +254,7 @@ public class BarChartFragment extends Fragment {
                                     @Override
                                     public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
                                         //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                                        int inverted_pos = (cycles_startToEnd.size() - 1) - position;
+                                        int inverted_pos = (cycles_size - 1) - position;
                                         res4.moveToPosition(inverted_pos);
                                         startdate_this = LocalDate.parse(res4.getString(0));
                                         enddate_this = LocalDate.parse(res4.getString(1));

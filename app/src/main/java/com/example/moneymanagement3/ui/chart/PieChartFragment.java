@@ -61,7 +61,7 @@ public class PieChartFragment extends Fragment {
     LocalDate currentDate;
     String cycle_input;
     ArrayList<String> cycles;
-    Spinner spinner_cycles;
+    Spinner spinner_cycles; int cycles_size;
     PieChart pieChart;
     PieData pieData;
     PieDataSet pieDataSet;
@@ -238,6 +238,8 @@ public class PieChartFragment extends Fragment {
                                     cycles_startToEnd.add(formatted_dates);
                                 }
 
+                                cycles_size = cycles_startToEnd.size();
+
                                 if(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
                                     while(cycles_startToEnd.size() > Integer.parseInt(num_of_cycles)){
                                         cycles_startToEnd.remove(0);
@@ -256,7 +258,7 @@ public class PieChartFragment extends Fragment {
                                     @Override
                                     public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
                                         //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                                        int inverted_pos = (cycles_startToEnd.size() - 1) - position;
+                                        int inverted_pos = (cycles_size - 1) - position;
                                         res4.moveToPosition(inverted_pos);
                                         startdate_this = LocalDate.parse(res4.getString(0));
                                         enddate_this = LocalDate.parse(res4.getString(1));

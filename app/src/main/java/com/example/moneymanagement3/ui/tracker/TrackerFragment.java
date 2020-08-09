@@ -47,7 +47,7 @@ public class TrackerFragment extends Fragment {
     Cursor res; Cursor res2; Cursor res3; Cursor res4;
     TextView tv_total; TextView tv_today; TextView tv_notice;
     ListView lv;
-    ArrayList<String> arrayList; ArrayList<String> cycles; ArrayList<String> all_cycles;
+    ArrayList<String> arrayList; ArrayList<String> cycles; int all_cycles_size;
     ArrayAdapter<String> adapter; ArrayAdapter<String> spn_cyc_adapter;
     ArrayList<Entry> entries_arraylist;
     EntryListAdapter entries_adapter;
@@ -117,6 +117,8 @@ public class TrackerFragment extends Fragment {
             String formatted_dates = cyc_startdate_formatted + " ~ " + cyc_enddate_formatted;
             cycles.add(formatted_dates);
         }
+
+        all_cycles_size = cycles.size();
 
         if(cycles.size() > Integer.parseInt(num_of_cycles)){
             while(cycles.size() > Integer.parseInt(num_of_cycles)){
@@ -237,7 +239,7 @@ public class TrackerFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View v, final int position, long id) {
 
                 //this is important bc "cycles"/spinner shows new-->old, but in the database table4, it's indexed old--->new
-                int inverted_pos = (cycles.size() - 1) - position;
+                int inverted_pos = (all_cycles_size - 1) - position;
 
                 res4.moveToPosition(inverted_pos);
                 startdate = LocalDate.parse(res4.getString(0));
